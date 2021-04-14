@@ -1,0 +1,31 @@
+exports.Template = (data, context) => {
+  return /*#__PURE__*/React.createElement(Klutch.KScreen, null, /*#__PURE__*/React.createElement(Klutch.KHeader, {
+    showBackArrow: true
+  }, "Subsaaaacription"), /*#__PURE__*/React.createElement(Klutch.KText, {
+    style: {
+      textAlign: "center"
+    }
+  }, "Add subscriptions to track by going to the transaction detail page and pressing the MiniApp panel. Example below"), /*#__PURE__*/React.createElement(Native.View, {
+    style: {
+      flex: 1,
+      justifyContent: "center"
+    }
+  }, /*#__PURE__*/React.createElement(Native.Image, {
+    source: {
+      uri: "https://klutch-test-public.s3.amazonaws.com/phone.png"
+    },
+    style: {
+      height: 400
+    },
+    resizeMode: "contain"
+  })), /*#__PURE__*/React.createElement(Klutch.KText, {
+    style: {
+      marginVertical: 30,
+      textAlign: "center"
+    }
+  }, "Our AI will also look for subscriptions as you spend and will start adding them here."), /*#__PURE__*/React.createElement(Klutch.KButtonBar, null, /*#__PURE__*/React.createElement(Klutch.KButton, {
+    type: "primary",
+    label: "GO TO TRANSACTIONS",
+    onPress: () => null
+  })));
+};
