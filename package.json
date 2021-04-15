@@ -1,13 +1,13 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "npx concurrently \"expo start\" \"yarn watch-templates\"",
+    "start": "concurrently \"expo start\" \"yarn watch-templates\"",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "build-templates": "npx babel --config-file ./babel-templates.config.js templates/*.jsx -d dist/templates --out-file-extension .template",
-    "watch-templates": "npx nodemon --watch templates --ext jsx --exec yarn build-templates"
+    "build-templates": "babel --config-file ./babel-templates.config.js templates/*.jsx -d dist/templates --out-file-extension .template",
+    "watch-templates": "nodemon --watch templates --ext jsx --exec yarn build-templates"
   },
   "dependencies": {
     "@alloycard/alloy-js": "^1.1.18",

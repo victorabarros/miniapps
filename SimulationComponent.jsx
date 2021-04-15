@@ -5,22 +5,20 @@ import {Text} from "react-native";
 import * as FileSystem from 'expo-file-system';
 import * as Klutch from '@alloycard/klutch-components'
 
-const SimulationComponent =  ({template}) => {
+const SimulationComponent =  ({template, type}) => {
     
-    const [markdownAsset] = useAssets([template])    
+    const [templateAsset] = useAssets([template])    
     const [content, setContent] = useState(null)
-
-    console.log(markdownAsset)
+    
     useEffect(() => {
         const run = async () => {
-            if( markdownAsset) {
-                const doc = await FileSystem.readAsStringAsync(markdownAsset[0].localUri)
-                console.log(doc)  
+            if(templateAsset) {
+                const doc = await FileSystem.readAsStringAsync(templateAsset[0].localUri)               
                 setContent(doc)  
             }
         }
         run()
-    }, [markdownAsset])
+    }, [templateAsset])
 
     const react = React
     const native = Native
@@ -29,14 +27,31 @@ const SimulationComponent =  ({template}) => {
         return <Klutch.KText>Loading...</Klutch.KText>
     }
     
-    return (
-        function() {
-            const r = eval(content)
-            const React = react
-            const Native = native
-            return r()
-        }()        
-    )
+    const drawTemplate = function() {
+        const r = eval(content)
+        const React = react
+        const Native = native
+        return r()
+    }
+
+    if (type === "fullscreen") {
+        return (
+            <Klutch.KScreen>
+                {drawTemplate()}
+            </Klutch.KScreen>  
+        )
+    }
+
+    if (type === "transactionPanel") {
+        return (
+            <Klutch.KScreen>
+                <Klutch.KTransactionPanel>
+                    {drawTemplate()}
+                </Klutch.KTransactionPanel>
+            </Klutch.KScreen>
+        )
+    }
+
 }
 
 export default SimulationComponent
