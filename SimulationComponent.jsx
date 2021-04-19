@@ -5,7 +5,7 @@ import {Text} from "react-native";
 import * as FileSystem from 'expo-file-system';
 import * as Klutch from '@alloycard/klutch-components'
 
-const SimulationComponent =  ({template, type}) => {
+const SimulationComponent =  ({template, type, name}) => {
     
     const [templateAsset] = useAssets([template])    
     const [content, setContent] = useState(null)
@@ -45,7 +45,7 @@ const SimulationComponent =  ({template, type}) => {
     if (type === "transaction") {
         return (
             <Klutch.KScreen>
-                <Klutch.KTransactionPanel>
+                <Klutch.KTransactionPanel recipeName={name}>
                     {drawTemplate()}
                 </Klutch.KTransactionPanel>
             </Klutch.KScreen>

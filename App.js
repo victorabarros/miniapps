@@ -10,12 +10,15 @@ export default function App() {
   let [fontsLoaded] = useFonts({Inter_400Regular, Inter_600SemiBold, Inter_700Bold});
   const [templateToLoad, setTemplateToLoad]  = useState()
 
+  const APPNAME = "Demo MiniApp"
+
   if (!fontsLoaded) {
     return <AppLoading />;
   }
 
   if (!templateToLoad) {
     const buttonStyle = {marginVertical: 10}
+  
 
     return (
       <KScreen style={{flex: 1, marginVertical: 30, justifyContent: 'space-evenly'}}>
@@ -29,7 +32,7 @@ export default function App() {
   
   return (
     <View>
-      <SimulationComponent type={templateToLoad.type} template={templateToLoad.template} />
+      <SimulationComponent name={APPNAME} type={templateToLoad.type} template={templateToLoad.template} />
     </View>
   );
 }
