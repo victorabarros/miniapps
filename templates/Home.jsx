@@ -6,4 +6,3 @@ exports.Template = (data, context) => {
         </>
     )
 }
-
