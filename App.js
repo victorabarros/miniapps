@@ -5,12 +5,40 @@ import AppLoading from 'expo-app-loading';
 import SimulationComponent from './SimulationComponent';
 import {KText, KButton, KScreen} from "@alloycard/klutch-components"
 
+
+
+
+/* MINIAPP CONFIGURATION */
+
+
+const APPNAME = "Demo MiniApp"
+
+const Templates = {
+  Main: {type: "fullscreen", template: require(`./dist/templates/Main.template`)},
+  Transaction: {type: "transaction", template: require(`./dist/templates/Transaction.template`)},
+  Home: {type: "home", template: require(`./dist/templates/Home.template`)},
+}
+
+const initialData = {
+  transaction: {
+      id: "0d2b05d9-68fd-4dd3-a354-25199bd55d48",
+      merchantName: "Sport's Academy",
+      cardName: "Shopping Card",
+      amount: 453.20,
+      category: "SHOPPING",
+      date: new Date("2021-03-25T11:43:23Z")                
+  }    
+}
+
+/* END MINIAPP CONFIGURATION */
+
+
 export default function App() {
 
   let [fontsLoaded] = useFonts({Inter_400Regular, Inter_600SemiBold, Inter_700Bold});
   const [templateToLoad, setTemplateToLoad]  = useState()
 
-  const APPNAME = "Demo MiniApp"
+
 
   if (!fontsLoaded) {
     return <AppLoading />;
@@ -21,18 +49,28 @@ export default function App() {
   
 
     return (
-      <KScreen style={{flex: 1, marginVertical: 30, justifyContent: 'space-evenly'}}>
+      <KScreen style={{flex: 1, marginVertical: 30, justifyContent: 'space-evenly'}}>        
         <KText>What template do you want to open?</KText>
-        <KButton type="primary" style={buttonStyle} label="Main" onPress={() => setTemplateToLoad({type: "fullscreen", template: require(`./dist/templates/Main.template`)})} />
-        <KButton type="primary" style={buttonStyle} label="Transaction Panel" onPress={() => setTemplateToLoad({type: "transaction", template: require(`./dist/templates/Transaction.template`)})} />
-        <KButton type="primary" style={buttonStyle} label="Home Panel" onPress={() => setTemplateToLoad({type: "home", template: require(`./dist/templates/Home.template`)})} />      
+        <KButton type="primary" style={buttonStyle} label="Main" onPress={() => setTemplateToLoad(Templates.Main)} />
+        <KButton type="primary" style={buttonStyle} label="Transaction Panel" onPress={() => setTemplateToLoad(Templates.Transaction)} />
+        <KButton type="primary" style={buttonStyle} label="Home Panel" onPress={() => setTemplateToLoad(Templates.Home)} />      
       </KScreen>
     )  
   }
   
+  const onLoadTemplate = (templateName, templateData) => {
+    setTemplateData(templateData)  
+    setTemplateToLoad(templateName)    
+  }
+  
   return (
     <View>
-      <SimulationComponent name={APPNAME} type={templateToLoad.type} template={templateToLoad.template} />
+      <SimulationComponent 
+        name={APPNAME} 
+        type={templateToLoad.type} 
+        template={templateToLoad.template} 
+        data={templateData}
+        onLoadTemplate={onLoadTemplate} />
     </View>
   );
 }
