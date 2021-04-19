@@ -42,7 +42,7 @@ const SimulationComponent =  ({template, type}) => {
         )
     }
 
-    if (type === "transactionPanel") {
+    if (type === "transaction") {
         return (
             <Klutch.KScreen>
                 <Klutch.KTransactionPanel>
