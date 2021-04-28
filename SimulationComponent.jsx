@@ -1,11 +1,15 @@
 import * as Klutch from '@alloycard/klutch-components';
 import { Asset } from 'expo-asset';
+import moment from 'moment';
 import React, { useEffect, useState } from "react";
 import * as Native from "react-native";
+
 
 const SimulationComponent =  ({template, type, name, data, onLoadTemplate}) => {
     
     const [content, setContent] = useState(null)
+    const [templateState, setTemplateState] = useState()
+    const [reRender, setReRender] = useState(0)
             
     useEffect(() => {        
         const run = async () => {
@@ -27,8 +31,36 @@ const SimulationComponent =  ({template, type, name, data, onLoadTemplate}) => {
     }
     
     const simulationContext = {
+        panel: {
+            id: "123456",
+            recipeInstall: {
+                id: "88764",
+                recipe: {
+                    id: "123456",
+                    name: "My Recipe"
+                }    
+            }
+        },
         loadTemplate(templateName, templateData) {
             onLoadTemplate &&  onLoadTemplate(templateName, templateData)
+        },
+        setState(stateObj) {
+            setTemplateState(obj => {
+                var target = obj || {}
+                const resp = Object.assign(target, stateObj)
+                return resp
+            })
+            setReRender(r => r + 1)
+        },        
+        state: templateState,
+        save(saveObj) {
+            
+        },
+        closeMiniApp() {
+            onLoadTemplate();
+        },
+        changePanelData(panelId, data) {
+
         }
     }
 
@@ -36,6 +68,7 @@ const SimulationComponent =  ({template, type, name, data, onLoadTemplate}) => {
         const r = eval(content)
         const React = react
         const Native = native
+        const { DateTime } = require("luxon");
         return r(data, simulationContext)
     }
 
