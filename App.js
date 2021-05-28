@@ -37,6 +37,7 @@ export default function App() {
 
   let [fontsLoaded] = useFonts({Inter_400Regular, Inter_600SemiBold, Inter_700Bold});
   const [templateToLoad, setTemplateToLoad]  = useState()
+  const [templateData, setTemplateData] = useState(initialData)
 
 
 
