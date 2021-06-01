@@ -21,6 +21,7 @@ const SimulationComponent =  ({template, type, name, data, onLoadTemplate}) => {
         run()
     })
 
+    const react = React    
 
     if (!content) {
         return <Klutch.KText>Loading...</Klutch.KText>
@@ -74,6 +75,7 @@ const SimulationComponent =  ({template, type, name, data, onLoadTemplate}) => {
 
     const drawTemplate = function() {
         const r = eval(content)
+        const React = react
         const { DateTime } = require("luxon");
         return r(data, simulationContext)
     }
