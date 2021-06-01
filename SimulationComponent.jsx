@@ -1,8 +1,6 @@
 import * as Klutch from '@alloycard/klutch-components';
 import { Asset } from 'expo-asset';
-import moment from 'moment';
 import React, { useEffect, useState } from "react";
-import * as Native from "react-native";
 
 
 const SimulationComponent =  ({template, type, name, data, onLoadTemplate}) => {
@@ -23,24 +21,12 @@ const SimulationComponent =  ({template, type, name, data, onLoadTemplate}) => {
         run()
     })
 
-    const react = React
-    const native = Native
 
     if (!content) {
         return <Klutch.KText>Loading...</Klutch.KText>
     }
     
-    const simulationContext = {
-        panel: {
-            id: "123456",
-            recipeInstall: {
-                id: "88764",
-                recipe: {
-                    id: "123456",
-                    name: "My Recipe"
-                }    
-            }
-        },
+    const simulationContext = {        
         loadTemplate(templateName, templateData) {
             onLoadTemplate &&  onLoadTemplate(templateName, templateData)
         },
@@ -53,8 +39,30 @@ const SimulationComponent =  ({template, type, name, data, onLoadTemplate}) => {
             setReRender(r => r + 1)
         },        
         state: templateState,
-        save(saveObj) {
+        async post(path, data) {
             
+            const resp = await axios.post({
+                url: `${recipeInstall.recipe.serverUrl}${path}` ,
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer EXAMPLEAUTHKEY`
+                },
+                data: data                
+            })
+            return resp
+        },
+        async get(path, data) {
+            const resp = await axios.get({
+                url: `${recipeInstall.recipe.serverUrl}${path}` ,
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer EXAMPLEAUTHKEY`
+                },
+                data: data                
+            })
+            return resp
         },
         closeMiniApp() {
             onLoadTemplate();
@@ -66,8 +74,6 @@ const SimulationComponent =  ({template, type, name, data, onLoadTemplate}) => {
 
     const drawTemplate = function() {
         const r = eval(content)
-        const React = react
-        const Native = native
         const { DateTime } = require("luxon");
         return r(data, simulationContext)
     }
@@ -78,16 +84,15 @@ const SimulationComponent =  ({template, type, name, data, onLoadTemplate}) => {
                 {drawTemplate()}
             </Klutch.KScreen>  
         )
-    }
-
-    if (type === "transaction") {
+    } else {
         return (
             <Klutch.KScreen>
-                <Klutch.KTransactionPanel recipeName={name}>
+                <Klutch.KMiniAppPanel recipeName={name} panelStyle={type}>
                     {drawTemplate()}
-                </Klutch.KTransactionPanel>
+                </Klutch.KMiniAppPanel>
             </Klutch.KScreen>
         )
+
     }
 
 }
