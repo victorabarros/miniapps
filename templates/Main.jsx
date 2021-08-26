@@ -1,4 +1,4 @@
-exports.Template = (data, context) => {
+Template = (data, context) => {
 
     return (
         <>
