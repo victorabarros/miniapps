@@ -1,13 +1,19 @@
 import * as Klutch from '@alloycard/klutch-components';
 import { Asset } from 'expo-asset';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import equal from "deep-equal";
+import axios from "axios";
 
 
-const SimulationComponent =  ({template, type, name, data, onLoadTemplate}) => {
+
+const SimulationComponent =  ({serverUrl, token, template, type, name, data, onLoadTemplate, panelConfigCallback}) => {
     
     const [content, setContent] = useState(null)
     const [templateState, setTemplateState] = useState()
     const [reRender, setReRender] = useState(0)
+    const [config, setConfig] = useState({})
+    const [initCallback, setInitCallback] = useState()
+    const [init, setInit] = useState(false)
             
     useEffect(() => {        
         const run = async () => {
@@ -21,6 +27,17 @@ const SimulationComponent =  ({template, type, name, data, onLoadTemplate}) => {
         run()
     })
 
+    useEffect(() => {
+        if (initCallback) {
+
+            if (isPromise(initCallback)) {
+                initCallback.then()
+            } else {
+                initCallback()    
+            }            
+        }
+    }, [init])
+
     const react = React    
 
     if (!content) {
@@ -32,44 +49,64 @@ const SimulationComponent =  ({template, type, name, data, onLoadTemplate}) => {
             onLoadTemplate &&  onLoadTemplate(templateName, templateData)
         },
         setState(stateObj) {
+            if (equal(stateObj, this.state)) {
+                return
+            }
             setTemplateState(obj => {
                 var target = obj || {}
                 const resp = Object.assign(target, stateObj)
+                
+                if (resp != obj) {
+                    setReRender(r => r + 1)
+                }
                 return resp
             })
-            setReRender(r => r + 1)
+            
         },        
         state: templateState,
         async post(path, data) {
             
-            const resp = await axios.post({
-                url: `${recipeInstall.recipe.serverUrl}${path}` ,
+            const resp = await axios.post(`${recipeInstall.recipe.serverUrl}${path}`, {                
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer EXAMPLEAUTHKEY`
+                    'Authorization': `Bearer ${token}`
                 },
                 data: data                
             })
-            return resp
+            return resp.data
         },
         async get(path, data) {
-            const resp = await axios.get({
-                url: `${recipeInstall.recipe.serverUrl}${path}` ,
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer EXAMPLEAUTHKEY`
-                },
-                data: data                
-            })
-            return resp
+            try {                
+                const resp = await axios.get(`${serverUrl}${path}`, {                    
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    data: data                
+                })                
+                return resp.data  
+            } catch (e) {
+                console.error(e)
+            }
         },
         closeMiniApp() {
             onLoadTemplate();
         },
         changePanelData(panelId, data) {
 
+        },
+        setPanelConfig(conf) {
+            if (!equal(config,conf)) {
+                setConfig(conf)
+            }            
+        }, 
+        init(callback) {
+            if(!init) {
+                setInitCallback(callback)
+                setInit(true)    
+            }
         }
     }
 
@@ -77,14 +114,16 @@ const SimulationComponent =  ({template, type, name, data, onLoadTemplate}) => {
         const r = eval(content)
         const React = react
         const { DateTime } = require("luxon");
+        const Victory = require("victory-native")
+        const AlloyJS = require("@alloycard/alloy-js")
         return r(data, simulationContext)
     }
 
     if (type === "fullscreen") {
         return (
-            <Klutch.KScreen>
+            <Klutch.KScrollScreen style={config.backgroundColor ? {backgroundColor: config}: null}>
                 {drawTemplate()}
-            </Klutch.KScreen>  
+            </Klutch.KScrollScreen>  
         )
     } else {
         return (
@@ -98,6 +137,8 @@ const SimulationComponent =  ({template, type, name, data, onLoadTemplate}) => {
     }
 
 }
+
+const isPromise = v => typeof v === 'object' && typeof v.then === 'function'
 
 export default SimulationComponent
 
