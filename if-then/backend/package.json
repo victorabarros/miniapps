@@ -1,0 +1,23 @@
+{
+  "name": "if-then-server",
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "if-then miniapp, automation conditional actions",
+  "repository": "https://github.com/AlloyCard/recipes/tree/main/if-then",
+  "scripts": {
+    "start": "nodemon -r dotenv/config src/server.js"
+  },
+  "dependencies": {
+    "@alloycard/alloy-js": "1.4.15",
+    "ajv": "^8.6.2",
+    "express": "^4.17.1",
+    "http-status": "^1.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.13.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.12",
+    "dotenv": "^10.0.0",
+    "nodemon": "^2.0.8"
+  }
+}

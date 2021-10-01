@@ -1,0 +1,112 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  categorization
+  
+Globals:
+  Function:
+    Timeout: 3
+
+Parameters:
+  RecipeId:
+      Type: String
+      Description: "Klutch Recipe Id:"
+  KlutchServerUrl:
+      Type: String
+      Description: "Klutch Server URL" 
+  KlutchPublicKey:
+      Type: String
+      Description: "Klutch Public Key"
+  
+Resources:
+  SubscriptionTrackerAPI:
+    Type: AWS::Serverless::HttpApi    
+  WebhookFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: app.handleWebhook
+      Runtime: nodejs14.x
+      Timeout: 10
+      Policies: 
+        - {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "KMSSign",
+                "Effect": "Allow",
+                "Action": "kms:Sign",
+                "Resource": !GetAtt RecipeKey.Arn
+              }             
+            ]
+          }
+      Environment: 
+        Variables:
+          klutchKey: !Ref RecipeKey
+          recipeId: !Ref RecipeId      
+          klutchServerUrl: !Ref KlutchServerUrl
+      Events:      
+        Webhook:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref SubscriptionTrackerAPI
+            Path: /klutch-webhook
+            Method: POST                    
+  GetCategoriesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: app.handleGetCategories
+      Runtime: nodejs14.x
+      Timeout: 10
+      Policies: 
+        - {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "KMSSign",
+                "Effect": "Allow",
+                "Action": "kms:Sign",
+                "Resource": !GetAtt RecipeKey.Arn
+              }             
+            ]
+          }
+      Environment: 
+        Variables:
+          klutchKey: !Ref RecipeKey
+          recipeId: !Ref RecipeId      
+          klutchServerUrl: !Ref KlutchServerUrl
+          KlutchPublicKey: !Ref KlutchPublicKey
+      Events:      
+        Webhook:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref SubscriptionTrackerAPI
+            Path: /categories
+            Method: GET                        
+  RecipeKey: 
+    Type: AWS::KMS::Key
+    Properties: 
+      Description: Key to Access Klutch resources
+      Enabled: true
+      EnableKeyRotation: false      
+      KeyPolicy:
+        Version: '2012-10-17'
+        Id: key-allow-root
+        Statement:
+        - Sid: Enable IAM User Permissions
+          Effect: Allow
+          Principal: 
+            AWS:  !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+          Action: kms:*
+          Resource: '*'
+      KeySpec: RSA_2048
+      KeyUsage: SIGN_VERIFY
+      PendingWindowInDays: 7
+Outputs:
+  RequestAuthenticationFunctionApi:
+    Description: "API Gateway endpoint URL for Prod stage for Recipe webhook"
+    Value: !Sub "https://${SubscriptionTrackerAPI}.execute-api.${AWS::Region}.amazonaws.com/klutch-webhook"
+  Key:
+    Description: "MiniApp Key"
+    Value: !Ref RecipeKey

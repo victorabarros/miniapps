@@ -1,0 +1,105 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  burner-card-miniapp
+
+Parameters:
+  DatabaseUrl:
+    Type: String
+    Description: MongoDb Url for this miniapp
+  DatabaseName:
+    Type: String
+    Description: MongoDb Name for this miniapp
+  KlutchServerUrl:
+    Type: String
+    Description: Klutch Server URL
+  KlutchPublicKey:
+    Type: String
+    Description: Klutch Public Key
+  PrivateKey:
+    Type: String
+    Description: MiniAppPrivateKey
+  RecipeId:
+    Type: String
+    Description: MiniApp id
+  Port:
+    Type: Number
+    Description: port
+
+Resources:
+  MiniAppECR:
+    Type: AWS::ECR::Repository
+    Properties:
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      ImageTagMutability: MUTABLE
+      RepositoryName: miniapps/burnercard
+
+  MiniAppECSTask:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      ContainerDefinitions:
+        - Name: "miniapps-burnercard"
+          Image: !GetAtt MiniAppECR.RepositoryUri
+          PortMappings:
+            - ContainerPort: !Ref Port
+              HostPort: !Ref Port
+              Protocol: tcp
+          MemoryReservation: 512
+          Environment:
+            [
+              { Name: DATABASE_URL, Value: !Ref DatabaseUrl },
+              { Name: DATABASE_NAME, Value: !Ref DatabaseName },
+              { Name: KLUTCH_SERVER_URL, Value: !Ref KlutchServerUrl },
+              { Name: KLUTCH_PUBLIC_KEY, Value: !Ref KlutchPublicKey },
+              { Name: PRIVATE_KEY, Value: !Ref PrivateKey },
+              { Name: RECIPE_ID, Value: !Ref RecipeId },
+              { Name: PORT, Value: !Ref Port },
+            ]
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref ECSCloudWatchLogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: ecs
+      Family: miniapps-burnercard
+      ExecutionRoleArn: !Ref TaskRole
+      TaskRoleArn: !Ref TaskRole
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ecs-tasks.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: allow-access-to-ecr
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  [
+                    "ecr:GetDownloadUrlForLayer",
+                    "ecr:BatchGetImage",
+                    "ecr:GetAuthorizationToken",
+                    "ecr:BatchCheckLayerAvailability",
+                  ]
+                Resource: "*"
+        - PolicyName: allow-cloudwatch-logs
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: ["logs:CreateLogStream", "logs:PutLogEvents"]
+                Resource: !GetAtt ECSCloudWatchLogGroup.Arn
+  ECSCloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: "/ecs/miniapps/burnercard"
+      RetentionInDays: 90

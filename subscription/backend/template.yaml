@@ -1,0 +1,203 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  subscription-tracker
+  
+Globals:
+  Function:
+    Timeout: 3
+
+Parameters:
+  RecipeId:
+      Type: String
+      Description: "Klutch Recipe Id:"
+  KlutchServerUrl:
+      Type: String
+      Description: "Klutch Server URL" 
+  KlutchPublicKey:
+      Type: String
+      Description: "Klutch Public Key"
+  
+Resources:
+  SubscriptionTrackerAPI:
+    Type: AWS::Serverless::HttpApi    
+  WebhookFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: app.klutchWebhook
+      Runtime: nodejs14.x
+      Timeout: 10
+      Policies: 
+        - {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "KMSSign",
+                "Effect": "Allow",
+                "Action": "kms:Sign",
+                "Resource": !GetAtt SubscriptionTrackerKey.Arn
+              },
+              {
+                "Sid": "DynamoDb",
+                "Effect": "Allow",
+                "Action": "dynamodb:*",
+                "Resource": [
+                  !GetAtt SubscriptionTable.Arn,
+                  !GetAtt SubscriptionTransactionTable.Arn
+                ]
+              }              
+            ]
+          }
+      Environment: 
+        Variables:
+          klutchKey: !Ref SubscriptionTrackerKey
+          recipeId: !Ref RecipeId      
+          SubscriptionTable: !Ref SubscriptionTable
+          SubscriptionTransactionTable: !Ref SubscriptionTransactionTable
+          klutchServerUrl: !Ref KlutchServerUrl
+      Events:      
+        Webhook:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref SubscriptionTrackerAPI
+            Path: /klutch-webhook
+            Method: POST
+  NewSubscriptionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: app.newSubscription
+      Runtime: nodejs14.x    
+      Timeout: 10
+      Environment:
+        Variables:
+          SubscriptionTable: !Ref SubscriptionTable
+          SubscriptionTransactionTable: !Ref SubscriptionTransactionTable
+          klutchpublickey: !Ref KlutchPublicKey
+          klutchServerUrl: !Ref KlutchServerUrl
+      Policies: 
+        - {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "KMSSign",
+                "Effect": "Allow",
+                "Action": "kms:Sign",
+                "Resource": !GetAtt SubscriptionTrackerKey.Arn
+              },
+              {
+                "Sid": "DynamoDb",
+                "Effect": "Allow",
+                "Action": "dynamodb:*",
+                "Resource": [
+                  !GetAtt SubscriptionTable.Arn,
+                  !GetAtt SubscriptionTransactionTable.Arn
+                ]
+              }              
+            ]
+          }
+      Events:      
+        POSTSubscriptions:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref SubscriptionTrackerAPI
+            Path: /subscriptions
+            Method: POST  
+  GetSubscriptionFunction: 
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: app.getSubscriptions
+      Runtime: nodejs14.x   
+      Timeout: 10 
+      Environment:
+        Variables:
+          SubscriptionTable: !Ref SubscriptionTable
+          SubscriptionTransactionTable: !Ref SubscriptionTransactionTable
+          klutchpublickey: !Ref KlutchPublicKey
+          recipeId: !Ref RecipeId      
+          klutchServerUrl: !Ref KlutchServerUrl
+      Policies: 
+        - {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "KMSSign",
+                "Effect": "Allow",
+                "Action": "kms:Sign",
+                "Resource": !GetAtt SubscriptionTrackerKey.Arn
+              },
+              {
+                "Sid": "DynamoDb",
+                "Effect": "Allow",
+                "Action": "dynamodb:*",
+                "Resource": [
+                  !GetAtt SubscriptionTable.Arn,
+                  !GetAtt SubscriptionTransactionTable.Arn
+                ]
+              }              
+            ]
+          }
+      Events:      
+        GetSubscriptions:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref SubscriptionTrackerAPI
+            Path: /subscriptions
+            Method: GET 
+                       
+  SubscriptionTrackerKey: 
+    Type: AWS::KMS::Key
+    Properties: 
+      Description: Key to Access Klutch resources
+      Enabled: true
+      EnableKeyRotation: false      
+      KeyPolicy:
+        Version: '2012-10-17'
+        Id: key-allow-root
+        Statement:
+        - Sid: Enable IAM User Permissions
+          Effect: Allow
+          Principal: 
+            AWS:  !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+          Action: kms:*
+          Resource: '*'
+      KeySpec: RSA_2048
+      KeyUsage: SIGN_VERIFY
+      PendingWindowInDays: 7
+  SubscriptionTable:
+    Type: AWS::DynamoDB::Table
+    Properties:      
+      AttributeDefinitions:
+        - AttributeName: recipeInstallId
+          AttributeType: "S"
+        - AttributeName: subscriptionId
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: recipeInstallId
+          KeyType: HASH
+        - AttributeName: subscriptionId
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST 
+  SubscriptionTransactionTable:
+    Type: AWS::DynamoDB::Table  
+    Properties:      
+      AttributeDefinitions:
+        - AttributeName: recipeInstallId
+          AttributeType: "S"
+        - AttributeName: transactionDate
+          AttributeType: "S"        
+      KeySchema:
+        - AttributeName: recipeInstallId
+          KeyType: HASH
+        - AttributeName: transactionDate
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST                   
+Outputs:
+  RequestAuthenticationFunctionApi:
+    Description: "API Gateway endpoint URL for Prod stage for SubscriptionTracker webhook"
+    Value: !Sub "https://${SubscriptionTrackerAPI}.execute-api.${AWS::Region}.amazonaws.com/klutch-webhook"
+  Key:
+    Description: "Klutch Public MiniApp Key"
+    Value: !Ref SubscriptionTrackerKey
