@@ -19,17 +19,7 @@ Template = (data, context) => {
     return (
         <>
             <Klutch.KHeader showBackArrow>Google Sheet Exporter</Klutch.KHeader>
-            <Klutch.KText style={{ textAlign: "center", marginVertical: 20 }}>Please type a sheet name and click on the connect button to start synching your transactions</Klutch.KText>            
-            <Klutch.KForm style={{marginTop: 20}}>
-                <Klutch.KTextInput 
-                    label="SHEET NAME"
-                    value={context.state.sheetName}                    
-                    onChangeText={text => context.setState({sheetName: text})}            
-                />                
-                <Klutch.KButtonBar>
-                    <Klutch.KButton type="primary" label="Connnect to Google" onPress={() => openGoogle()} />
-                </Klutch.KButtonBar>     
-            </Klutch.KForm>
+            <Klutch.KText style={{ textAlign: "center", marginVertical: 20 }}>Google is now connected. Transactions will be exported to Google Sheets</Klutch.KText>                        
         </>
     )
 }

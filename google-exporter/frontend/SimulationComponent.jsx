@@ -3,10 +3,11 @@ import { Asset } from 'expo-asset';
 import React, { useEffect, useState, useCallback } from "react";
 import equal from "deep-equal";
 import axios from "axios";
+import * as Linking from 'expo-linking';
 
 
 
-const SimulationComponent =  ({serverUrl, token, template, type, name, data, onLoadTemplate, panelConfigCallback}) => {
+const SimulationComponent =  ({serverUrl, token, template, type, name, data, onLoadTemplate, panelConfigCallback, recipeInstallId}) => {
     
     const [content, setContent] = useState(null)
     const [templateState, setTemplateState] = useState()
@@ -49,21 +50,15 @@ const SimulationComponent =  ({serverUrl, token, template, type, name, data, onL
             onLoadTemplate &&  onLoadTemplate(templateName, templateData)
         },
         setState(stateObj) {
-            if (equal(stateObj, this.state)) {
-                return
-            }
             setTemplateState(obj => {
                 var target = obj || {}
                 const resp = Object.assign(target, stateObj)
-                
-                if (resp != obj) {
-                    setReRender(r => r + 1)
-                }
-                return resp
-            })
-            
-        },        
+                setReRender(r => r + 1)
+                return resp    
+            })            
+        },                  
         state: templateState,
+        recipeInstallId: recipeInstallId,
         async post(path, data) {
             
             const resp = await axios.post(`${recipeInstall.recipe.serverUrl}${path}`, {                
@@ -90,6 +85,9 @@ const SimulationComponent =  ({serverUrl, token, template, type, name, data, onL
             } catch (e) {
                 console.error(e)
             }
+        },
+        openExternalUrl(url) {
+            Linking.openURL(url);
         },
         closeMiniApp() {
             onLoadTemplate();

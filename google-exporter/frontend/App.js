@@ -30,7 +30,7 @@ const initialData = {
   }    
 }
 
-const RECIPEID = "<<RECIPE ID>>"
+const RECIPEID = "d0e8685b-4396-4d4c-8009-6d4d90ac90b9"
 const RECIPEINSTALLID = "<<RECIPE INSTALL ID>>"
 const SERVERURL = "<<YOUR SERVER"
 
@@ -60,6 +60,9 @@ export default function App() {
       userPoolClientId: envFields.userPoolClientId,
       userPoolServer: envFields.userPoolServer           
     })      
+    if (RECIPEINSTALLID == "<<RECIPE INSTALL ID>>") {
+      return
+    }
     const run = async () => {      
       await AuthService.signIn(envFields.userName, envFields.password)      
       try {
@@ -114,6 +117,7 @@ export default function App() {
     <View>
       <SimulationComponent 
         recipeId={RECIPEID}
+        recipeInstallId={RECIPEINSTALLID}
         serverUrl={SERVERURL}
         name={APPNAME} 
         type={templateToLoad.type} 
