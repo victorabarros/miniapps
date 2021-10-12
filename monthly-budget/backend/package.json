@@ -8,9 +8,11 @@
     "start": "nodemon -r dotenv/config src/server.js"
   },
   "dependencies": {
+    "@klutchcard/alloy-js": "1.4.32-a",
     "axios": "0.23.0",
     "express": "4.17.1",
-    "http-status": "1.5.0"
+    "http-status": "1.5.0",
+    "jsonwebtoken": "8.5.1"
   },
   "devDependencies": {
     "@types/express": "4.17.13",

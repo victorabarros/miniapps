@@ -3,6 +3,7 @@ const throwMissingVariable = (name) => { throw new Error(`missing required env v
 
 const config = {
   klutchServerUrl: process.env.KLUTCH_SERVER_URL || throwMissingVariable('KLUTCH_SERVER_URL'),
+  klutchPublicKey: process.env.KLUTCH_PUBLIC_KEY || throwMissingVariable('KLUTCH_PUBLIC_KEY'),
   port: process.env.PORT || 3003,
 }
 

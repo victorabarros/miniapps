@@ -2,8 +2,12 @@ const axios = require('axios')
 const { Router } = require("express")
 const httpStatus = require('http-status')
 const { klutchServerUrl } = require("../config")
+const { addBudget } = require('./controllers/Budget')
+
 
 const router = Router()
+
+router.post("/card", addBudget)
 
 router.get("/health", async (req, resp) => {
   let responseStatus = httpStatus.OK
