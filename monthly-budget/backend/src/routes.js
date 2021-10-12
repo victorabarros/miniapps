@@ -7,8 +7,7 @@ const { addBudget } = require('./controllers/Budget')
 
 const router = Router()
 
-router.post("/card", addBudget)
-
+router.post("/budget", addBudget)
 router.get("/health", async (req, resp) => {
   let responseStatus = httpStatus.OK
   let services = {
