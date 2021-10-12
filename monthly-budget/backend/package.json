@@ -1,0 +1,19 @@
+{
+  "name": "monthly-budget-server",
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "monthly budget miniapp server",
+  "repository": "https://github.com/KlutchCard/miniapps/",
+  "scripts": {
+    "start": "nodemon -r dotenv/config src/server.js"
+  },
+  "dependencies": {
+    "express": "4.17.1",
+    "http-status": "1.5.0"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.13",
+    "dotenv": "10.0.0",
+    "nodemon": "2.0.12"
+  }
+}
