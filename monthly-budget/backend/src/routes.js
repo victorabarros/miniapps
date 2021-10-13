@@ -1,8 +1,9 @@
 const axios = require('axios')
 const { Router } = require("express")
 const httpStatus = require('http-status')
-const { klutchServerUrl } = require("../src/config/config")
+const { klutchServerUrl, database } = require("../src/config/config")
 const { addBudget, getBudgets } = require('./controllers/BudgetController')
+const connection = require('./database/index')
 
 
 const router = Router()
@@ -16,6 +17,11 @@ router.get("/health", async (req, resp) => {
       success: true,
       errorMessage: null,
     },
+    database: {
+      success: true,
+      errorMessage: null,
+      databaseName: database.database,
+    },
   }
 
   await axios({ method: 'get', url: `${klutchServerUrl}/healthcheck`, })
@@ -26,8 +32,13 @@ router.get("/health", async (req, resp) => {
       console.log(services.klutchServer.errorMessage, error)
     })
 
-  // TODO
-  // check database
+  await connection.authenticate()
+    .catch(err => {
+      services.database.success = false
+      services.database.errorMessage = "database connection fail"
+      responseStatus = httpStatus.SERVICE_UNAVAILABLE
+      console.log(services.database.errorMessage, err)
+    })
 
   return resp.status(responseStatus).json({ services })
 })
