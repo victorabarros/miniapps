@@ -1,0 +1,136 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  google-exporter
+  
+Globals:
+  Function:
+    Timeout: 3
+
+Parameters:
+  RecipeId:
+      Type: String
+      Description: "Klutch Recipe Id:"
+  KlutchServerUrl:
+      Type: String
+      Description: "Klutch Server URL" 
+  KlutchPublicKey:
+      Type: String
+      Description: "Klutch Public Key"
+  GoogleOauthSecret:      
+    Type: String
+    Description: "Google OAuth Secret"
+    NoEcho: true   
+  GoogleOAuthClientId:
+      Type: String
+      Description: "Google OAuth ClientId"    
+
+
+Resources:
+  GoogleOAuthSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties: 
+      Description: Secrets for connecting to  Google OAuth Service
+      Name: /google/oauth
+      SecretString: !Sub '{"client_id": "${GoogleOAuthClientId}", "client_secret": "${GoogleOauthSecret}"}' 
+  GoogleExporterApi:
+    Type: AWS::Serverless::HttpApi    
+  WebhookFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: app.handleWebhook
+      Runtime: nodejs14.x
+      Timeout: 10
+      Policies: 
+        - {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "KMSSign",
+                "Effect": "Allow",
+                "Action": "kms:Sign",
+                "Resource": !GetAtt RecipeKey.Arn
+              }             
+            ]
+          }
+      Environment: 
+        Variables:
+          klutchKey: !Ref RecipeKey
+          recipeId: !Ref RecipeId      
+          klutchServerUrl: !Ref KlutchServerUrl
+          AccessTokenTable: !Ref AccessTokenTable
+      Events:      
+        Webhook:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref GoogleExporterApi
+            Path: /klutch-webhook
+            Method: POST                    
+  OauthRedirectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: app.oauthRedirect
+      Runtime: nodejs14.x
+      Timeout: 10
+      Policies: 
+        - {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "KMSSign",
+                "Effect": "Allow",
+                "Action": "kms:Sign",
+                "Resource": !GetAtt RecipeKey.Arn
+              }             
+            ]
+          }
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: !Ref GoogleOAuthSecret     
+        - DynamoDBCrudPolicy:
+            TableName: !Ref AccessTokenTable
+      Environment: 
+        Variables:
+          klutchKey: !Ref RecipeKey
+          recipeId: !Ref RecipeId      
+          klutchServerUrl: !Ref KlutchServerUrl
+          KlutchPublicKey: !Ref KlutchPublicKey
+          AccessTokenTable: !Ref AccessTokenTable
+      Events:      
+        Webhook:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref GoogleExporterApi
+            Path: /oauth-redirect
+            Method: GET        
+              
+  AccessTokenTable:
+    Type: AWS::Serverless::SimpleTable    
+    
+  RecipeKey: 
+    Type: AWS::KMS::Key
+    Properties: 
+      Description: Key to Access Klutch resources
+      Enabled: true
+      EnableKeyRotation: false      
+      KeyPolicy:
+        Version: '2012-10-17'
+        Id: key-allow-root
+        Statement:
+        - Sid: Enable IAM User Permissions
+          Effect: Allow
+          Principal: 
+            AWS:  !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+          Action: kms:*
+          Resource: '*'
+      KeySpec: RSA_2048
+      KeyUsage: SIGN_VERIFY
+      PendingWindowInDays: 7
+Outputs:
+  RequestAuthenticationFunctionApi:
+    Description: "API Gateway endpoint URL for Prod stage for Recipe webhook"
+    Value: !Sub "https://${GoogleExporterApi}.execute-api.${AWS::Region}.amazonaws.com/klutch-webhook"
+  Key:
+    Description: "MiniApp Key"
+    Value: !Ref RecipeKey
