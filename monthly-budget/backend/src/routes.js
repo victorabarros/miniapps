@@ -2,7 +2,7 @@ const axios = require('axios')
 const { Router } = require("express")
 const httpStatus = require('http-status')
 const { klutchServerUrl } = require("../config")
-const { addBudget } = require('./controllers/Budget')
+const { addBudget } = require('./controllers/BudgetController')
 
 
 const router = Router()
