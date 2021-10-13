@@ -1,7 +1,7 @@
 const { AlloyJS } = require("@klutchcard/alloy-js")
 const express = require('express')
 const { router } = require('./routes')
-const { port, klutchServerUrl, klutchPublicKey } = require('../config')
+const { port, klutchServerUrl, klutchPublicKey } = require('../src/config/config')
 require('./database')
 
 const app = express()

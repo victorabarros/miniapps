@@ -1,7 +1,7 @@
-require('dotenv').config({ path: process.env.NODE_ENV === 'test' ? ".env.test" : ".env" })
+require('dotenv').config({ path: ".env" })
 const throwMissingVariable = (name) => { throw new Error(`missing required env variable "${name}"`) }
 
-const config = {
+module.exports = {
   klutchServerUrl: process.env.KLUTCH_SERVER_URL || throwMissingVariable('KLUTCH_SERVER_URL'),
   klutchPublicKey: process.env.KLUTCH_PUBLIC_KEY || throwMissingVariable('KLUTCH_PUBLIC_KEY'),
   port: process.env.PORT || 3003,
@@ -13,5 +13,3 @@ const config = {
     password: process.env.DATABASE_PASSWORD || throwMissingVariable('DATABASE_PASSWORD'),
   }
 }
-
-module.exports = { ...config }
