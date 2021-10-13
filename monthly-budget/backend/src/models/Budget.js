@@ -12,10 +12,12 @@ class budget extends Model {
   }
 }
 
-const insertBudget = async (recipeInstallId, category, amount) =>
-  await budget.create({ id: uuid(), recipeInstallId, category, amount })
+const upsertBudget = async (recipeInstallId, category, amount) => {
+  const resp = await budget.upsert({ id: uuid(), recipeInstallId, category, amount })
+  return resp[0]
+}
 
 const listBudgets = async (recipeInstallId) =>
   await budget.findAll({ where: { recipeInstallId } })
 
-module.exports = { Budget: budget, insertBudget, listBudgets }
+module.exports = { Budget: budget, upsertBudget, listBudgets }
