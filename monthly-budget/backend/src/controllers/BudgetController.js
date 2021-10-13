@@ -1,7 +1,7 @@
 const { RecipesService } = require("@klutchcard/alloy-js");
 const httpStatus = require('http-status')
 const Ajv = require("ajv")
-const { insertBudget } = require("../models/Budget")
+const { insertBudget, listBudgets } = require("../models/Budget")
 
 
 const ajv = new Ajv()
@@ -43,8 +43,29 @@ const addBudget = async (req, resp) => {
     return resp.status(httpStatus.CREATED).json(row)
   } catch (err) {
     console.log({ err })
-    return resp.status(httpStatus.SERVICE_UNAVAILABLE).json({ errorMessage: 'fail in insert to database' })
+    return resp.status(httpStatus.SERVICE_UNAVAILABLE).json({ errorMessage: 'fail in connect with database' })
   }
 }
 
-module.exports = { addBudget }
+const getBudgets = async (req, resp) => {
+  console.log("GET /budget started")
+
+  let recipeInstallId
+  try {
+    recipeInstallId = getRecipeInstallId(req.headers.authorization)
+  } catch (err) {
+    console.log({ err })
+    return resp.status(httpStatus.UNAUTHORIZED).json({ errorMessage: "Invalid token" })
+  }
+
+  try {
+    const rows = await listBudgets(recipeInstallId)
+    console.log("GET /budget finished with success")
+    return resp.status(httpStatus.OK).json(rows)
+  } catch (err) {
+    console.log({ err })
+    return resp.status(httpStatus.SERVICE_UNAVAILABLE).json({ errorMessage: 'fail in connect with database' })
+  }
+}
+
+module.exports = { addBudget, getBudgets }
