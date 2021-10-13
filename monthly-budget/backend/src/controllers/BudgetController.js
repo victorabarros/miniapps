@@ -1,8 +1,7 @@
 const { RecipesService } = require("@klutchcard/alloy-js");
 const httpStatus = require('http-status')
 const Ajv = require("ajv")
-const { Budget } = require("../models/Budget")
-const { v4: uuid } = require("uuid")
+const { insertBudget } = require("../models/Budget")
 
 
 const ajv = new Ajv()
@@ -39,7 +38,7 @@ const addBudget = async (req, resp) => {
   const { category, amount } = req.body
 
   try {
-    const row = await Budget.create({ id: uuid(), recipeInstallId, category, amount })
+    const row = await insertBudget(recipeInstallId, category, amount)
     console.log("POST /budget finished with success")
     return resp.status(httpStatus.CREATED).json(row)
   } catch (err) {

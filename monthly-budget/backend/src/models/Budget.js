@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require("sequelize")
+const { v4: uuid } = require("uuid")
 
 
 class budget extends Model {
@@ -11,4 +12,7 @@ class budget extends Model {
   }
 }
 
-module.exports = { Budget: budget }
+const insertBudget = async (recipeInstallId, category, amount) =>
+  await budget.create({ id: uuid(), recipeInstallId, category, amount })
+
+module.exports = { Budget: budget, insertBudget }
