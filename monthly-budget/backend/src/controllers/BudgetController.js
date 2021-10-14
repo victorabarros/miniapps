@@ -27,9 +27,8 @@ const createOrUpdateBudget = async (req, resp) => {
   try {
     recipeInstallId = getRecipeInstallId(req.headers.authorization)
   } catch (err) {
-    // console.log({ err })
-    // return resp.status(httpStatus.UNAUTHORIZED).json({ errorMessage: "Invalid token" })
-    recipeInstallId = "2b85e031-1a71-484e-843d-b8e4be811352" // DEV
+    console.log({ err })
+    return resp.status(httpStatus.UNAUTHORIZED).json({ errorMessage: "Invalid token" })
   }
 
   if (!validate(req.body)) {
@@ -55,9 +54,8 @@ const getBudgets = async (req, resp) => {
   try {
     recipeInstallId = getRecipeInstallId(req.headers.authorization)
   } catch (err) {
-    // console.log({ err })
-    // return resp.status(httpStatus.UNAUTHORIZED).json({ errorMessage: "Invalid token" })
-    recipeInstallId = "2b85e031-1a71-484e-843d-b8e4be811352" // DEV
+    console.log({ err })
+    return resp.status(httpStatus.UNAUTHORIZED).json({ errorMessage: "Invalid token" })
   }
 
   try {
