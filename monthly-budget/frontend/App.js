@@ -12,7 +12,6 @@ const APPNAME = "Demo MiniApp"
 
 const Templates = {
   Main: { type: "fullscreen", template: require(`./dist/templates/Main.template`) },
-  Home: { type: "home", template: require(`./dist/templates/Home.template`) },
 }
 
 const initialData = {
@@ -44,7 +43,6 @@ export default function App() {
       <KScreen style={{ flex: 1, marginVertical: 30, justifyContent: 'space-evenly' }}>
         <KText>What template do you want to open?</KText>
         <KButton type="primary" style={buttonStyle} label="Main" onPress={() => setTemplateToLoad(Templates.Main)} />
-        <KButton type="primary" style={buttonStyle} label="Home Panel" onPress={() => setTemplateToLoad(Templates.Home)} />
       </KScreen>
     )
   }
