@@ -1947,7 +1947,21 @@
     "@babel/runtime" "^7.7.2"
     regenerator-runtime "^0.13.3"
 
-"@klutchcard/alloy-js@1.4.34", "@klutchcard/alloy-js@^1.4.15":
+"@klutchcard/alloy-js@1.4.31":
+  version "1.4.31"
+  resolved "https://npm.pkg.github.com/download/@klutchcard/alloy-js/1.4.31/becdb367565cc6a00138b6611e1d123d53274aa6be0e636540099bb7696ee02d#3422bf1256109d6263e5245a81243d084a382ce5"
+  integrity sha512-i6dN0nAiCmSsyJfchW8KjwWqT1kjoZYu1NXnngeU6ypjfD+8qyrZNAouz53i6YE6I6t3hkRpxIVpdP7I9pxPkQ==
+  dependencies:
+    "@apollo/client" "^3.3.19"
+    axios "^0.21.1"
+    base64url "^3.0.1"
+    cross-fetch "^3.0.6"
+    graphql "^15.3.0"
+    graphql-tag "^2.12.0"
+    rxjs "^6.6.2"
+    sqlite3 "^5.0.2"
+
+"@klutchcard/alloy-js@1.4.34":
   version "1.4.34"
   resolved "https://npm.pkg.github.com/download/@klutchcard/alloy-js/1.4.34/8c92d12642e4e7f4c43b2f2e4266b1ccb14cd448482b9e4d0ded19539794cf7b#97a1d0f0108ad274e105b3f37d5056ae7d6399e4"
   integrity sha512-CH+383MDYqn1XS9yEWhRXmYe5XVT+RhC1c9831kEN+dIC2ElNInJSfxCRsbs3b9RjceVwJDJm3dgiGRg4q2vDg==
@@ -1962,13 +1976,13 @@
     rxjs "^6.6.2"
     sqlite3 "^5.0.2"
 
-"@klutchcard/klutch-components@0.1.83":
-  version "0.1.83"
-  resolved "https://npm.pkg.github.com/download/@klutchcard/klutch-components/0.1.83/64a9ea3be02cbd96358f24e7a85381ee55578e649fcec3d5c073eecc50bb433c#2312e3b28d2914a8224bac7445bd849a165a7dcc"
-  integrity sha512-YNfRcd40llcv/3La5zvoVLL4+scYjnMxxYQtCuo010DAUFiyUHoKdlJvQaiaoPRLvb1d3fFFfzRTfJlN8cCqUw==
+"@klutchcard/klutch-components@0.1.84":
+  version "0.1.84"
+  resolved "https://npm.pkg.github.com/download/@klutchcard/klutch-components/0.1.84/effd0bc9e5bed941e56bd0243d6225601a1ea0a983dd15569906490a6dec8a29#5bb28d13bf1a4faaf5dd792792f30a25d7275b64"
+  integrity sha512-lHNuKZyRtUB4RQob4hu46lUpcQC2Eoby/Z7LMZllPDEE1K3GeRnhDkwpVUz9/ElWJqz2syQJyzw8ya9ZroUCRw==
   dependencies:
     "@expo-google-fonts/inter" "^0.1.0"
-    "@klutchcard/alloy-js" "^1.4.15"
+    "@klutchcard/alloy-js" "1.4.31"
     "@react-native-community/hooks" "^2.6.0"
     expo "^42.0.0"
     expo-haptics "~10.1.0"
