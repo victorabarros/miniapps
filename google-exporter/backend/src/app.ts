@@ -98,7 +98,6 @@ export const oauthRedirect = async (event: APIGatewayProxyEvent): Promise<APIGat
     const alloyKey = process.env.klutchKey
 
 
-    console.log("EVENT", event)
 
     if (!event.queryStringParameters) {
         return {
@@ -110,7 +109,6 @@ export const oauthRedirect = async (event: APIGatewayProxyEvent): Promise<APIGat
     const redirect_uri = `https://${event.headers.host}/oauth-redirect`
     const code = event.queryStringParameters["code"] || ""
     const state = JSON.parse(event.queryStringParameters["state"] || "")
-    console.log("STATE",setImmediate)
 
     const params = new URLSearchParams()
     params.append('client_id',client_id)
@@ -142,17 +140,26 @@ export const oauthRedirect = async (event: APIGatewayProxyEvent): Promise<APIGat
 
     const transactions: Transaction[] = await alloy.getAllTransactions(alloyKey, recipeId, state.recipeInstallId)
     
+    
     const newSheet = sheet.sheetsByIndex[0]
+    var rows = []
     for (let t of transactions) {
-        await newSheet.addRow([t.transactionDate, t.card?.name || "", t.merchantName, t.amount, t.category?.name || "", t.transactionType, t.transactionStatus, t.streetAddress, t.city, t.state, t.zipCode]) 
+        try {
+            rows.push([t.transactionDate, t.card?.name || "", t.merchantName, t.amount, t.category?.name || "", t.transactionType, t.transactionStatus, t.streetAddress, t.city, t.state, t.zipCode]) 
+        } catch (e) {
+            console.error("ERROR", e)
+        }
     }
+    await newSheet.addRows(rows)
     await newSheet.saveUpdatedCells()
 
+    const redirectUrl = `klutch://klutch/miniapps/${recipeId}/templates/Connected.template`
+    console.log("Redirecting to: " + redirectUrl)
     return {
         'statusCode': 301,
         body: "redirecting...",
         headers: {
-            Location: `klutch://klutch/miniapps/${recipeId}/Connected`
+            Location: redirectUrl
         }
     }
 }

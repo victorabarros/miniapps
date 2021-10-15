@@ -73,7 +73,7 @@ Resources:
       CodeUri: dist/
       Handler: app.oauthRedirect
       Runtime: nodejs14.x
-      Timeout: 10
+      Timeout: 60
       Policies: 
         - {
             "Version": "2012-10-17",
