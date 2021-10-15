@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "license": "MIT",
   "description": "burner card miniapp server",
-  "repository": "https://github.com/AlloyCard/recipes",
+  "repository": "https://github.com/KlutchCard/miniapps",
   "scripts": {
     "start": "nodemon -r dotenv/config src/server.js"
   },
   "dependencies": {
-    "@alloycard/alloy-js": "1.4.16",
+    "@klutchcard/alloy-js": "1.4.34",
     "express": "4.17.1",
     "http-status": "1.5.0",
     "jsonwebtoken": "8.5.1",
