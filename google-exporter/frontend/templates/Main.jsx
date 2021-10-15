@@ -11,6 +11,7 @@ Template = (data, context) => {
     const openGoogle = () => {
         var state = `{"sheetName": "${context.state.sheetName}", "recipeInstallId": "${context.recipeInstallId}"}`
         context.openExternalUrl(`https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=code&scope=https://www.googleapis.com/auth/spreadsheets&access_type=offline&state=${state}`)
+        context.closeMiniApp()
     }
 
     if (!context.state) {

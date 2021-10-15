@@ -154,11 +154,15 @@ export const oauthRedirect = async (event: APIGatewayProxyEvent): Promise<APIGat
     }
     await newSheet.addRows(rows)
     await newSheet.saveUpdatedCells()
+
+    const redirectUrl = `klutch://klutch/miniapps/${recipeId}/templates/Connected.template`
+  // const redirectUrl = `exp://192.168.1.61:19000/--/miniapps/${recipeId}/templates/Connected.template`
+    console.log("Redirecting to: " + redirectUrl)
     return {
         'statusCode': 301,
         body: "redirecting...",
         headers: {
-            Location: `klutch://klutch/miniapps/${recipeId}/templates/Connected.template`
+            Location: redirectUrl
         }
     }
 }
