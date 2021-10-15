@@ -1,5 +1,5 @@
 const clientId = "620929000316-t20imcv3nuttr4n58dedpcgrm8ag88rb.apps.googleusercontent.com"
-const redirectUrl = "https://dkr0j9ba8e.execute-api.us-west-1.amazonaws.com/oauth-redirect"
+const redirectUrl = "https://googleexporter.klutchcard.com/oauth-redirect"
 
 
 Template = (data, context) => {
