@@ -37,6 +37,8 @@ const createOrUpdateBudget = async (req, resp) => {
 
   const { category, amount } = req.body
 
+  console.log(`new budget creating: "${{ category, recipeInstallId }}"`)
+
   try {
     const row = await upsertBudget(recipeInstallId, category, amount)
     console.log("POST /budget finished with success")
@@ -60,7 +62,7 @@ const getBudgets = async (req, resp) => {
 
   try {
     const rows = await listBudgets(recipeInstallId)
-    console.log("GET /budget finished with success")
+    console.log(`recipeInstall "${recipeInstallId}" has "${rows.length}" budgets\nGET /budget finished with success`)
     return resp.status(httpStatus.OK).json(rows)
   } catch (err) {
     console.log({ err })
