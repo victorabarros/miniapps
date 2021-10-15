@@ -1,9 +1,9 @@
 const httpStatus = require('http-status')
-const { GraphQLService, RecipesService, CardsService, TransactionService, CardMedia } = require("@alloycard/alloy-js");
+const { GraphQLService, RecipesService, CardsService, TransactionService, CardMedia } = require("@klutchcard/alloy-js");
 const { BuildJWTToken, DecodeToken } = require('./helper');
 const BurnerCard = require('../models/Card');
 const { klutchServerUrl } = require("../../config")
-const { AlloyJS } = require('@alloycard/alloy-js');
+const { AlloyJS } = require('@klutchcard/alloy-js');
 
 AlloyJS.configure({ serverUrl: `${klutchServerUrl}/graphql` })
 
@@ -101,7 +101,7 @@ const addBurnerCard = async (req, resp) => {
     const recipeInstallToken = await RecipesService.getRecipeInstallToken(recipeInstallId)
     GraphQLService.setAuthToken(recipeInstallToken)
 
-    newCard = await CardsService.addCard(`Burner ${cards.length + 1}`, CardMedia.VIRTUAL, null)
+    newCard = await CardsService.addCard(`SINGLEUSE ${cards.length + 1}`, CardMedia.VIRTUAL, null)
     console.log(`new card created "${newCard.id}"`)
   } catch (err) {
     console.log({ err, recipeInstallId })

@@ -2,19 +2,6 @@
 # yarn lockfile v1
 
 
-"@alloycard/alloy-js@1.4.16":
-  version "1.4.16"
-  resolved "https://npm.pkg.github.com/download/@alloycard/alloy-js/1.4.16/4bc898f8178ffd54e83b96d206759502d60f84f5018b16c72c389b0cb6c7cab7#e02f3e4c71b141aaacb499e782fcea484f802f12"
-  integrity sha512-e+2TEPSvqVBrRIlV+5wlXdtUymd5MpFke1eSlIN/1Vvk2iTyNz7L3IoJVDyJEqdv/mpCmiR5JW3aPt+OXH9qFQ==
-  dependencies:
-    "@apollo/client" "^3.3.19"
-    axios "^0.21.1"
-    cross-fetch "^3.0.6"
-    graphql "^15.3.0"
-    graphql-tag "^2.12.0"
-    rxjs "^6.6.2"
-    sqlite3 "^5.0.2"
-
 "@apollo/client@^3.3.19":
   version "3.4.9"
   resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.4.9.tgz#78d0decf8371b768f97c721d1b71c96260bac4db"
@@ -37,6 +24,21 @@
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@graphql-typed-document-node/core/-/core-3.1.0.tgz#0eee6373e11418bfe0b5638f654df7a4ca6a3950"
   integrity sha512-wYn6r8zVZyQJ6rQaALBEln5B1pzxb9shV5Ef97kTvn6yVGrqyXVnDqnU24MXnFubR+rZjBY9NWuxX3FB2sTsjg==
+
+"@klutchcard/alloy-js@1.4.34":
+  version "1.4.34"
+  resolved "https://npm.pkg.github.com/download/@klutchcard/alloy-js/1.4.34/8c92d12642e4e7f4c43b2f2e4266b1ccb14cd448482b9e4d0ded19539794cf7b#97a1d0f0108ad274e105b3f37d5056ae7d6399e4"
+  integrity sha512-CH+383MDYqn1XS9yEWhRXmYe5XVT+RhC1c9831kEN+dIC2ElNInJSfxCRsbs3b9RjceVwJDJm3dgiGRg4q2vDg==
+  dependencies:
+    "@apollo/client" "^3.3.19"
+    axios "^0.21.1"
+    base64url "^3.0.1"
+    cross-fetch "^3.0.6"
+    graphql "^15.3.0"
+    graphql-tag "^2.12.0"
+    jsonwebtoken "8.5.1"
+    rxjs "^6.6.2"
+    sqlite3 "^5.0.2"
 
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
@@ -277,6 +279,11 @@ base64-js@^1.3.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
   integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
+
+base64url@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/base64url/-/base64url-3.0.1.tgz#6399d572e2bc3f90a9a8b22d5dbb0a32d33f788d"
+  integrity sha512-ir1UPr3dkwexU7FdV8qBBbNDRUhMmIekYMFZfi+C/sLNnRESKPl23nB9b2pltqfOQNnGzsDdId90AEtG5tCx4A==
 
 bcrypt-pbkdf@^1.0.0:
   version "1.0.2"
