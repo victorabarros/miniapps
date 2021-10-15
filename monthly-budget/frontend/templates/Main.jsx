@@ -44,12 +44,6 @@ Template = (data, context) => {
 
   const fetchData = async () => {
     const budgets = await context.get('/budget')
-
-    const categories = budgets.map(b => b.category)
-
-    console.log(categories)
-    // AlloyJS
-
     context.setState({ budgets, loading: false })
   }
 

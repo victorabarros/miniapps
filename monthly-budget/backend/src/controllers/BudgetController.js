@@ -1,7 +1,8 @@
-const { RecipesService } = require("@klutchcard/alloy-js");
+const { GraphQLService, RecipesService, TransactionService } = require("@klutchcard/alloy-js");
 const httpStatus = require('http-status')
 const Ajv = require("ajv")
 const { upsertBudget, listBudgets } = require("../models/Budget")
+const { recipeId, privateKey } = require('../config/config')
 
 
 const ajv = new Ajv()
@@ -69,9 +70,28 @@ const getBudgets = async (req, resp) => {
     return resp.status(httpStatus.SERVICE_UNAVAILABLE).json({ errorMessage: 'fail in connect with database' })
   }
 
+  let result = []
+
+  try {
+    const recipeToken = RecipesService.buildRecipeToken(recipeId, privateKey)
+    GraphQLService.setAuthToken(recipeToken)
+    const recipeInstallToken = await RecipesService.getRecipeInstallToken(recipeInstallId)
+    GraphQLService.setAuthToken(recipeInstallToken)
+
+    // const now = new Date()
+    // const startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+    // const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+
+    // const transactions = await TransactionService.getTransactionsWithFilter({ startDate, endDate })
+    // console.log(transactions)
+  } catch (err) {
+    console.log({ err })
+    return resp.status(httpStatus.INTERNAL_SERVER_ERROR).json({})
+  }
+
   console.log(`recipeInstall "${recipeInstallId}" has "${rows.length}" budgets\nGET /budget finished with success`)
 
-  return resp.status(httpStatus.OK).json(rows)
+  return resp.status(httpStatus.OK).json(result)
 }
 
 module.exports = { createOrUpdateBudget, getBudgets }
