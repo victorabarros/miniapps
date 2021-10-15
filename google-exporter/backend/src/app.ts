@@ -98,7 +98,6 @@ export const oauthRedirect = async (event: APIGatewayProxyEvent): Promise<APIGat
     const alloyKey = process.env.klutchKey
 
 
-    console.log("EVENT2", event)
 
     if (!event.queryStringParameters) {
         return {
@@ -110,7 +109,6 @@ export const oauthRedirect = async (event: APIGatewayProxyEvent): Promise<APIGat
     const redirect_uri = `https://${event.headers.host}/oauth-redirect`
     const code = event.queryStringParameters["code"] || ""
     const state = JSON.parse(event.queryStringParameters["state"] || "")
-    console.log("STATE",setImmediate)
 
     const params = new URLSearchParams()
     params.append('client_id',client_id)
@@ -156,7 +154,6 @@ export const oauthRedirect = async (event: APIGatewayProxyEvent): Promise<APIGat
     await newSheet.saveUpdatedCells()
 
     const redirectUrl = `klutch://klutch/miniapps/${recipeId}/templates/Connected.template`
-  // const redirectUrl = `exp://192.168.1.61:19000/--/miniapps/${recipeId}/templates/Connected.template`
     console.log("Redirecting to: " + redirectUrl)
     return {
         'statusCode': 301,
