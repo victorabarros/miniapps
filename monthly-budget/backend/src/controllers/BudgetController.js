@@ -60,14 +60,18 @@ const getBudgets = async (req, resp) => {
     return resp.status(httpStatus.UNAUTHORIZED).json({ errorMessage: "Invalid token" })
   }
 
+  let rows = []
+
   try {
-    const rows = await listBudgets(recipeInstallId)
-    console.log(`recipeInstall "${recipeInstallId}" has "${rows.length}" budgets\nGET /budget finished with success`)
-    return resp.status(httpStatus.OK).json(rows)
+    rows = await listBudgets(recipeInstallId)
   } catch (err) {
     console.log({ err })
     return resp.status(httpStatus.SERVICE_UNAVAILABLE).json({ errorMessage: 'fail in connect with database' })
   }
+
+  console.log(`recipeInstall "${recipeInstallId}" has "${rows.length}" budgets\nGET /budget finished with success`)
+
+  return resp.status(httpStatus.OK).json(rows)
 }
 
 module.exports = { createOrUpdateBudget, getBudgets }
