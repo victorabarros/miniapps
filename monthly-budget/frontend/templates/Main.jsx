@@ -1,6 +1,6 @@
 styles = {}
 
-const budgetCard = ({ id, category, amount: budget }, spent = 35.27) => {
+const budgetCard = ({ id, category, amount: budget }, spent) => {
   return (
     <Klutch.KView style={{ marginVertical: 10 }} key={`budget-${id}`}>
       <Klutch.KView style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -8,7 +8,7 @@ const budgetCard = ({ id, category, amount: budget }, spent = 35.27) => {
         <Klutch.KView>
           <Klutch.KText style={{ fontSize: 20, fontWeight: 'bold', }}>{category.toUpperCase()}</Klutch.KText>
           <Klutch.KText style={{ fontSize: 15 }}>
-            {(budget - spent) > 0 ? (budget - spent).toFixed(2) : "0.00"}
+            {Math.max((budget - spent), 0).toFixed(2)}
             <Klutch.KText style={{ fontSize: 10 }}> LEFT</Klutch.KText>
           </Klutch.KText>
         </Klutch.KView>
@@ -42,13 +42,19 @@ const budgetCard = ({ id, category, amount: budget }, spent = 35.27) => {
 Template = (data, context) => {
   let { budgets, loading } = context.state || { budgets: [], loading: true }
 
-  const fetchBudgets = async () => {
+  const fetchData = async () => {
     const budgets = await context.get('/budget')
+
+    const categories = budgets.map(b => b.category)
+
+    console.log(categories)
+    // AlloyJS
+
     context.setState({ budgets, loading: false })
   }
 
   if (loading) {
-    fetchBudgets()
+    fetchData()
     return (
       <Klutch.KView style={{ flex: 1, justifyContent: "center" }}>
         <Klutch.KLoadingIndicator />
@@ -90,15 +96,15 @@ Template = (data, context) => {
         </Klutch.KPressable>
       </Klutch.KView>
 
-      <Klutch.KView key='sumary' style={{ marginVertical: 15 }}>
+      <Klutch.KView key='sumary' style={{ marginVertical: 5 }}>
         <Klutch.KText style={{ fontSize: 45, fontWeight: 'bold' }}>$1,200.00</Klutch.KText>
         <Klutch.KText style={{ fontWeight: 'bold', marginVertical: 10 }}>Total Budgeted</Klutch.KText>
       </Klutch.KView>
 
-      <Klutch.KScrollView>
+      <Klutch.KScrollView key='body'>
 
-        <Klutch.KView key='body'>
-          {budgets.map(b => budgetCard(b))}
+        <Klutch.KView>
+          {budgets.map(b => budgetCard(b, 35.27))}
         </Klutch.KView>
 
       </Klutch.KScrollView>
