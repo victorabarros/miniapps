@@ -1,4 +1,32 @@
-styles = {}
+const styles = {
+  loading: {
+    flex: 1,
+    justifyContent: "center"
+  },
+  editButtonContainer: {
+    position: 'absolute',
+    height: '60%',
+    width: "10%",
+    alignSelf: 'flex-end',
+    justifyContent: 'center',
+  },
+  editButtonText: {
+    fontSize: 11,
+    color: "#44CCFF",
+    alignSelf: 'flex-end',
+  },
+  summaryContainer: {
+    marginVertical: 5
+  },
+  summaryAmount: {
+    fontSize: 45,
+    fontWeight: 'bold'
+  },
+  summarySubtitle: {
+    fontWeight: 'bold',
+    marginVertical: 10
+  },
+}
 
 const budgetCard = ({ id, category, amount: budget }, spent) => {
   return (
@@ -38,7 +66,6 @@ const budgetCard = ({ id, category, amount: budget }, spent) => {
   )
 }
 
-
 Template = (data, context) => {
   let { budgets, loading } = context.state || { budgets: [], loading: true }
 
@@ -50,7 +77,7 @@ Template = (data, context) => {
   if (loading) {
     fetchData()
     return (
-      <Klutch.KView style={{ flex: 1, justifyContent: "center" }}>
+      <Klutch.KView style={styles.loading}>
         <Klutch.KLoadingIndicator />
       </Klutch.KView>
     )
@@ -69,31 +96,21 @@ Template = (data, context) => {
         </Klutch.KHeader>
 
         <Klutch.KPressable
-          style={{
-            position: 'absolute',
-            height: '60%',
-            width: "10%",
-            alignSelf: 'flex-end',
-            justifyContent: 'center',
-          }}
+          style={styles.editButtonContainer}
           onPress={async () => {
             console.log("TODO move to edit page")
           }}
         >
-          <Klutch.KText style={{
-            fontSize: 11,
-            color: "#44CCFF",
-            alignSelf: 'flex-end',
-          }}>
+          <Klutch.KText style={styles.editButtonText}>
             EDIT
           </Klutch.KText>
         </Klutch.KPressable>
       </Klutch.KView>
 
-      <Klutch.KView key='sumary' style={{ marginVertical: 5 }}>
-        <Klutch.KText style={{ fontSize: 45, fontWeight: 'bold' }}>$1,200.00</Klutch.KText>
-        <Klutch.KText style={{ fontWeight: 'bold', marginVertical: 10 }}>Total Budgeted</Klutch.KText>
-      </Klutch.KView>
+      <Klutch.KView key='summary' style={styles.summaryContainer}>
+        <Klutch.KText style={styles.summaryAmount}>$1,200.00</Klutch.KText>
+        <Klutch.KText style={styles.summarySubtitle}>Total Budgeted</Klutch.KText>
+      </Klutch.KView >
 
       <Klutch.KScrollView key='body'>
 
@@ -102,6 +119,6 @@ Template = (data, context) => {
         </Klutch.KView>
 
       </Klutch.KScrollView>
-    </Klutch.KView>
+    </Klutch.KView >
   )
 }
