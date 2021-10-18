@@ -28,7 +28,7 @@ const styles = {
   },
 }
 
-const budgetCard = ({ id, category, amount: budget }, spent) => {
+const budgetContainer = ({ id, category, amount: budget, spent }) => {
   return (
     <Klutch.KView style={{ marginVertical: 10 }} key={`budget-${id}`}>
       <Klutch.KView style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -67,11 +67,12 @@ const budgetCard = ({ id, category, amount: budget }, spent) => {
 }
 
 Template = (data, context) => {
-  let { budgets, loading } = context.state || { budgets: [], loading: true }
+  let { budgets, loading, totalBudget } = context.state || { budgets: [], loading: true }
 
   const fetchData = async () => {
     const budgets = await context.get('/budget')
-    context.setState({ budgets, loading: false })
+    const totalBudget = budgets.reduce((accum, item) => accum + item.amount, 0)
+    context.setState({ budgets, totalBudget, loading: false })
   }
 
   if (loading) {
@@ -108,14 +109,14 @@ Template = (data, context) => {
       </Klutch.KView>
 
       <Klutch.KView key='summary' style={styles.summaryContainer}>
-        <Klutch.KText style={styles.summaryAmount}>$1,200.00</Klutch.KText>
+        <Klutch.KText style={styles.summaryAmount}>{`$${totalBudget.toFixed(2)}`}</Klutch.KText>
         <Klutch.KText style={styles.summarySubtitle}>Total Budgeted</Klutch.KText>
       </Klutch.KView >
 
       <Klutch.KScrollView key='body'>
 
         <Klutch.KView>
-          {budgets.map(b => budgetCard(b, 35.27))}
+          {budgets.map(budgetContainer)}
         </Klutch.KView>
 
       </Klutch.KScrollView>
