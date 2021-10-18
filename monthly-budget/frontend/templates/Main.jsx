@@ -120,9 +120,7 @@ Template = (data, context) => {
 
         <Klutch.KPressable
           style={styles.editButtonContainer}
-          onPress={async () => {
-            console.log("TODO move to edit page")
-          }}
+          onPress={() => context.loadTemplate("/templates/Edit.template")}
         >
           <Klutch.KText style={styles.editButtonText}>EDIT</Klutch.KText>
         </Klutch.KPressable>

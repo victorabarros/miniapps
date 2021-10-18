@@ -11,19 +11,11 @@ import { KText, KButton, KScreen } from "@klutchcard/klutch-components"
 const APPNAME = "Demo MiniApp"
 
 const Templates = {
-  Main: { type: "fullscreen", template: require(`./dist/templates/Main.template`) },
+  Main: { filename: "/templates/Main.template", type: "fullscreen", template: require(`./dist/templates/Main.template`) },
+  Edit: { filename: "/templates/Edit.template", type: "fullscreen", template: require(`./dist/templates/Edit.template`) },
 }
 
-const initialData = {
-  transaction: {
-    id: "0d2b05d9-68fd-4dd3-a354-25199bd55d48",
-    merchantName: "Sport's Academy",
-    cardName: "Shopping Card",
-    amount: 453.20,
-    category: "SHOPPING",
-    date: new Date("2021-03-25T11:43:23Z")
-  }
-}
+const initialData = {}
 
 /* END MINIAPP CONFIGURATION */
 
@@ -43,13 +35,15 @@ export default function App() {
       <KScreen style={{ flex: 1, marginVertical: 30, justifyContent: 'space-evenly' }}>
         <KText>What template do you want to open?</KText>
         <KButton type="primary" style={buttonStyle} label="Main" onPress={() => setTemplateToLoad(Templates.Main)} />
+        <KButton type="primary" style={buttonStyle} label="Edit" onPress={() => setTemplateToLoad(Templates.Edit)} />
       </KScreen>
     )
   }
 
   const onLoadTemplate = (templateName, templateData) => {
     setTemplateData(templateData)
-    setTemplateToLoad(templateName)
+    const template = Object.keys(Templates).map(c => Templates[c]).find(c => c.filename == templateName)
+    setTemplateToLoad(template)
   }
 
   return (
