@@ -1,4 +1,10 @@
-const { GraphQLService, RecipesService, TransactionService } = require("@klutchcard/alloy-js");
+const {
+  GraphQLService,
+  RecipesService,
+  TransactionService,
+  TransactionType,
+  TransactionStatus
+} = require("@klutchcard/alloy-js");
 const httpStatus = require('http-status')
 const Ajv = require("ajv")
 const { upsertBudget, listBudgets } = require("../models/Budget")
@@ -19,6 +25,37 @@ const validate = ajv.compile({
 const getRecipeInstallId = (token) => {
   const decodedToken = RecipesService.decodeJwtToken(token.substr(7))
   return decodedToken["custom:principalId"]
+}
+
+const splitTransactionsPerCategory = (transactions) => {
+  const result = {}
+
+  transactions.map(t => {
+    if (t.category) {
+      const categoryName = t.category.name.toUpperCase().trim()
+
+      if (result[categoryName]) {
+        result[categoryName].push(t)
+      } else {
+        result[categoryName] = [t]
+      }
+    }
+  })
+
+  return result
+}
+
+const handlerTransactionsDataPerBudgets = (budgets, transactions) => {
+  const transactionsSplitted = splitTransactionsPerCategory(transactions)
+  return budgets.map(budget => {
+    const categoryName = budget.category.toUpperCase().trim()
+    const trxs = transactionsSplitted[categoryName] || []
+
+    let result = { ...budget.dataValues }
+    result.spent = trxs.reduce((accum, item) => accum + item.amount, 0)
+    // result.transactions = trxs
+    return result
+  })
 }
 
 const createOrUpdateBudget = async (req, resp) => {
@@ -61,35 +98,43 @@ const getBudgets = async (req, resp) => {
     return resp.status(httpStatus.UNAUTHORIZED).json({ errorMessage: "Invalid token" })
   }
 
-  let rows = []
+  let budgets = []
 
   try {
-    rows = await listBudgets(recipeInstallId)
+    budgets = await listBudgets(recipeInstallId)
   } catch (err) {
     console.log({ err })
     return resp.status(httpStatus.SERVICE_UNAVAILABLE).json({ errorMessage: 'fail in connect with database' })
   }
 
-  let result = []
+  let transactions = []
 
   try {
-    const recipeToken = RecipesService.buildRecipeToken(recipeId, privateKey)
-    GraphQLService.setAuthToken(recipeToken)
+    GraphQLService.setAuthToken(RecipesService.buildRecipeToken(recipeId, privateKey))
     const recipeInstallToken = await RecipesService.getRecipeInstallToken(recipeInstallId)
     GraphQLService.setAuthToken(recipeInstallToken)
 
-    // const now = new Date()
-    // const startDate = new Date(now.getFullYear(), now.getMonth(), 1)
-    // const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+    const now = new Date()
+    const startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+    const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1)
 
-    // const transactions = await TransactionService.getTransactionsWithFilter({ startDate, endDate })
-    // console.log(transactions)
+    const filters = {
+      startDate,
+      endDate,
+      transactionTypes: [TransactionType.PAYMENT],
+      transactionStatus: [TransactionStatus.PENDING, TransactionStatus.SETLLED]
+    }
+
+    transactions = await TransactionService.getTransactionsWithFilter(filters)
+
   } catch (err) {
     console.log({ err })
-    return resp.status(httpStatus.INTERNAL_SERVER_ERROR).json({})
+    return resp.status(httpStatus.INTERNAL_SERVER_ERROR).json({ errorMessage: 'fail in fetch transactions from server' })
   }
 
-  console.log(`recipeInstall "${recipeInstallId}" has "${rows.length}" budgets\nGET /budget finished with success`)
+  const result = handlerTransactionsDataPerBudgets(budgets, transactions)
+
+  console.log(`recipeInstall "${recipeInstallId}" has "${result.length}" budgets\nGET /budget finished with success`)
 
   return resp.status(httpStatus.OK).json(result)
 }
