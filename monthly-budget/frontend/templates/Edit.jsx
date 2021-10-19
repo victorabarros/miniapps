@@ -48,24 +48,25 @@ const budgetContainerStyles = {
   },
 }
 
-const budgetContainer = ({ id, category, amount: budget }) => (
-  <Klutch.KPressable
-    style={budgetContainerStyles.container}
-    key={`budget-${id}`}
-    onPress={() => console.log('TODO move to edit')}
-  >
-
-    <Klutch.KView style={budgetContainerStyles.textContainer}>
-      <Klutch.KText style={budgetContainerStyles.text}>{category.toUpperCase()}</Klutch.KText>
-      <Klutch.KText style={budgetContainerStyles.text}>{budget.toFixed(2)}</Klutch.KText>
-    </Klutch.KView>
-
-    <Klutch.Arrow color="black" />
-
-  </Klutch.KPressable>
-)
-
 Template = (data, context) => {
+
+  const budgetContainer = ({ id, category, amount: budget }) => (
+    <Klutch.KPressable
+      style={budgetContainerStyles.container}
+      key={`budget-${id}`}
+      onPress={() => context.loadTemplate("/templates/Budget.template", { id, category, amount: budget })}
+    >
+
+      <Klutch.KView style={budgetContainerStyles.textContainer}>
+        <Klutch.KText style={budgetContainerStyles.text}>{category.toUpperCase()}</Klutch.KText>
+        <Klutch.KText style={budgetContainerStyles.text}>{budget.toFixed(2)}</Klutch.KText>
+      </Klutch.KView>
+
+      <Klutch.Arrow color="black" />
+
+    </Klutch.KPressable>
+  )
+
   const { budgets, totalBudget } = context.state
 
   return (
@@ -81,7 +82,7 @@ Template = (data, context) => {
 
           <Klutch.KPressable
             style={styles.addBudgetButton}
-            onPress={() => console.log("TODO move add budget")}
+            onPress={() => context.loadTemplate("/templates/Budget.template", { amount: 0 })}
           >
             <Klutch.PlusSign color="#44CCFF" />
           </Klutch.KPressable >
