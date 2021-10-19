@@ -65,15 +65,6 @@ const stylesCategories = {
   footerText: { fontSize: 12 },
 }
 
-getRandomColor = () => {
-  var letters = '0123456789ABCDEF'
-  var color = '#'
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)]
-  }
-  return color
-}
-
 // Enum
 const State = {
   fromOtherView: 'switchingToEdit',
@@ -85,65 +76,11 @@ const State = {
 }
 
 Template = (data, context) => {
-  if (!context.state.budget) context.setState({ budget: data })
-  let { id, category, amount } = context.state.budget || {}
-
-  let { state } = context.state || { selectCategory: false }
+  if (Object.keys(context.state.budget).length === 0) context.setState({ budget: data })
+  const { category, amount } = context.state.budget
+  const { state } = context.state
 
   if (state === State.fromOtherView) context.setState({ state: State.ready })
-
-  if (state === State.selectCategory) {
-    return (
-      <Klutch.KView key='container'>
-
-        <Klutch.KView key='header'>
-          <Klutch.KHeader
-            showBackArrow
-            onBackArrowPressed={() => context.setState({ selectCategory: false })}
-            textStyle={styles.textHeader}
-          >
-            CATEGORIES
-          </Klutch.KHeader>
-        </Klutch.KView>
-
-        <Klutch.KText style={stylesCategories.label}>
-          What category are you budgeting for?
-        </Klutch.KText>
-
-        <Klutch.KScrollView key='body'>
-          {/* TODO fix scroll */}
-          {/* TODO fetch categories from server */}
-          {['SHOPPING', 'DINING OUT', 'TRANSPORT', 'FOOD', 'GIFTS', 'FUN', 'MEDICAL', 'BEAUTY']
-            .map(categoryCandidate => {
-              return (
-                <Klutch.KPressable
-                  key={categoryCandidate}
-                  style={stylesCategories.button}
-                  onPress={() => {
-                    context.setState({ budget: { id, category: categoryCandidate, amount } })
-                    context.setState({ state: State.ready })
-                  }}
-                >
-                  <Klutch.KView style={stylesCategories.buttonLabelContainer}>
-                    <Klutch.KView
-                      style={[stylesCategories.buttonSquare, { backgroundColor: getRandomColor() }]}
-                    />
-                    <Klutch.KText style={stylesCategories.buttonLabelText}>{categoryCandidate}</Klutch.KText>
-                  </Klutch.KView>
-                  <Klutch.Arrow color="black" />
-                </Klutch.KPressable>
-              )
-            })
-          }
-        </Klutch.KScrollView >
-
-        <Klutch.KText style={stylesCategories.footerText}>
-          To create a new category, go to the transactions tab and swipe right on a transaction
-        </Klutch.KText>
-
-      </Klutch.KView >
-    )
-  }
 
   if (state !== State.ready) {
     return (
@@ -154,7 +91,7 @@ Template = (data, context) => {
   }
 
   const onSaveButtonPress = async () => {
-    if (!category || amount == 0) return
+    if (amount == 0) return
     context.setState({ state: State.saving })
 
     await context.request('put', '/budget', { category, amount })
@@ -179,10 +116,7 @@ Template = (data, context) => {
         />
       </Klutch.KView>
 
-      <Klutch.KView
-        key='category'
-        style={styles.inputContainer}
-      >
+      <Klutch.KView key='category' style={styles.inputContainer} >
         <Klutch.KText style={styles.inputLabel}>Budget Category</Klutch.KText>
         <Klutch.KView
           style={styles.inputCategoryContainer}
@@ -191,29 +125,23 @@ Template = (data, context) => {
         </Klutch.KView>
       </Klutch.KView>
 
-      <Klutch.KPressable
-        key='save-button'
-        style={styles.button}
-        onPress={onSaveButtonPress}
-      >
+      <Klutch.KPressable key='save-button' style={styles.button} onPress={onSaveButtonPress} >
         <Klutch.KText style={styles.buttonText}>SAVE</Klutch.KText>
       </Klutch.KPressable>
 
-      {id && (
-        <Klutch.KPressable
-          key='delete-button'
-          style={[styles.button, { backgroundColor: 'transparent' }]}
-          onPress={() => {
-            // TODO validate category not null
-            // TODO loading feedback
-            // TODO clear context
-            console.log("TODO delete")
-            // TODO redirect to Home template
-          }}
-        >
-          <Klutch.KText style={styles.buttonText}>DELETE</Klutch.KText>
-        </Klutch.KPressable>
-      )}
+      {/* <Klutch.KPressable
+        key='delete-button'
+        style={[styles.button, { backgroundColor: 'transparent' }]}
+        onPress={() => {
+          // TODO validate category not null
+          // TODO loading feedback
+          // TODO clear context
+          console.log("TODO delete")
+          // TODO redirect to Home template
+        }}
+      >
+        <Klutch.KText style={styles.buttonText}>DELETE</Klutch.KText>
+      </Klutch.KPressable> */}
 
     </Klutch.KView >
   )

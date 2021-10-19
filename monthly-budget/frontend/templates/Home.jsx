@@ -81,7 +81,7 @@ const budgetContainer = ({ id, category, amount: budget, spent }) => (
         <Klutch.KText style={budgetContainerStyles.currency}>{spent.toFixed(2)}
           <Klutch.KText style={budgetContainerStyles.text}> SPENT</Klutch.KText>
         </Klutch.KText>
-        <Klutch.KText style={budgetContainerStyles.budget}>{`OF ${budget}`}</Klutch.KText>
+        <Klutch.KText style={budgetContainerStyles.budget}>{`OF ${(budget - spent).toFixed(2)}`}</Klutch.KText>
       </Klutch.KView>
     </Klutch.KView>
 
@@ -103,11 +103,10 @@ const State = {
 
 Template = (data, context) => {
   let { budgets, state, totalBudget } = context.state || { budgets: [], state: State.initializing }
-  console.log(state)
   const fetchData = async () => {
     const budgets = await context.get('/budget')
     const totalBudget = budgets.reduce((accum, item) => accum + item.amount, 0)
-    context.setState({ budgets, totalBudget, state: State.done })
+    context.setState({ budgets, totalBudget, state: State.done, budget: {} })
   }
 
   if (state === State.fromOtherView) context.setState({ state: State.initializing })
