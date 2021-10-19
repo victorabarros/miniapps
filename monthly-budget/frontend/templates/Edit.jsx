@@ -54,10 +54,10 @@ const budgetContainerStyles = {
 
 // Enum
 const State = {
-  fromMainView: 'switchingMainToEdit',
+  fromMainView: 'switchingToEdit',
 
   done: 'done',
-  finishing: 'switchingEditToBudget',
+  finishing: 'switchingToBudget',
 }
 
 Template = (data, context) => {

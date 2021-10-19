@@ -94,9 +94,11 @@ const budgetContainer = ({ id, category, amount: budget, spent }) => (
 
 // Enum
 const State = {
+  fromOtherView: 'switchingtoMain',
+
   initializing: 'initializing',
   done: 'done',
-  toEditView: 'switchingMainToEdit',
+  toEditView: 'switchingToEdit',
 }
 
 Template = (data, context) => {
@@ -108,6 +110,7 @@ Template = (data, context) => {
     context.setState({ budgets, totalBudget, state: State.done })
   }
 
+  if (state === State.fromOtherView) context.setState({ state: State.initializing })
   if (state === State.initializing) {
     fetchData()
   }
