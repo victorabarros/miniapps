@@ -1,4 +1,8 @@
 const styles = {
+  loading: {
+    flex: 1,
+    justifyContent: "center",
+  },
   textHeader: {
     fontSize: 20,
   },
@@ -70,12 +74,24 @@ getRandomColor = () => {
   return color
 }
 
+// Enum
+const State = {
+  fromOtherView: 'switchingToBudget',
+
+  selectCategory: 'selectCategory',
+  saving: 'saving',
+  ready: 'ready',
+  toMainView: 'switchingtoMain',
+}
+
 Template = (data, context) => {
   if (!context.state.budget) context.setState({ budget: data })
   let { category, amount } = context.state.budget || {}
-  let { selectCategory } = context.state || { selectCategory: false }
+  let { state } = context.state || { selectCategory: false }
 
-  if (selectCategory) {
+  if (state === State.fromOtherView) context.setState({ state: State.ready })
+
+  if (state === State.selectCategory) {
     return (
       <Klutch.KView key='container'>
 
@@ -95,6 +111,7 @@ Template = (data, context) => {
 
         <Klutch.KScrollView key='body'>
           {/* TODO fix scroll */}
+          {/* TODO fetch categories from server */}
           {['SHOPPING', 'DINING OUT', 'TRANSPORT', 'FOOD', 'GIFTS', 'FUN', 'MEDICAL', 'BEAUTY']
             .map(categoryCandidate => {
               return (
@@ -103,7 +120,7 @@ Template = (data, context) => {
                   style={stylesCategories.button}
                   onPress={() => {
                     context.setState({ budget: { category: categoryCandidate, amount } })
-                    context.setState({ selectCategory: false })
+                    context.setState({ state: State.ready })
                   }}
                 >
                   <Klutch.KView style={stylesCategories.buttonLabelContainer}>
@@ -125,6 +142,23 @@ Template = (data, context) => {
 
       </Klutch.KView >
     )
+  }
+
+  if (state !== State.ready) {
+    return (
+      <Klutch.KView style={styles.loading}>
+        <Klutch.KLoadingIndicator />
+      </Klutch.KView>
+    )
+  }
+
+  const onSaveButtonPress = async () => {
+    if (!category || amount == 0) return
+    context.setState({ state: State.saving })
+
+    await context.request('put', '/budget', { category, amount })
+    context.setState({ state: State.toMainView })
+    context.loadTemplate("/templates/Main.template")
   }
 
   return (
@@ -151,7 +185,7 @@ Template = (data, context) => {
         <Klutch.KText style={styles.inputLabel}>Budget Category</Klutch.KText>
         <Klutch.KPressable
           style={styles.inputCategoryContainer}
-          onPress={() => context.setState({ selectCategory: true })}
+          onPress={() => context.setState({ state: State.selectCategory })}
         >
           <Klutch.KText style={styles.inputValue}>{category}</Klutch.KText>
           <Klutch.Arrow color="black" />
@@ -161,13 +195,7 @@ Template = (data, context) => {
       <Klutch.KPressable
         key='save-button'
         style={styles.button}
-        onPress={() => {
-          // TODO validate category not null
-          // TODO loading feedback
-          // TODO clear context
-          console.log("TODO save")
-          // TODO redirect to Main template
-        }}
+        onPress={onSaveButtonPress}
       >
         <Klutch.KText style={styles.buttonText}>SAVE</Klutch.KText>
       </Klutch.KPressable>
