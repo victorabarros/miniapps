@@ -96,18 +96,21 @@ Template = (data, context) => {
         <Klutch.KScrollView key='body'>
           {/* TODO fix scroll */}
           {['SHOPPING', 'DINING OUT', 'TRANSPORT', 'FOOD', 'GIFTS', 'FUN', 'MEDICAL', 'BEAUTY']
-            .map(category => {
+            .map(categoryCandidate => {
               return (
                 <Klutch.KPressable
-                  key={category}
+                  key={categoryCandidate}
                   style={stylesCategories.button}
-                  onPress={() => console.log("TODO select category")}
+                  onPress={() => {
+                    context.setState({ budget: { category: categoryCandidate, amount } })
+                    context.setState({ selectCategory: false })
+                  }}
                 >
                   <Klutch.KView style={stylesCategories.buttonLabelContainer}>
                     <Klutch.KView
                       style={[stylesCategories.buttonSquare, { backgroundColor: getRandomColor() }]}
                     />
-                    <Klutch.KText style={stylesCategories.buttonLabelText}>{category}</Klutch.KText>
+                    <Klutch.KText style={stylesCategories.buttonLabelText}>{categoryCandidate}</Klutch.KText>
                   </Klutch.KView>
                   <Klutch.Arrow color="black" />
                 </Klutch.KPressable>
@@ -163,6 +166,7 @@ Template = (data, context) => {
           // TODO loading feedback
           // TODO clear context
           console.log("TODO save")
+          // TODO redirect to Main template
         }}
       >
         <Klutch.KText style={styles.buttonText}>SAVE</Klutch.KText>
@@ -176,6 +180,7 @@ Template = (data, context) => {
           // TODO loading feedback
           // TODO clear context
           console.log("TODO delete")
+          // TODO redirect to Main template
         }}
       >
         <Klutch.KText style={styles.buttonText}>DELETE</Klutch.KText>
