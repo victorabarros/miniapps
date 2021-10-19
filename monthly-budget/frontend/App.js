@@ -11,9 +11,9 @@ import { KText, KButton, KScreen } from "@klutchcard/klutch-components"
 const APPNAME = "Demo MiniApp"
 
 const Templates = {
+  Home: { filename: "/templates/Home.template", type: "fullscreen", template: require(`./dist/templates/Home.template`) },
   Main: { filename: "/templates/Main.template", type: "fullscreen", template: require(`./dist/templates/Main.template`) },
   Edit: { filename: "/templates/Edit.template", type: "fullscreen", template: require(`./dist/templates/Edit.template`) },
-  Budget: { filename: "/templates/Budget.template", type: "fullscreen", template: require(`./dist/templates/Budget.template`) },
 }
 
 const initialData = {}
@@ -35,7 +35,7 @@ export default function App() {
     return (
       <KScreen style={{ flex: 1, marginVertical: 30, justifyContent: 'space-evenly' }}>
         <KText>What template do you want to open?</KText>
-        <KButton type="primary" style={buttonStyle} label="Main" onPress={() => setTemplateToLoad(Templates.Main)} />
+        <KButton type="primary" style={buttonStyle} label="Home" onPress={() => setTemplateToLoad(Templates.Home)} />
         {/* <KButton type="primary" style={buttonStyle} label="Edit" onPress={() => setTemplateToLoad(Templates.Edit)} /> */}
       </KScreen>
     )

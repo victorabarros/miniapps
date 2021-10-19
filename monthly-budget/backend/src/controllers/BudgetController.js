@@ -59,7 +59,7 @@ const handlerTransactionsDataPerBudgets = (budgets, transactions) => {
 }
 
 const createOrUpdateBudget = async (req, resp) => {
-  console.log("POST /budget started")
+  console.log("PUT /budget started")
 
   let recipeInstallId
   try {
@@ -79,7 +79,7 @@ const createOrUpdateBudget = async (req, resp) => {
 
   try {
     const row = await upsertBudget(recipeInstallId, category, amount)
-    console.log("POST /budget finished with success")
+    console.log("PUT /budget finished with success")
     return resp.status(httpStatus.OK).json(row)
   } catch (err) {
     console.log({ err })

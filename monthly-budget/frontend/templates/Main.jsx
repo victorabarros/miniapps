@@ -6,24 +6,25 @@ const styles = {
   textHeader: {
     fontSize: 20,
   },
-  editButtonContainer: {
-    position: 'absolute',
-    height: '60%',
-    width: "10%",
-    alignSelf: 'flex-end',
-    justifyContent: 'center',
-  },
-  editButtonText: {
-    fontSize: 11,
-    color: "#44CCFF",
-    alignSelf: 'flex-end',
-  },
   summaryContainer: {
     marginVertical: 5,
+  },
+  summaryAmountContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   summaryAmount: {
     fontSize: 45,
     fontWeight: 'bold',
+  },
+  addBudgetButton: {
+    width: 65,
+    height: 30,
+    borderWidth: 1,
+    borderColor: '#44CCFF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   summarySubtitle: {
     fontWeight: 'bold',
@@ -33,87 +34,57 @@ const styles = {
 
 const budgetContainerStyles = {
   container: {
-    marginVertical: 10,
-  },
-  headerContainer: {
+    marginTop: 30,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    borderBottomWidth: .5,
+    borderColor: 'lightgray',
   },
-  category: {
+  textContainer: {
+    marginBottom: 10,
+    flexDirection: 'row',
+    width: '75%',
+    justifyContent: 'space-between',
+  },
+  text: {
     fontSize: 20,
     fontWeight: 'bold',
   },
-  currency: {
-    fontSize: 15,
-  },
-  text: {
-    fontSize: 10,
-  },
-  budget: {
-    fontSize: 10,
-    alignSelf: 'flex-end',
-  },
-  progressBar: {
-    height: 6,
-    width: '100%',
-    borderWidth: .5,
-    marginVertical: 5,
-  },
-  progress: {
-    height: '100%',
-    backgroundColor: '#44CCFF',
-  },
 }
-
-const budgetContainer = ({ id, category, amount: budget, spent }) => (
-  <Klutch.KView style={budgetContainerStyles.container} key={`budget-${id}`}>
-    <Klutch.KView style={budgetContainerStyles.headerContainer}>
-
-      <Klutch.KView>
-        <Klutch.KText style={budgetContainerStyles.category}>{category.toUpperCase()}</Klutch.KText>
-        <Klutch.KText style={budgetContainerStyles.currency}>
-          {Math.max((budget - spent), 0).toFixed(2)}
-          <Klutch.KText style={budgetContainerStyles.text}> LEFT</Klutch.KText>
-        </Klutch.KText>
-      </Klutch.KView>
-
-      <Klutch.KView style={{ alignSelf: 'flex-end' }}>
-        <Klutch.KText style={budgetContainerStyles.currency}>{spent.toFixed(2)}
-          <Klutch.KText style={budgetContainerStyles.text}> SPENT</Klutch.KText>
-        </Klutch.KText>
-        <Klutch.KText style={budgetContainerStyles.budget}>{`OF ${budget}`}</Klutch.KText>
-      </Klutch.KView>
-    </Klutch.KView>
-
-    <Klutch.KView style={budgetContainerStyles.progressBar}>
-      <Klutch.KView style={[budgetContainerStyles.progress, { width: `${100 * spent / budget}%` }]} />
-    </Klutch.KView>
-
-  </Klutch.KView>
-)
 
 // Enum
 const State = {
-  fromOtherView: 'switchingtoMain',
+  fromOtherView: 'switchingToMain',
 
-  initializing: 'initializing',
   done: 'done',
-  toEditView: 'switchingToEdit',
+  finishing: 'switchingToEdit',
 }
 
 Template = (data, context) => {
-  let { budgets, state, totalBudget } = context.state || { budgets: [], state: State.initializing }
 
-  const fetchData = async () => {
-    const budgets = await context.get('/budget')
-    const totalBudget = budgets.reduce((accum, item) => accum + item.amount, 0)
-    context.setState({ budgets, totalBudget, state: State.done })
-  }
+  const budgetContainer = ({ id, category, amount: budget }) => (
+    <Klutch.KPressable
+      style={budgetContainerStyles.container}
+      key={`budget-${id}`}
+      onPress={() => {
+        context.setState({ state: State.finishing })
+        context.loadTemplate("/templates/Edit.template", { id, category, amount: budget })
+      }}
+    >
 
-  if (state === State.fromOtherView) context.setState({ state: State.initializing })
-  if (state === State.initializing) {
-    fetchData()
-  }
+      <Klutch.KView style={budgetContainerStyles.textContainer}>
+        <Klutch.KText style={budgetContainerStyles.text}>{category.toUpperCase()}</Klutch.KText>
+        <Klutch.KText style={budgetContainerStyles.text}>{budget.toFixed(2)}</Klutch.KText>
+      </Klutch.KView>
+
+      <Klutch.Arrow color="black" />
+
+    </Klutch.KPressable>
+  )
+
+  const { budgets, totalBudget, state } = context.state
+
+  if (state === State.fromOtherView) context.setState({ state: State.done })
 
   if (state !== State.done) {
     return (
@@ -127,23 +98,24 @@ Template = (data, context) => {
     <Klutch.KView key='container'>
 
       <Klutch.KView key='header'>
-        <Klutch.KHeader showBackArrow onBackArrowPressed={context.closeMiniApp} textStyle={styles.textHeader} >
-          MONTHLY BUDGET
-        </Klutch.KHeader>
-
-        <Klutch.KPressable
-          style={styles.editButtonContainer}
-          onPress={() => {
-            context.setState({ state: State.toEditView })
-            context.loadTemplate("/templates/Edit.template")
-          }}
-        >
-          <Klutch.KText style={styles.editButtonText}>EDIT</Klutch.KText>
-        </Klutch.KPressable>
+        <Klutch.KHeader showBackArrow textStyle={styles.textHeader}>MONTHLY BUDGET</Klutch.KHeader>
       </Klutch.KView>
 
       <Klutch.KView key='summary' style={styles.summaryContainer}>
-        <Klutch.KText style={styles.summaryAmount}>{`$${totalBudget.toFixed(2)}`}</Klutch.KText>
+        <Klutch.KView style={styles.summaryAmountContainer}>
+          <Klutch.KText style={styles.summaryAmount}>{`$${totalBudget.toFixed(2)}`}</Klutch.KText>
+
+          <Klutch.KPressable
+            style={styles.addBudgetButton}
+            onPress={() => {
+              context.setState({ state: State.finishing })
+              context.loadTemplate("/templates/Edit.template", { category: '', amount: 0 })
+            }}
+          >
+            <Klutch.PlusSign color="#44CCFF" />
+          </Klutch.KPressable >
+        </Klutch.KView >
+
         <Klutch.KText style={styles.summarySubtitle}>Total Budgeted</Klutch.KText>
       </Klutch.KView >
 

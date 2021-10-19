@@ -6,87 +6,146 @@ const styles = {
   textHeader: {
     fontSize: 20,
   },
-  summaryContainer: {
-    marginVertical: 5,
+  inputContainer: {
+    marginTop: 10,
+    marginBottom: 30,
+    borderBottomWidth: 1,
+    borderColor: 'lightgray',
   },
-  summaryAmountContainer: {
+  inputLabel: {
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  inputValue: {
+    fontSize: 55,
+    fontWeight: 'bold',
+  },
+  inputCategoryContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  summaryAmount: {
-    fontSize: 45,
-    fontWeight: 'bold',
-  },
-  addBudgetButton: {
-    width: 65,
-    height: 30,
+  button: {
+    height: 50,
     borderWidth: 1,
-    borderColor: '#44CCFF',
+    marginVertical: 4,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#44CCFF',
   },
-  summarySubtitle: {
-    fontWeight: 'bold',
-    marginVertical: 10,
+  buttonText: {
+    fontSize: 12,
   },
 }
 
-const budgetContainerStyles = {
-  container: {
-    marginTop: 30,
+const stylesCategories = {
+  label: {
+    fontSize: 15,
+    fontWeight: "bold"
+  },
+  button: {
+    paddingTop: 20,
+    paddingBottom: 30,
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    borderBottomWidth: .5,
-    borderColor: 'lightgray',
+    borderBottomWidth: 1,
+    borderColor: 'lightgray'
   },
-  textContainer: {
-    marginBottom: 10,
+  buttonLabelContainer: {
     flexDirection: 'row',
-    width: '75%',
-    justifyContent: 'space-between',
+    alignItems: 'center'
   },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  buttonSquare: {
+    height: 10,
+    width: 10,
+    borderRadius: 2
   },
+  buttonLabelText: { marginLeft: 16 },
+  footerText: { fontSize: 12 },
+}
+
+getRandomColor = () => {
+  var letters = '0123456789ABCDEF'
+  var color = '#'
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)]
+  }
+  return color
 }
 
 // Enum
 const State = {
-  fromMainView: 'switchingToEdit',
+  fromOtherView: 'switchingToEdit',
 
-  done: 'done',
-  finishing: 'switchingToBudget',
+  selectCategory: 'selectCategory',
+  saving: 'saving',
+  ready: 'ready',
+  toHomeView: 'switchingtoHome',
 }
 
 Template = (data, context) => {
+  if (!context.state.budget) context.setState({ budget: data })
+  let { id, category, amount } = context.state.budget || {}
 
-  const budgetContainer = ({ id, category, amount: budget }) => (
-    <Klutch.KPressable
-      style={budgetContainerStyles.container}
-      key={`budget-${id}`}
-      onPress={() => {
-        context.setState({ state: State.finishing })
-        context.loadTemplate("/templates/Budget.template", { id, category, amount: budget })
-      }}
-    >
+  let { state } = context.state || { selectCategory: false }
 
-      <Klutch.KView style={budgetContainerStyles.textContainer}>
-        <Klutch.KText style={budgetContainerStyles.text}>{category.toUpperCase()}</Klutch.KText>
-        <Klutch.KText style={budgetContainerStyles.text}>{budget.toFixed(2)}</Klutch.KText>
-      </Klutch.KView>
+  if (state === State.fromOtherView) context.setState({ state: State.ready })
 
-      <Klutch.Arrow color="black" />
+  if (state === State.selectCategory) {
+    return (
+      <Klutch.KView key='container'>
 
-    </Klutch.KPressable>
-  )
+        <Klutch.KView key='header'>
+          <Klutch.KHeader
+            showBackArrow
+            onBackArrowPressed={() => context.setState({ selectCategory: false })}
+            textStyle={styles.textHeader}
+          >
+            CATEGORIES
+          </Klutch.KHeader>
+        </Klutch.KView>
 
-  const { budgets, totalBudget, state } = context.state
+        <Klutch.KText style={stylesCategories.label}>
+          What category are you budgeting for?
+        </Klutch.KText>
 
-  if (state === State.fromMainView) context.setState({ state: State.done })
+        <Klutch.KScrollView key='body'>
+          {/* TODO fix scroll */}
+          {/* TODO fetch categories from server */}
+          {['SHOPPING', 'DINING OUT', 'TRANSPORT', 'FOOD', 'GIFTS', 'FUN', 'MEDICAL', 'BEAUTY']
+            .map(categoryCandidate => {
+              return (
+                <Klutch.KPressable
+                  key={categoryCandidate}
+                  style={stylesCategories.button}
+                  onPress={() => {
+                    context.setState({ budget: { id, category: categoryCandidate, amount } })
+                    context.setState({ state: State.ready })
+                  }}
+                >
+                  <Klutch.KView style={stylesCategories.buttonLabelContainer}>
+                    <Klutch.KView
+                      style={[stylesCategories.buttonSquare, { backgroundColor: getRandomColor() }]}
+                    />
+                    <Klutch.KText style={stylesCategories.buttonLabelText}>{categoryCandidate}</Klutch.KText>
+                  </Klutch.KView>
+                  <Klutch.Arrow color="black" />
+                </Klutch.KPressable>
+              )
+            })
+          }
+        </Klutch.KScrollView >
 
-  if (state !== State.done) {
+        <Klutch.KText style={stylesCategories.footerText}>
+          To create a new category, go to the transactions tab and swipe right on a transaction
+        </Klutch.KText>
+
+      </Klutch.KView >
+    )
+  }
+
+  if (state !== State.ready) {
     return (
       <Klutch.KView style={styles.loading}>
         <Klutch.KLoadingIndicator />
@@ -94,34 +153,67 @@ Template = (data, context) => {
     )
   }
 
+  const onSaveButtonPress = async () => {
+    if (!category || amount == 0) return
+    context.setState({ state: State.saving })
+
+    await context.request('put', '/budget', { category, amount })
+    context.setState({ state: State.toHomeView })
+    context.loadTemplate("/templates/Home.template")
+  }
+
   return (
     <Klutch.KView key='container'>
 
       <Klutch.KView key='header'>
-        <Klutch.KHeader showBackArrow textStyle={styles.textHeader}>MONTHLY BUDGET</Klutch.KHeader>
+        <Klutch.KHeader showBackArrow textStyle={styles.textHeader}>EDIT BUDGET</Klutch.KHeader>
       </Klutch.KView>
 
-      <Klutch.KView key='summary' style={styles.summaryContainer}>
-        <Klutch.KView style={styles.summaryAmountContainer}>
-          <Klutch.KText style={styles.summaryAmount}>{`$${totalBudget.toFixed(2)}`}</Klutch.KText>
+      <Klutch.KView key='budget' style={styles.inputContainer}>
+        <Klutch.KText style={styles.inputLabel}>Monthly Budget</Klutch.KText>
+        <Klutch.KBigCurrencyInput
+          style={styles.inputValue}
+          value={amount}
+          onAmountChanged={(value) => context.setState({ budget: { category, amount: value } })}
+          placeholder="$0.00"
+        />
+      </Klutch.KView>
 
-          <Klutch.KPressable
-            style={styles.addBudgetButton}
-            onPress={() => {
-              context.setState({ state: State.finishing })
-              context.loadTemplate("/templates/Budget.template", { category: '', amount: 0 })
-            }}
-          >
-            <Klutch.PlusSign color="#44CCFF" />
-          </Klutch.KPressable >
-        </Klutch.KView >
+      <Klutch.KView
+        key='category'
+        style={styles.inputContainer}
+      >
+        <Klutch.KText style={styles.inputLabel}>Budget Category</Klutch.KText>
+        <Klutch.KView
+          style={styles.inputCategoryContainer}
+        >
+          <Klutch.KText style={styles.inputValue}>{category}</Klutch.KText>
+        </Klutch.KView>
+      </Klutch.KView>
 
-        <Klutch.KText style={styles.summarySubtitle}>Total Budgeted</Klutch.KText>
-      </Klutch.KView >
+      <Klutch.KPressable
+        key='save-button'
+        style={styles.button}
+        onPress={onSaveButtonPress}
+      >
+        <Klutch.KText style={styles.buttonText}>SAVE</Klutch.KText>
+      </Klutch.KPressable>
 
-      <Klutch.KScrollView key='body'>
-        {budgets.map(budgetContainer)}
-      </Klutch.KScrollView>
+      {id && (
+        <Klutch.KPressable
+          key='delete-button'
+          style={[styles.button, { backgroundColor: 'transparent' }]}
+          onPress={() => {
+            // TODO validate category not null
+            // TODO loading feedback
+            // TODO clear context
+            console.log("TODO delete")
+            // TODO redirect to Home template
+          }}
+        >
+          <Klutch.KText style={styles.buttonText}>DELETE</Klutch.KText>
+        </Klutch.KPressable>
+      )}
 
     </Klutch.KView >
   )
