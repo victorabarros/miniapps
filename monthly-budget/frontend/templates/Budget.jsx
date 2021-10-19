@@ -34,6 +34,33 @@ const styles = {
   },
 }
 
+const stylesCategories = {
+  label: {
+    fontSize: 15,
+    fontWeight: "bold"
+  },
+  button: {
+    paddingTop: 20,
+    paddingBottom: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderColor: 'lightgray'
+  },
+  buttonLabelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  buttonSquare: {
+    height: 10,
+    width: 10,
+    borderRadius: 2
+  },
+  buttonLabelText: { marginLeft: 16 },
+  footerText: { fontSize: 12 },
+}
+
 getRandomColor = () => {
   var letters = '0123456789ABCDEF'
   var color = '#'
@@ -49,7 +76,6 @@ Template = (data, context) => {
   let { selectCategory } = context.state || { selectCategory: false }
 
   if (selectCategory) {
-    console.log()
     return (
       <Klutch.KView key='container'>
 
@@ -63,7 +89,7 @@ Template = (data, context) => {
           </Klutch.KHeader>
         </Klutch.KView>
 
-        <Klutch.KText style={{ fontSize: 15, fontWeight: "bold" }}>
+        <Klutch.KText style={stylesCategories.label}>
           What category are you budgeting for?
         </Klutch.KText>
 
@@ -74,12 +100,14 @@ Template = (data, context) => {
               return (
                 <Klutch.KPressable
                   key={category}
-                  style={{ paddingTop: 20, paddingBottom: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: 1, borderColor: 'lightgray' }}
+                  style={stylesCategories.button}
                   onPress={() => console.log("TODO select category")}
                 >
-                  <Klutch.KView style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Klutch.KView style={{ height: 10, width: 10, borderRadius: 2, backgroundColor: getRandomColor() }} />
-                    <Klutch.KText style={{ marginLeft: 16 }}>{category}</Klutch.KText>
+                  <Klutch.KView style={stylesCategories.buttonLabelContainer}>
+                    <Klutch.KView
+                      style={[stylesCategories.buttonSquare, { backgroundColor: getRandomColor() }]}
+                    />
+                    <Klutch.KText style={stylesCategories.buttonLabelText}>{category}</Klutch.KText>
                   </Klutch.KView>
                   <Klutch.Arrow color="black" />
                 </Klutch.KPressable>
@@ -88,7 +116,7 @@ Template = (data, context) => {
           }
         </Klutch.KScrollView >
 
-        <Klutch.KText style={{ fontSize: 12 }}>
+        <Klutch.KText style={stylesCategories.footerText}>
           To create a new category, go to the transactions tab and swipe right on a transaction
         </Klutch.KText>
 
