@@ -109,7 +109,7 @@ Template = (data, context) => {
             style={styles.addBudgetButton}
             onPress={() => {
               context.setState({ state: State.finishing })
-              context.loadTemplate("/templates/Budget.template")
+              context.loadTemplate("/templates/Budget.template", { category: '', amount: 0 })
             }}
           >
             <Klutch.PlusSign color="#44CCFF" />

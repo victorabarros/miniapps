@@ -35,9 +35,8 @@ const styles = {
 }
 
 Template = (data, context) => {
-  console.log(data)
-  const { category, amount } = data
-  console.log({ category, amount })
+  if (!context.state.budget) context.setState({ budget: data })
+  let { category, amount } = context.state.budget || {}
 
   return (
     <Klutch.KView key='container'>
@@ -48,8 +47,12 @@ Template = (data, context) => {
 
       <Klutch.KView key='budget' style={styles.inputContainer}>
         <Klutch.KText style={styles.inputLabel}>Monthly Budget</Klutch.KText>
-        {/* TODO currency input */}
-        <Klutch.KText style={styles.inputValue}>{amount.toFixed(2)}</Klutch.KText>
+        <Klutch.KBigCurrencyInput
+          style={styles.inputValue}
+          value={amount}
+          onAmountChanged={(value) => context.setState({ budget: { category, amount: value } })}
+          placeholder="$0.00"
+        />
       </Klutch.KView>
 
       <Klutch.KView
@@ -72,6 +75,7 @@ Template = (data, context) => {
         onPress={() => {
           // TODO validate category not null
           // TODO loading feedback
+          // TODO clear context
           console.log("TODO save")
         }}
       >
@@ -84,6 +88,7 @@ Template = (data, context) => {
         onPress={() => {
           // TODO validate category not null
           // TODO loading feedback
+          // TODO clear context
           console.log("TODO delete")
         }}
       >
