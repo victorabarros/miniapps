@@ -64,6 +64,18 @@ const SimulationComponent = ({ template, type, name, data, onLoadTemplate }) => 
       })
       return resp.data
     },
+    async request(verb, path, data) {
+      const resp = await axios({
+        url: `${config.recipe.serverUrl}${path}`,
+        method: verb.toUpperCase(),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer EXAMPLEAUTHKEY`
+        },
+        data: data
+      })
+      return resp
+    },
     closeMiniApp() {
       onLoadTemplate();
     },
