@@ -13,6 +13,7 @@ const APPNAME = "Demo MiniApp"
 const Templates = {
   Home: { filename: "/templates/Home.template", type: "fullscreen", template: require(`./dist/templates/Home.template`) },
   Main: { filename: "/templates/Main.template", type: "fullscreen", template: require(`./dist/templates/Main.template`) },
+  New: { filename: "/templates/New.template", type: "fullscreen", template: require(`./dist/templates/New.template`) },
   Edit: { filename: "/templates/Edit.template", type: "fullscreen", template: require(`./dist/templates/Edit.template`) },
 }
 

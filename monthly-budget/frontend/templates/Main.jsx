@@ -57,7 +57,8 @@ const State = {
   fromOtherView: 'switchingToMain',
 
   done: 'done',
-  finishing: 'switchingToEdit',
+  toEditView: 'switchingToEdit',
+  toNewView: 'switchingToNew',
 }
 
 Template = (data, context) => {
@@ -67,8 +68,8 @@ Template = (data, context) => {
       style={budgetContainerStyles.container}
       key={`budget-${id}`}
       onPress={() => {
-        context.setState({ state: State.finishing })
-        context.loadTemplate("/templates/Edit.template", { id, category, amount: budget })
+        context.setState({ state: State.toEditView })
+        context.loadTemplate("/templates/Edit.template", { category, amount: budget })
       }}
     >
 
@@ -108,8 +109,8 @@ Template = (data, context) => {
           <Klutch.KPressable
             style={styles.addBudgetButton}
             onPress={() => {
-              context.setState({ state: State.finishing })
-              context.loadTemplate("/templates/Edit.template", { category: '', amount: 0 })
+              context.setState({ state: State.toNewView })
+              context.loadTemplate("/templates/New.template")
             }}
           >
             <Klutch.PlusSign color="#44CCFF" />
