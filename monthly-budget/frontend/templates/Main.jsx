@@ -69,7 +69,7 @@ Template = (data, context) => {
       key={`budget-${id}`}
       onPress={() => {
         context.setState({ state: State.toEditView })
-        context.loadTemplate("/templates/Edit.template", { category, amount: budget })
+        context.loadTemplate("/templates/Edit.template", { id, category, amount: budget })
       }}
     >
 

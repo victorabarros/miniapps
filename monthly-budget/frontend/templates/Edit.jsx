@@ -71,13 +71,14 @@ const State = {
 
   selectCategory: 'selectCategory',
   saving: 'saving',
+  deleting: 'deleting',
   ready: 'ready',
   toHomeView: 'switchingtoHome',
 }
 
 Template = (data, context) => {
   if (Object.keys(context.state.budget).length === 0) context.setState({ budget: data })
-  const { category, amount } = context.state.budget
+  const { id, category, amount } = context.state.budget
   const { state } = context.state
 
   if (state === State.fromOtherView) context.setState({ state: State.ready })
@@ -99,6 +100,15 @@ Template = (data, context) => {
     context.loadTemplate("/templates/Home.template")
   }
 
+  const onDeleteButtonPress = async () => {
+    context.setState({ state: State.deleting })
+    await context.request('delete', `/budget/${id}`, {})
+
+    context.setState({ state: State.toHomeView })
+    context.loadTemplate("/templates/Home.template")
+  }
+
+
   return (
     <Klutch.KView key='container'>
 
@@ -111,7 +121,7 @@ Template = (data, context) => {
         <Klutch.KBigCurrencyInput
           style={styles.inputValue}
           value={amount}
-          onAmountChanged={(value) => context.setState({ budget: { category, amount: value } })}
+          onAmountChanged={(value) => context.setState({ budget: { id, category, amount: value } })}
           placeholder="$0.00"
         />
       </Klutch.KView>
@@ -129,19 +139,12 @@ Template = (data, context) => {
         <Klutch.KText style={styles.buttonText}>SAVE</Klutch.KText>
       </Klutch.KPressable>
 
-      {/* <Klutch.KPressable
-        key='delete-button'
+      <Klutch.KPressable key='delete-button'
         style={[styles.button, { backgroundColor: 'transparent' }]}
-        onPress={() => {
-          // TODO validate category not null
-          // TODO loading feedback
-          // TODO clear context
-          console.log("TODO delete")
-          // TODO redirect to Home template
-        }}
+        onPress={onDeleteButtonPress}
       >
         <Klutch.KText style={styles.buttonText}>DELETE</Klutch.KText>
-      </Klutch.KPressable> */}
+      </Klutch.KPressable>
 
     </Klutch.KView >
   )
