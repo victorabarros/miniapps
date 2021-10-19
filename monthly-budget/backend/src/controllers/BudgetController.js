@@ -7,7 +7,7 @@ const {
 } = require("@klutchcard/alloy-js");
 const httpStatus = require('http-status')
 const Ajv = require("ajv")
-const { upsertBudget, listBudgets } = require("../models/Budget")
+const { upsertBudget, listBudgets, deleteBudget: findAndDeleteBudget } = require("../models/Budget")
 const { recipeId, privateKey } = require('../config/config')
 
 
@@ -139,4 +139,27 @@ const getBudgets = async (req, resp) => {
   return resp.status(httpStatus.OK).json(result)
 }
 
-module.exports = { createOrUpdateBudget, getBudgets }
+const deleteBudget = async (req, resp) => {
+  const { id } = req.params
+  console.log(`DELETE /budget/${id} started`)
+
+  let recipeInstallId
+  try {
+    recipeInstallId = getRecipeInstallId(req.headers.authorization)
+  } catch (err) {
+    console.log({ err })
+    return resp.status(httpStatus.UNAUTHORIZED).json({ errorMessage: "Invalid token" })
+  }
+
+  try {
+    await findAndDeleteBudget(id)
+  } catch (err) {
+    console.log({ err })
+    return resp.status(httpStatus.SERVICE_UNAVAILABLE).json({ errorMessage: 'fail in connect with database' })
+  }
+
+  console.log(`DELETE /budget/${id} finished with success`)
+  return resp.status(httpStatus.OK).json(null)
+}
+
+module.exports = { createOrUpdateBudget, getBudgets, deleteBudget }

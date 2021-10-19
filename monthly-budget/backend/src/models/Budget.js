@@ -20,4 +20,10 @@ const upsertBudget = async (recipeInstallId, category, amount) => {
 const listBudgets = async (recipeInstallId) =>
   await budget.findAll({ where: { recipeInstallId } })
 
-module.exports = { Budget: budget, upsertBudget, listBudgets }
+const deleteBudget = async (budgetId) => {
+  // TODO improve to soft delete
+  const bud = await budget.findOne({ where: { id: budgetId } })
+  await bud.destroy()
+}
+
+module.exports = { Budget: budget, upsertBudget, listBudgets, deleteBudget }
