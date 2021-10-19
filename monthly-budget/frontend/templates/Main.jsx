@@ -95,8 +95,8 @@ const budgetContainer = ({ id, category, amount: budget, spent }) => (
 // Enum
 const State = {
   initializing: 'initializing',
-  loading: 'loading',
   done: 'done',
+  toEditView: 'switchingMainToEdit',
 }
 
 Template = (data, context) => {
@@ -112,7 +112,7 @@ Template = (data, context) => {
     fetchData()
   }
 
-  if ([State.initializing, State.loading].includes(state)) {
+  if (state !== State.done) {
     return (
       <Klutch.KView style={styles.loading}>
         <Klutch.KLoadingIndicator />
@@ -131,7 +131,7 @@ Template = (data, context) => {
         <Klutch.KPressable
           style={styles.editButtonContainer}
           onPress={() => {
-            context.setState({ state: State.loading })
+            context.setState({ state: State.toEditView })
             context.loadTemplate("/templates/Edit.template")
           }}
         >

@@ -1,4 +1,8 @@
 const styles = {
+  loading: {
+    flex: 1,
+    justifyContent: "center",
+  },
   textHeader: {
     fontSize: 20,
   },
@@ -48,13 +52,24 @@ const budgetContainerStyles = {
   },
 }
 
+// Enum
+const State = {
+  fromMainView: 'switchingMainToEdit',
+
+  done: 'done',
+  finishing: 'switchingEditToBudget',
+}
+
 Template = (data, context) => {
 
   const budgetContainer = ({ id, category, amount: budget }) => (
     <Klutch.KPressable
       style={budgetContainerStyles.container}
       key={`budget-${id}`}
-      onPress={() => context.loadTemplate("/templates/Budget.template", { id, category, amount: budget })}
+      onPress={() => {
+        context.setState({ state: State.finishing })
+        context.loadTemplate("/templates/Budget.template", { id, category, amount: budget })
+      }}
     >
 
       <Klutch.KView style={budgetContainerStyles.textContainer}>
@@ -67,7 +82,17 @@ Template = (data, context) => {
     </Klutch.KPressable>
   )
 
-  const { budgets, totalBudget } = context.state
+  const { budgets, totalBudget, state } = context.state
+
+  if (state === State.fromMainView) context.setState({ state: State.done })
+
+  if (state !== State.done) {
+    return (
+      <Klutch.KView style={styles.loading}>
+        <Klutch.KLoadingIndicator />
+      </Klutch.KView>
+    )
+  }
 
   return (
     <Klutch.KView key='container'>
@@ -82,7 +107,10 @@ Template = (data, context) => {
 
           <Klutch.KPressable
             style={styles.addBudgetButton}
-            onPress={() => context.loadTemplate("/templates/Budget.template", { amount: 0 })}
+            onPress={() => {
+              context.setState({ state: State.finishing })
+              context.loadTemplate("/templates/Budget.template")
+            }}
           >
             <Klutch.PlusSign color="#44CCFF" />
           </Klutch.KPressable >
