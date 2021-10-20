@@ -166,6 +166,7 @@ Template = (data, context) => {
     <Klutch.KView key='container'>
 
       <Klutch.KView key='header'>
+        {/* TODO add loading feedback when click on backarrow */}
         <Klutch.KHeader showBackArrow textStyle={styles.textHeader}>NEW BUDGET</Klutch.KHeader>
       </Klutch.KView>
 

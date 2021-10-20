@@ -84,7 +84,7 @@ const budgetContainer = ({ id, category, amount: budget, spent }) => (
         <Klutch.KText style={budgetContainerStyles.currency}>{spent.toFixed(2)}
           <Klutch.KText style={budgetContainerStyles.text}> SPENT</Klutch.KText>
         </Klutch.KText>
-        <Klutch.KText style={budgetContainerStyles.budget}>{`OF ${(budget - spent).toFixed(2)}`}</Klutch.KText>
+        <Klutch.KText style={budgetContainerStyles.budget}>{`OF ${(budget).toFixed(2)}`}</Klutch.KText>
       </Klutch.KView>
     </Klutch.KView>
 
