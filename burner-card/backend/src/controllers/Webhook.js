@@ -1,4 +1,11 @@
-const { RecipesService, GraphQLService, TransactionService, CardsService, Card, TransactionType } = require("@alloycard/alloy-js")
+const {
+  RecipesService,
+  GraphQLService,
+  TransactionService,
+  CardsService,
+  Card,
+  CardTerminateReason,
+  TransactionType } = require("@klutchcard/alloy-js")
 const httpStatus = require('http-status');
 const { BuildJWTToken } = require("./helper")
 const { recipeInstallCreatedEventType, transactionCreatedEventType } = require('../../config')
@@ -75,7 +82,7 @@ const execWebhook = async (req, resp) => {
 
     if (!cards.includes(transaction.card.id)) return resp.status(httpStatus.OK).json()
 
-    await CardsService.cardCancel(new Card({ id: transaction.card.id }))
+    await CardsService.cardCancel(new Card({ id: transaction.card.id }), CardTerminateReason.USER_REQUESTED)
   } catch (err) {
     console.log({ err, recipeInstallId })
     return resp.status(httpStatus.SERVICE_UNAVAILABLE).json({ errorMessage: err.message })
