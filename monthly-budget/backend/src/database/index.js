@@ -7,6 +7,7 @@ const connection = new Sequelize({
   define: {
     timestamps: true,
   },
+  dialectOptions: { decimalNumbers: true },
   ...databaseConfig
 })
 
