@@ -108,7 +108,6 @@ Template = (data, context) => {
     context.loadTemplate("/templates/Home.template")
   }
 
-
   return (
     <Klutch.KView key='container'>
 

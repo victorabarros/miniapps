@@ -30,6 +30,9 @@ const styles = {
     fontWeight: 'bold',
     marginVertical: 10,
   },
+  scrollContainer: {
+    paddingBottom: 350,
+  },
 }
 
 const budgetContainerStyles = {
@@ -120,9 +123,11 @@ Template = (data, context) => {
         <Klutch.KText style={styles.summarySubtitle}>Total Budgeted</Klutch.KText>
       </Klutch.KView >
 
-      <Klutch.KScrollView key='body'>
-        {budgets.map(budgetContainer)}
-      </Klutch.KScrollView>
+      <Klutch.KView key='body' style={styles.scrollContainer}>
+        <Klutch.KScrollView key='body'>
+          {budgets.map(budgetContainer)}
+        </Klutch.KScrollView>
+      </Klutch.KView >
 
     </Klutch.KView >
   )

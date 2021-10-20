@@ -63,6 +63,10 @@ const stylesCategories = {
   },
   buttonLabelText: { marginLeft: 16 },
   footerText: { fontSize: 12 },
+  scrollContainer: {
+    marginTop: 10,
+    height: "85%",
+  },
 }
 
 getRandomColor = () => {
@@ -105,38 +109,37 @@ Template = (data, context) => {
 
         <Klutch.KText style={stylesCategories.label}>What category are you budgeting for?</Klutch.KText>
 
-
-        <Klutch.KScrollView key='body'>
-          {/* TODO fix scroll */}
-          {/* TODO fetch categories from server */}
-          {['SHOPPING', 'DINING OUT', 'TRANSPORT', 'FOOD', 'GIFTS', 'FUN', 'MEDICAL', 'BEAUTY']
-            .map(categoryCandidate => {
-              return (
-                <Klutch.KPressable
-                  key={categoryCandidate}
-                  style={stylesCategories.button}
-                  onPress={() => {
-                    context.setState({ budget: { category: categoryCandidate, amount } })
-                    context.setState({ state: State.ready })
-                  }}
-                >
-                  <Klutch.KView style={stylesCategories.buttonLabelContainer}>
-                    <Klutch.KView
-                      style={[stylesCategories.buttonSquare, { backgroundColor: getRandomColor() }]}
-                    />
-                    <Klutch.KText style={stylesCategories.buttonLabelText}>{categoryCandidate}</Klutch.KText>
-                  </Klutch.KView>
-                  <Klutch.Arrow color="black" />
-                </Klutch.KPressable>
-              )
-            })
-          }
-        </Klutch.KScrollView >
-
-
-        <Klutch.KText style={stylesCategories.footerText}>
-          To create a new category, go to the transactions tab and swipe right on a transaction
-        </Klutch.KText>
+        <Klutch.KView key='body' style={stylesCategories.scrollContainer}>
+          <Klutch.KScrollView>
+            {/* TODO fetch categories from server */}
+            {['SHOPPING', 'DINING OUT', 'TRANSPORT', 'FOOD', 'GIFTS', 'FUN', 'MEDICAL', 'BEAUTY',]
+              .map(categoryCandidate => {
+                return (
+                  <Klutch.KPressable
+                    key={categoryCandidate}
+                    style={stylesCategories.button}
+                    onPress={() => {
+                      context.setState({ budget: { category: categoryCandidate, amount } })
+                      context.setState({ state: State.ready })
+                    }}
+                  >
+                    <Klutch.KView style={stylesCategories.buttonLabelContainer}>
+                      <Klutch.KView
+                        style={[stylesCategories.buttonSquare, { backgroundColor: getRandomColor() }]}
+                      />
+                      <Klutch.KText style={stylesCategories.buttonLabelText}>{categoryCandidate}</Klutch.KText>
+                    </Klutch.KView>
+                    <Klutch.Arrow color="black" />
+                  </Klutch.KPressable>
+                )
+              })
+            }
+            {/* TODO uncoment when fetch catagories */}
+            {/* <Klutch.KText style={stylesCategories.footerText}>
+              To create a new category, go to the transactions tab and swipe right on a transaction
+            </Klutch.KText> */}
+          </Klutch.KScrollView >
+        </Klutch.KView>
 
       </Klutch.KView >
     )
