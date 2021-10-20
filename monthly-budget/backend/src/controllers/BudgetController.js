@@ -113,7 +113,12 @@ const getBudgets = async (req, resp) => {
     GraphQLService.setAuthToken(RecipesService.buildRecipeToken(recipeId, privateKey))
     const recipeInstallToken = await RecipesService.getRecipeInstallToken(recipeInstallId)
     GraphQLService.setAuthToken(recipeInstallToken)
+  } catch (err) {
+    console.log({ err })
+    return resp.status(httpStatus.INTERNAL_SERVER_ERROR).json({ errorMessage: 'fail build authorization token' })
+  }
 
+  try {
     const now = new Date()
     const startDate = new Date(now.getFullYear(), now.getMonth(), 1)
     const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1)
@@ -129,7 +134,7 @@ const getBudgets = async (req, resp) => {
 
   } catch (err) {
     console.log({ err })
-    return resp.status(httpStatus.INTERNAL_SERVER_ERROR).json({ errorMessage: 'fail in fetch transactions from server' })
+    return resp.status(httpStatus.SERVICE_UNAVAILABLE).json({ errorMessage: 'fail in fetch transactions from server' })
   }
 
   const result = handlerTransactionsDataPerBudgets(budgets, transactions)
@@ -143,9 +148,8 @@ const deleteBudget = async (req, resp) => {
   const { id } = req.params
   console.log(`DELETE /budget/${id} started`)
 
-  let recipeInstallId
   try {
-    recipeInstallId = getRecipeInstallId(req.headers.authorization)
+    getRecipeInstallId(req.headers.authorization)
   } catch (err) {
     console.log({ err })
     return resp.status(httpStatus.UNAUTHORIZED).json({ errorMessage: "Invalid token" })

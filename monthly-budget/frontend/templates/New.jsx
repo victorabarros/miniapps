@@ -84,7 +84,7 @@ const State = {
 
   selectCategory: 'selectCategory',
   ready: 'ready',
-  toHomeView: 'switchingtoHome',
+  toMainView: 'switchingtoMain',
 }
 
 Template = (data, context) => {
@@ -158,8 +158,8 @@ Template = (data, context) => {
     context.setState({ state: State.saving })
 
     await context.request('put', '/budget', { category, amount })
-    context.setState({ state: State.toHomeView })
-    context.loadTemplate("/templates/Home.template")
+    context.setState({ state: State.toMainView })
+    context.loadTemplate("/templates/Main.template")
   }
 
   return (

@@ -73,7 +73,7 @@ const State = {
   saving: 'saving',
   deleting: 'deleting',
   ready: 'ready',
-  toHomeView: 'switchingtoHome',
+  toMainView: 'switchingtoMain',
 }
 
 Template = (data, context) => {
@@ -96,16 +96,16 @@ Template = (data, context) => {
     context.setState({ state: State.saving })
 
     await context.request('put', '/budget', { category, amount })
-    context.setState({ state: State.toHomeView })
-    context.loadTemplate("/templates/Home.template")
+    context.setState({ state: State.toMainView })
+    context.loadTemplate("/templates/Main.template")
   }
 
   const onDeleteButtonPress = async () => {
     context.setState({ state: State.deleting })
     await context.request('delete', `/budget/${id}`, {})
 
-    context.setState({ state: State.toHomeView })
-    context.loadTemplate("/templates/Home.template")
+    context.setState({ state: State.toMainView })
+    context.loadTemplate("/templates/Main.template")
   }
 
   return (
