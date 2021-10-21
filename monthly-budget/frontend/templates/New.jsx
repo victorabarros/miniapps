@@ -88,10 +88,10 @@ const State = {
 }
 
 Template = (data, context) => {
-  const { category, amount } = context.state.budget || { category: '', amount: 0 }
-  const { state } = context.state
+  const { state, budget } = context.state || { state: State.ready }
+  const { category, amount } = budget || { category: '', amount: 0 }
 
-  if (state === State.fromOtherView) context.setState({ state: State.ready })
+  if (state === State.fromOtherView) context.setState({ budget: { category, amount }, state: State.ready })
 
   if (state === State.selectCategory) {
     return (
@@ -100,7 +100,7 @@ Template = (data, context) => {
         <Klutch.KView key='header'>
           <Klutch.KHeader
             showBackArrow
-            onBackArrowPressed={() => context.setState({ state: State.ready })}
+            onBackArrowPressed={() => context.setState({ budget: { category, amount }, state: State.ready })}
             textStyle={styles.textHeader}
           >
             CATEGORIES
@@ -119,8 +119,7 @@ Template = (data, context) => {
                     key={categoryCandidate}
                     style={stylesCategories.button}
                     onPress={() => {
-                      context.setState({ budget: { category: categoryCandidate, amount } })
-                      context.setState({ state: State.ready })
+                      context.setState({ budget: { category: categoryCandidate, amount }, state: State.ready })
                     }}
                   >
                     <Klutch.KView style={stylesCategories.buttonLabelContainer}>
@@ -166,6 +165,7 @@ Template = (data, context) => {
     <Klutch.KView key='container'>
 
       <Klutch.KView key='header'>
+        {/* TODO add loading feedback when click on backarrow */}
         <Klutch.KHeader showBackArrow textStyle={styles.textHeader}>NEW BUDGET</Klutch.KHeader>
       </Klutch.KView>
 
@@ -174,7 +174,7 @@ Template = (data, context) => {
         <Klutch.KBigCurrencyInput
           style={styles.inputValue}
           value={amount}
-          onAmountChanged={(value) => context.setState({ budget: { category, amount: value } })}
+          onAmountChanged={(value) => context.setState({ budget: { category, amount: value }, state })}
           placeholder="$0.00"
         />
       </Klutch.KView>
@@ -186,7 +186,7 @@ Template = (data, context) => {
         <Klutch.KText style={styles.inputLabel}>Budget Category</Klutch.KText>
         <Klutch.KPressable
           style={styles.inputCategoryContainer}
-          onPress={() => context.setState({ state: State.selectCategory })}
+          onPress={() => context.setState({ budget: { category, amount }, state: State.selectCategory })}
         >
           <Klutch.KText style={styles.inputValue}>{category || "SELECT CATEGORY"}</Klutch.KText>
           <Klutch.Arrow color="black" />

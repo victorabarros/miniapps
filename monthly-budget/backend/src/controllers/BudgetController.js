@@ -58,6 +58,20 @@ const handlerTransactionsDataPerBudgets = (budgets, transactions) => {
   })
 }
 
+const addPanelToHomeScreen = async (recipeInstallId) => {
+  try {
+    const panels = await RecipesService.getPanels(undefined)
+    const panelsRecipeInstallId = panels.map(p => p.recipeInstall.id)
+
+    if (panelsRecipeInstallId.includes(recipeInstallId)) return
+
+    console.log(`adding home panel to recipeInstallId \"${recipeInstallId}\"`)
+    await RecipesService.addPanel(recipeInstallId, "/templates/HomePanel.template", { recipeId }, null)
+  } catch (err) {
+    console.log({ err, recipeInstallId })
+  }
+}
+
 const createOrUpdateBudget = async (req, resp) => {
   console.log("PUT /budget started")
 
@@ -117,6 +131,8 @@ const getBudgets = async (req, resp) => {
     console.log({ err })
     return resp.status(httpStatus.INTERNAL_SERVER_ERROR).json({ errorMessage: 'fail build authorization token' })
   }
+
+  if (budgets.length == 0) addPanelToHomeScreen(recipeInstallId)
 
   try {
     const now = new Date()
