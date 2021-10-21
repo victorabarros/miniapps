@@ -7,6 +7,8 @@ APP_DIR = /${APP_NAME}/src
 PORT=3003
 DOCKER_BASE_IMAGE=node:14.18
 DOCKER_IMAGE=miniapps/monthly-budget-manager
+DOCKER_REMOTE_REPOSITORY=victorbarros1130/miniapp-monthly-budget-manager
+TAG_VERSION?=0.0.1
 
 mysql:
 	@echo "\e[1m\033[33mStarting MySQL on port 3306\e[0m"
@@ -44,9 +46,19 @@ dev:
 	@make docker-command COMMAND="yarn dev"
 
 build-docker-image: remove-images
+	@clear
+	@echo "\e[1m\033[33mBuilding image ${DOCKER_IMAGE}\e[0m"
 	@yarn install
 	@docker build --rm . --tag ${DOCKER_IMAGE}
 
 start: remove-containers
 	@echo "\e[1m\033[33mRunning ${APP_NAME} on port ${PORT}\e[0m"
 	docker run -d -p ${PORT}:${PORT} --name ${APP_NAME} ${DOCKER_IMAGE}
+
+publish-image:
+	@echo "\e[1m\033[33mPublishing image ${DOCKER_REMOTE_REPOSITORY}:${TAG_VERSION}\e[0m"
+	@docker tag ${DOCKER_IMAGE} ${DOCKER_REMOTE_REPOSITORY}:${TAG_VERSION}
+	@docker push ${DOCKER_REMOTE_REPOSITORY}:${TAG_VERSION}
+	@echo "\e[1m\033[33mRunning command:\e[0m"
+	@echo "docker run --rm -d -p ${PORT}:${PORT} --name ${APP_NAME} ${DOCKER_REMOTE_REPOSITORY}:${TAG_VERSION}"
+
