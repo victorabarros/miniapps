@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 export default (config) => (
 {
   expo: {
@@ -34,6 +36,11 @@ export default (config) => (
       serverUrl: "https://sandbox.klutchcard.com/graphql",
       userPoolClientId: "32022akd8ldlkjkk5v4i5m8td3",
       userPoolServer: "https://cognito-idp.us-west-2.amazonaws.com/",
+      MiniAppServerUrl: process.env.MiniAppServerUrl,
+      RecipeInstallId: process.env.RecipeInstallId,
+      RecipeId: process.env.RecipeId,
+      userName: process.env.userName,
+      password: process.env.password
     }    
   }
 }

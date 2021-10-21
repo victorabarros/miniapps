@@ -1,0 +1,38 @@
+{
+  "name": "recurring-transfers-miniapp",
+  "version": "1.0.0",
+  "description": "Recurring Transfers",
+  "license": "LGPL",
+  "private": true,
+  "main": "dist/app.js",
+  "scripts": {
+    "start": "tsc --watch",
+    "build": "tsc",
+    "test": "rm -rfd dist/;  tsc;  mocha -r dotenv/config --recursive --timeout=100000 ./dist",
+    "postbuild": "cp package.json  dist/ && cp .yarnrc  dist/ &&  cd dist && yarn install --production"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.75",
+    "@types/chai": "^4.2.16",
+    "@types/jsonwebtoken": "^8.5.1",
+    "@types/luxon": "^1.26.5",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^15.6.0",
+    "@types/uuid": "^8.3.0",
+    "chai": "^4.3.4",
+    "dotenv": "^10.0.0",
+    "mocha": "latest",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "@klutchcard/alloy-js": "^1.4.33",
+    "aws-sdk": "^2.891.0",
+    "axios": "^0.22.0",
+    "base64url": "^3.0.1",
+    "google-spreadsheet": "^3.1.15",
+    "jsonwebtoken": "^8.5.1",
+    "luxon": "^1.27.0",
+    "react": "^17.0.2",
+    "uuid": "^8.3.2"
+  }
+}

@@ -1,4 +1,4 @@
-import * as Klutch from '@alloycard/klutch-components';
+import * as Klutch from '@klutchcard/klutch-components';
 import { Asset } from 'expo-asset';
 import React, { useEffect, useState, useCallback } from "react";
 import equal from "deep-equal";
@@ -28,9 +28,14 @@ const SimulationComponent =  ({serverUrl, token, template, type, name, data, onL
         run()
     })
 
+
+    useEffect(() => {
+        setInit(false)
+    }, [template, data])
+
+
     useEffect(() => {
         if (initCallback) {
-
             if (isPromise(initCallback)) {
                 initCallback.then()
             } else {
@@ -60,16 +65,19 @@ const SimulationComponent =  ({serverUrl, token, template, type, name, data, onL
         state: templateState,
         recipeInstallId: recipeInstallId,
         async post(path, data) {
-            
-            const resp = await axios.post(`${recipeInstall.recipe.serverUrl}${path}`, {                
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                data: data                
-            })
-            return resp.data
+            try {
+                const resp = await axios.post(`${serverUrl}${path}`, data, {                
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }                    
+                })
+                return resp.data
+            } catch (e) {
+                console.error("Error on post ", e)
+            }
+           
         },
         async get(path, data) {
             try {                
@@ -86,6 +94,21 @@ const SimulationComponent =  ({serverUrl, token, template, type, name, data, onL
                 console.error(e)
             }
         },
+        async delete(path, data) {
+            try {                
+                const resp = await axios.delete(`${serverUrl}${path}`, {                    
+                    method: "DELETE",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    data: data                
+                })                
+                return resp.data  
+            } catch (e) {
+                console.error(e)
+            }
+        },        
         openExternalUrl(url) {
             Linking.openURL(url);
         },
@@ -113,9 +136,10 @@ const SimulationComponent =  ({serverUrl, token, template, type, name, data, onL
         const React = react
         const { DateTime } = require("luxon");
         const Victory = require("victory-native")
-        const AlloyJS = require("@alloycard/alloy-js")
+        const AlloyJS = require("@klutchcard/alloy-js")
         return r(data, simulationContext)
     }
+
 
     if (type === "fullscreen") {
         return (

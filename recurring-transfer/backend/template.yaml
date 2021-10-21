@@ -1,0 +1,203 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  recurring-transfers
+  
+Globals:
+  Function:
+    Timeout: 3
+
+Parameters:
+  RecipeId:
+      Type: String
+      Description: "Klutch Recipe Id:"
+  KlutchServerUrl:
+      Type: String
+      Description: "Klutch Server URL" 
+  KlutchPublicKey:
+      Type: String
+      Description: "Klutch Public Key"
+
+Resources:
+  RecurringTransferAPI:
+    Type: AWS::Serverless::HttpApi    
+  WebhookFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: app.handleWebhook
+      Runtime: nodejs14.x
+      Timeout: 10
+      Policies: 
+        - {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "KMSSign",
+                "Effect": "Allow",
+                "Action": "kms:Sign",
+                "Resource": !GetAtt RecipeKey.Arn
+              }             
+            ]
+          }
+      Environment: 
+        Variables:
+          klutchKey: !Ref RecipeKey
+          recipeId: !Ref RecipeId      
+          klutchServerUrl: !Ref KlutchServerUrl
+          RecurringTransferTable: !Ref RecurringTransferTable
+      Events:      
+        Webhook:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RecurringTransferAPI
+            Path: /klutch-webhook
+            Method: POST                      
+  ListTransfersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: recurringtransfer.listRecurringTransfers
+      Runtime: nodejs14.x
+      Timeout: 10
+      Policies: 
+        - Version: 2012-10-17
+          Statement: 
+            - Sid: KMSSign
+              Effect: Allow
+              Action: kms:Sign
+              Resource: !GetAtt RecipeKey.Arn                        
+        - Version: 2012-10-17
+          Statement: 
+            - Sid: DynamoQuery
+              Effect: Allow
+              Action: dynamodb:Query
+              Resource: !GetAtt RecurringTransferTable.Arn
+      Environment: 
+        Variables:
+          klutchKey: !Ref RecipeKey
+          recipeId: !Ref RecipeId      
+          klutchServerUrl: !Ref KlutchServerUrl
+          klutchpublickey: !Ref KlutchPublicKey
+          RecurringTableName: !Ref RecurringTransferTable
+      Events:      
+        Webhook:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RecurringTransferAPI
+            Path: /transfers
+            Method: GET  
+  DeleteTransfersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: recurringtransfer.deleteTransfer
+      Runtime: nodejs14.x
+      Timeout: 10
+      Policies: 
+        - Version: 2012-10-17
+          Statement: 
+            - Sid: KMSSign
+              Effect: Allow
+              Action: kms:Sign
+              Resource: !GetAtt RecipeKey.Arn                        
+        - Version: 2012-10-17
+          Statement: 
+            - Sid: DynamoQuery
+              Effect: Allow
+              Action: 
+                - dynamodb:Query
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+              Resource: !GetAtt RecurringTransferTable.Arn
+      Environment: 
+        Variables:
+          klutchKey: !Ref RecipeKey
+          recipeId: !Ref RecipeId      
+          klutchServerUrl: !Ref KlutchServerUrl
+          klutchpublickey: !Ref KlutchPublicKey
+          RecurringTableName: !Ref RecurringTransferTable
+      Events:      
+        Webhook:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RecurringTransferAPI
+            Path: /transfer/{transferId}
+            Method: DELETE 
+  AddTransfersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: recurringtransfer.addRecurringTranfer
+      Runtime: nodejs14.x
+      Timeout: 10
+      Policies: 
+        - Version: 2012-10-17
+          Statement: 
+            - Sid: KMSSign
+              Effect: Allow
+              Action: kms:Sign
+              Resource: !GetAtt RecipeKey.Arn                        
+        - Version: 2012-10-17
+          Statement: 
+            - Sid: DynamoQuery
+              Effect: Allow
+              Action: 
+                - dynamodb:Query
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+              Resource: !GetAtt RecurringTransferTable.Arn
+      Environment: 
+        Variables:
+          klutchKey: !Ref RecipeKey
+          recipeId: !Ref RecipeId      
+          klutchServerUrl: !Ref KlutchServerUrl
+          klutchpublickey: !Ref KlutchPublicKey
+          RecurringTableName: !Ref RecurringTransferTable
+      Events:      
+        Webhook:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RecurringTransferAPI
+            Path: /transfers
+            Method: POST                                       
+  RecurringTransferTable:
+    Type: AWS::DynamoDB::Table    
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: recipeInstallId
+          AttributeType: S
+        - AttributeName: id
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        - AttributeName: recipeInstallId
+          KeyType: HASH 
+        - AttributeName: id
+          KeyType: RANGE
+  RecipeKey: 
+    Type: AWS::KMS::Key
+    Properties: 
+      Description: Key to Access Klutch resources
+      Enabled: true
+      EnableKeyRotation: false      
+      KeyPolicy:
+        Version: '2012-10-17'
+        Id: key-allow-root
+        Statement:
+        - Sid: Enable IAM User Permissions
+          Effect: Allow
+          Principal: 
+            AWS:  !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+          Action: kms:*
+          Resource: '*'
+      KeySpec: RSA_2048
+      KeyUsage: SIGN_VERIFY
+      PendingWindowInDays: 7
+Outputs:
+  RequestAuthenticationFunctionApi:
+    Description: "API Gateway endpoint URL for Prod stage for Recipe webhook"
+    Value: !Sub "https://${RecurringTransferAPI}.execute-api.${AWS::Region}.amazonaws.com/klutch-webhook"
+  Key:
+    Description: "MiniApp Key"
+    Value: !Ref RecipeKey

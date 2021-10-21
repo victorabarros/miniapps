@@ -3,8 +3,8 @@ import {View} from "react-native";
 import { useFonts, Inter_400Regular, Inter_600SemiBold,  Inter_700Bold  } from '@expo-google-fonts/inter';
 import AppLoading from 'expo-app-loading';
 import SimulationComponent from './SimulationComponent';
-import {KText, KButton, KScreen} from "@alloycard/klutch-components"
-import AlloyJS, { AuthService, GraphQLService} from '@alloycard/alloy-js';
+import {KText, KButton, KScreen} from "@klutchcard/klutch-components"
+import AlloyJS, { AuthService, GraphQLService} from '@klutchcard/alloy-js';
 import Constants from 'expo-constants';
 import {gql} from "graphql-tag"
 
@@ -14,9 +14,31 @@ import {gql} from "graphql-tag"
 const APPNAME = "DEMO APP"
 
 const Templates = {
-  Main: {type: "fullscreen", template: require(`./dist/templates/Main.template`)},
-  Transaction: {type: "transaction", template: require(`./dist/templates/Transaction.template`)},
-  Home: {type: "home", template: require(`./dist/templates/Home.template`)},
+  Main: {type: "fullscreen", 
+      template: require(`./dist/templates/Main.template`),
+      path: `/templates/Main.template`},
+  Transaction: {type: "transaction", 
+      template: require(`./dist/templates/Transaction.template`),
+      path: `/templates/Transaction.template`
+    },
+  Home: {type: "home", 
+    path: `/templates/Home.template`,
+    template: require(`./dist/templates/Home.template`)},
+  AddTransfer: {
+    type: "fullscreen", 
+    path: `/templates/AddTransfer.template`,
+    template: require(`./dist/templates/AddTransfer.template`),
+    },
+  NewRecurringTransfer: {
+    type: "fullscreen", 
+    path: `/templates/NewRecurringTransfer.template`,
+    template: require(`./dist/templates/NewRecurringTransfer.template`),
+    },
+  DeleteTransfer: {
+    type: "fullscreen", 
+    path: `/templates/DeleteTransfer.template`,
+    template: require(`./dist/templates/DeleteTransfer.template`),
+    }    
 }
 
 const initialData = {
@@ -30,9 +52,7 @@ const initialData = {
   }    
 }
 
-const RECIPEID = "<<RECIPE ID>>"
-const RECIPEINSTALLID = "<<RECIPE INSTALL ID>>"
-const SERVERURL = "<<YOUR SERVER"
+
 
 
 /* END MINIAPP CONFIGURATION */
@@ -41,6 +61,10 @@ const envFields = Constants.manifest?.extra
 if (!envFields) {
   throw new Error("Cannot read environment")
 }
+
+const RECIPEID = envFields.RecipeId
+const RECIPEINSTALLID = envFields.RecipeInstallId
+const SERVERURL = envFields.MiniAppServerUrl
 
 
 
@@ -105,8 +129,13 @@ export default function App() {
   }
   
   const onLoadTemplate = (templateName, templateData) => {
+    var t = templateName
+    if (typeof templateName == 'string') {
+      var name = Object.keys(Templates).find(x =>  Templates[x].path == templateName)
+      t = Templates[name]
+    }
     setTemplateData(templateData)  
-    setTemplateToLoad(templateName)    
+    setTemplateToLoad(t)    
   }
 
   
