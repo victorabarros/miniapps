@@ -102,20 +102,25 @@ const State = {
   initializing: 'initializing',
   done: 'done',
   toHomeView: 'switchingToHome',
+  toNewView: 'switchingToNew',
 }
 
 Template = (data, context) => {
   let { budgets, state, totalBudget } = context.state || { budgets: [], state: State.initializing }
   const fetchData = async () => {
     const budgets = await context.get('/budget')
-    const totalBudget = budgets.reduce((accum, item) => accum + item.amount, 0)
-    context.setState({ budgets, totalBudget, state: State.done, budget: {} })
+
+    if (budgets.length === 0) {
+      context.setState({ state: State.toNewView })
+      context.loadTemplate("/templates/New.template")
+    } else {
+      const totalBudget = budgets.reduce((accum, item) => accum + item.amount, 0)
+      context.setState({ budgets, totalBudget, state: State.done, budget: {} })
+    }
   }
 
   if (state === State.fromOtherView) context.setState({ state: State.initializing })
-  if (state === State.initializing) {
-    fetchData()
-  }
+  if (state === State.initializing) fetchData()
 
   if (state !== State.done) {
     return (
@@ -129,7 +134,7 @@ Template = (data, context) => {
     <Klutch.KView key='container'>
 
       <Klutch.KView key='header'>
-        <Klutch.KHeader showBackArrow onBackArrowPressed={context.closeMiniApp} textStyle={styles.textHeader} >
+        <Klutch.KHeader showBackArrow onBackArrowPressed={context.closeMiniApp} textStyle={styles.textHeader}>
           MONTHLY BUDGET
         </Klutch.KHeader>
 
