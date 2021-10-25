@@ -47,7 +47,6 @@ const budgetContainerStyles = {
   },
   text: {
     fontSize: 20,
-    fontWeight: 'bold',
   },
 }
 
@@ -73,9 +72,8 @@ Template = (data, context) => {
     >
 
       <Klutch.KView style={budgetContainerStyles.textContainer}>
-        <Klutch.KText style={budgetContainerStyles.text}>{category.toUpperCase()}</Klutch.KText>
-        {/* TODO bolder */}
-        <Klutch.KText style={budgetContainerStyles.text}>{budget.toFixed(2)}</Klutch.KText>
+        <Klutch.KText style={budgetContainerStyles.text} fontWeight='bold'>{category.toUpperCase()}</Klutch.KText>
+        <Klutch.KText style={budgetContainerStyles.text} fontWeight='bold'>{budget.toFixed(2)}</Klutch.KText>
       </Klutch.KView>
 
       <Klutch.Arrow color="black" />
@@ -118,7 +116,6 @@ Template = (data, context) => {
         </Klutch.KView >
 
         <Klutch.KText style={styles.summarySubtitle} fontWeight='bold'>Total Budgeted</Klutch.KText>
-        {/* TODO bolder */}
       </Klutch.KView >
 
       <Klutch.KView key='body' style={styles.scrollContainer}>

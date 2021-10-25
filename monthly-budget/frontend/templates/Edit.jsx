@@ -108,7 +108,6 @@ Template = (data, context) => {
   }
 
   // TODO add category choice
-
   // TODO add error message
   return (
     <Klutch.KView key='container'>
@@ -133,7 +132,6 @@ Template = (data, context) => {
           style={styles.inputCategoryContainer}
         >
           <Klutch.KText style={styles.inputValue}>{category}</Klutch.KText>
-          {/* same bold as currency */}
         </Klutch.KView>
       </Klutch.KView>
 

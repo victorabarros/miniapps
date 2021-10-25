@@ -39,9 +39,13 @@ const budgetContainer = ({ id, category, amount: budget, spent }) => (
   <Klutch.KView key={`budget-${id}`} style={styles.square}>
 
     <Klutch.KText style={styles.category} fontWeight="bold">
-      {category.trim().toLowerCase().replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())))}
+      {`${category[0].toUpperCase()}${category.substring(1).toLowerCase()}`}
     </Klutch.KText>
-    {/* TODO add arrow */}
+    {/* TODO add arrow and redirect to home template
+      context.setState({ budgets, state: State.loading })
+      context.redirect(`/miniapps/${recipeId}/templates/New.template`)
+      context.setState({ budgets, state: State.done })
+    */}
 
     <Klutch.KView>
       <Klutch.KText style={styles.spent} fontWeight="bold">{spent.toFixed(2)}</Klutch.KText>
@@ -90,10 +94,7 @@ Template = (data, context) => {
         <Klutch.KView style={styles.squareContainer}>
           {budgets.map(budgetContainer)}
 
-          <Klutch.KPressable
-            style={[styles.square, styles.squareAddBudget]}
-            onPress={onPlusButtonPress}
-          >
+          <Klutch.KPressable style={[styles.square, styles.squareAddBudget]} onPress={onPlusButtonPress}>
             <Klutch.PlusSign color="#6B6B6B" width={30} height={30} />
           </Klutch.KPressable>
 

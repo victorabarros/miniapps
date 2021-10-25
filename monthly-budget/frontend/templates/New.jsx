@@ -151,8 +151,6 @@ Template = (data, context) => {
     if (!category || amount == 0) return
     context.setState({ state: State.saving })
 
-    // TODO if budgets is already setted, publish error message
-
     await context.request('put', '/budget', { category, amount })
     context.setState({ state: State.toMainView })
     context.loadTemplate("/templates/Main.template")
