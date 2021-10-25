@@ -4,7 +4,7 @@ const styles = {
     justifyContent: "center",
   },
   summaryContainer: {
-    marginVertical: 5,
+    marginVertical: 15,
   },
   summaryAmountContainer: {
     flexDirection: 'row',
@@ -24,7 +24,6 @@ const styles = {
   },
   summarySubtitle: {
     fontSize: 17,
-    fontWeight: 'bold',
     marginVertical: 10,
   },
   scrollContainer: {
@@ -34,14 +33,14 @@ const styles = {
 
 const budgetContainerStyles = {
   container: {
-    marginTop: 30,
+    marginTop: 40,
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomWidth: .5,
     borderColor: 'lightgray',
   },
   textContainer: {
-    marginBottom: 10,
+    marginBottom: 20,
     flexDirection: 'row',
     width: '75%',
     justifyContent: 'space-between',
@@ -118,7 +117,7 @@ Template = (data, context) => {
           </Klutch.KPressable >
         </Klutch.KView >
 
-        <Klutch.KText style={styles.summarySubtitle}>Total Budgeted</Klutch.KText>
+        <Klutch.KText style={styles.summarySubtitle} fontWeight='bold'>Total Budgeted</Klutch.KText>
         {/* TODO bolder */}
       </Klutch.KView >
 

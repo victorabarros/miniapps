@@ -7,14 +7,13 @@ const styles = {
     fontSize: 20,
   },
   inputContainer: {
-    marginTop: 10,
+    marginTop: 30,
     marginBottom: 30,
     borderBottomWidth: 1,
     borderColor: 'lightgray',
   },
   inputLabel: {
     fontSize: 15,
-    fontWeight: 'bold',
   },
   inputValue: {
     fontSize: 55,
@@ -108,6 +107,9 @@ Template = (data, context) => {
     context.loadTemplate("/templates/Main.template")
   }
 
+  // TODO add category choice
+
+  // TODO add error message
   return (
     <Klutch.KView key='container'>
 
@@ -116,7 +118,7 @@ Template = (data, context) => {
       </Klutch.KView>
 
       <Klutch.KView key='budget' style={styles.inputContainer}>
-        <Klutch.KText style={styles.inputLabel}>Monthly Budget</Klutch.KText>
+        <Klutch.KText style={styles.inputLabel} fontWeight="bold">Monthly Budget</Klutch.KText>
         <Klutch.KBigCurrencyInput
           style={styles.inputValue}
           value={amount}
@@ -131,6 +133,7 @@ Template = (data, context) => {
           style={styles.inputCategoryContainer}
         >
           <Klutch.KText style={styles.inputValue}>{category}</Klutch.KText>
+          {/* same bold as currency */}
         </Klutch.KView>
       </Klutch.KView>
 

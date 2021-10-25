@@ -17,8 +17,7 @@ const styles = {
     fontSize: 75,
   },
   categoryLabel: {
-    fontSize: 65,
-    fontWeight: 'bold'
+    fontSize: 55,
   },
   inputCategoryContainer: {
     flexDirection: 'row',
@@ -85,7 +84,7 @@ const State = {
 }
 
 Template = (data, context) => {
-  const { state, budget } = context.state || { state: State.ready }
+  const { state, budget } = context.state || { state: State.setAmount }
   const { category, amount } = budget || { category: '', amount: 0 }
 
   if (state === State.fromOtherView) context.setState({ budget: { category, amount }, state: State.setAmount })
@@ -99,7 +98,7 @@ Template = (data, context) => {
             showBackArrow
             onBackArrowPressed={() => context.setState({ budget: { category, amount }, state: State.ready })}
           >
-            NEW BUDGET
+            CATEGORIES
           </Klutch.KHeader>
         </Klutch.KView>
 
@@ -168,7 +167,11 @@ Template = (data, context) => {
       </Klutch.KView>
 
       <Klutch.KView key='budget' style={styles.inputContainer}>
-        <Klutch.KText style={styles.inputLabel}>How much do you want to spend monthly?</Klutch.KText>
+        <Klutch.KText style={styles.inputLabel}>{
+          state === State.setAmount ?
+            "How much do you want to spend monthly?" :
+            "Monthly Budget"
+        }</Klutch.KText>
         <Klutch.KBigCurrencyInput
           style={styles.inputValue}
           value={amount}
@@ -195,13 +198,13 @@ Template = (data, context) => {
               style={styles.inputCategoryContainer}
               onPress={() => context.setState({ budget: { category, amount }, state: State.selectCategory })}
             >
-              <Klutch.KText style={styles.categoryLabel}>{category}</Klutch.KText>
-              <Klutch.Arrow color="black" />
+              <Klutch.KText style={styles.categoryLabel} fontWeight="bold">{category}</Klutch.KText>
+              <Klutch.Arrow color="black" height={30} width={30} />
             </Klutch.KPressable>
           </Klutch.KView>
 
           <Klutch.KPressable key='save-button' style={styles.button} onPress={onSaveButtonPress} >
-            <Klutch.KText style={styles.buttonText}>SAVE</Klutch.KText>
+            <Klutch.KText style={styles.buttonText}>CREATE</Klutch.KText>
           </Klutch.KPressable>
         </>
       )}

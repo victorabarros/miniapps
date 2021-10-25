@@ -10,10 +10,11 @@ const styles = {
     flexDirection: 'row'
   },
   square: {
-    height: 120,
-    width: 120,
+    height: 110,
+    width: 130,
     padding: 16,
-    margin: 6,
+    paddingLeft: 8,
+    margin: 2,
     borderWidth: 1,
     justifyContent: "space-between"
   },
@@ -22,7 +23,6 @@ const styles = {
   },
   spent: {
     fontSize: 16,
-    fontWeight: 'bold'
   },
   budget: {
     fontSize: 12,
@@ -38,10 +38,13 @@ const styles = {
 const budgetContainer = ({ id, category, amount: budget, spent }) => (
   <Klutch.KView key={`budget-${id}`} style={styles.square}>
 
-    <Klutch.KText style={styles.category}>{category.toUpperCase()}</Klutch.KText>
+    <Klutch.KText style={styles.category} fontWeight="bold">
+      {category.trim().toLowerCase().replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())))}
+    </Klutch.KText>
+    {/* TODO add arrow */}
 
     <Klutch.KView>
-      <Klutch.KText style={styles.spent}>{spent.toFixed(2)}</Klutch.KText>
+      <Klutch.KText style={styles.spent} fontWeight="bold">{spent.toFixed(2)}</Klutch.KText>
       <Klutch.KText style={styles.budget}>{`of ${(budget).toFixed(0)}`}</Klutch.KText>
     </Klutch.KView>
 

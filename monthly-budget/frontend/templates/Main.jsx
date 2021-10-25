@@ -42,7 +42,6 @@ const budgetContainerStyles = {
   },
   category: {
     fontSize: 20,
-    fontWeight: 'bold',
   },
   currency: {
     fontSize: 15,
@@ -71,8 +70,8 @@ const budgetContainer = ({ id, category, amount: budget, spent }) => (
     <Klutch.KView style={budgetContainerStyles.headerContainer}>
 
       <Klutch.KView>
-        <Klutch.KText style={budgetContainerStyles.category}>{category.toUpperCase()}</Klutch.KText>
-        <Klutch.KText style={budgetContainerStyles.currency}>
+        <Klutch.KText style={budgetContainerStyles.category} fontWeight="semibold">{category.toUpperCase()}</Klutch.KText>
+        <Klutch.KText style={budgetContainerStyles.currency} fontWeight="semibold">
           {Math.max((budget - spent), 0).toFixed(2)}
           <Klutch.KText style={budgetContainerStyles.text}> LEFT</Klutch.KText>
         </Klutch.KText>
