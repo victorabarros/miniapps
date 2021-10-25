@@ -150,17 +150,20 @@ Template = (data, context) => {
 
   const onSaveButtonPress = async () => {
     if (amount == 0) return
-    context.setState({ ...context.state, state: State.saving })
+    context.setState({ ...context.state, error: undefined, state: State.saving })
 
-    // check if category is alread setted
+    // check if category is alread exists
     const budgetSetted = budgets.find(b => b.category == category)
     if (budgetSetted && budgetSetted.id !== id) {
       context.setState({ ...context.state, state: State.ready, error: "Budget for this category already exists" })
       return
     }
 
+    // if new category, delete older
+    if (!budgetSetted) await context.request('delete', `/budget/${id}`, {})
+
     await context.request('put', '/budget', { category, amount })
-    context.setState({ state: State.toMainView })
+    context.setState({ error: undefined, state: State.toMainView })
     context.loadTemplate("/templates/Main.template")
   }
 
