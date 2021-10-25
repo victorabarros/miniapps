@@ -3,9 +3,6 @@ const styles = {
     flex: 1,
     justifyContent: "center",
   },
-  textHeader: {
-    fontSize: 20,
-  },
   summaryContainer: {
     marginVertical: 5,
   },
@@ -15,8 +12,7 @@ const styles = {
     alignItems: 'center',
   },
   summaryAmount: {
-    fontSize: 45,
-    fontWeight: 'bold',
+    fontSize: 50,
   },
   addBudgetButton: {
     width: 65,
@@ -27,6 +23,7 @@ const styles = {
     alignItems: 'center',
   },
   summarySubtitle: {
+    fontSize: 17,
     fontWeight: 'bold',
     marginVertical: 10,
   },
@@ -78,6 +75,7 @@ Template = (data, context) => {
 
       <Klutch.KView style={budgetContainerStyles.textContainer}>
         <Klutch.KText style={budgetContainerStyles.text}>{category.toUpperCase()}</Klutch.KText>
+        {/* TODO bolder */}
         <Klutch.KText style={budgetContainerStyles.text}>{budget.toFixed(2)}</Klutch.KText>
       </Klutch.KView>
 
@@ -107,7 +105,7 @@ Template = (data, context) => {
 
       <Klutch.KView key='summary' style={styles.summaryContainer}>
         <Klutch.KView style={styles.summaryAmountContainer}>
-          <Klutch.KText style={styles.summaryAmount}>{`$${totalBudget.toFixed(2)}`}</Klutch.KText>
+          <Klutch.KText style={styles.summaryAmount} fontWeight='semibold'>{`$${totalBudget.toFixed(2)}`}</Klutch.KText>
 
           <Klutch.KPressable
             style={styles.addBudgetButton}
@@ -121,6 +119,7 @@ Template = (data, context) => {
         </Klutch.KView >
 
         <Klutch.KText style={styles.summarySubtitle}>Total Budgeted</Klutch.KText>
+        {/* TODO bolder */}
       </Klutch.KView >
 
       <Klutch.KView key='body' style={styles.scrollContainer}>
