@@ -3,29 +3,27 @@ const styles = {
     flex: 1,
     justifyContent: "center",
   },
-  textHeader: {
-    fontSize: 20,
-  },
   editButtonContainer: {
     position: 'absolute',
     height: '60%',
-    width: "10%",
+    width: '15%',
     alignSelf: 'flex-end',
     justifyContent: 'center',
   },
   editButtonText: {
-    fontSize: 11,
+    fontSize: 15,
+    fontWeight: 'bold',
     color: "#44CCFF",
-    alignSelf: 'flex-end',
+    alignSelf: 'center',
   },
   summaryContainer: {
     marginVertical: 5,
   },
   summaryAmount: {
-    fontSize: 45,
-    fontWeight: 'bold',
+    fontSize: 50,
   },
   summarySubtitle: {
+    fontSize: 17,
     fontWeight: 'bold',
     marginVertical: 10,
   },
@@ -44,7 +42,6 @@ const budgetContainerStyles = {
   },
   category: {
     fontSize: 20,
-    fontWeight: 'bold',
   },
   currency: {
     fontSize: 15,
@@ -73,8 +70,10 @@ const budgetContainer = ({ id, category, amount: budget, spent }) => (
     <Klutch.KView style={budgetContainerStyles.headerContainer}>
 
       <Klutch.KView>
-        <Klutch.KText style={budgetContainerStyles.category}>{category.toUpperCase()}</Klutch.KText>
-        <Klutch.KText style={budgetContainerStyles.currency}>
+        <Klutch.KText style={budgetContainerStyles.category} fontWeight="semibold">
+          {category.toUpperCase()}
+        </Klutch.KText>
+        <Klutch.KText style={budgetContainerStyles.currency} fontWeight="semibold">
           {Math.max((budget - spent), 0).toFixed(2)}
           <Klutch.KText style={budgetContainerStyles.text}> LEFT</Klutch.KText>
         </Klutch.KText>
@@ -102,20 +101,25 @@ const State = {
   initializing: 'initializing',
   done: 'done',
   toHomeView: 'switchingToHome',
+  toNewView: 'switchingToNew',
 }
 
 Template = (data, context) => {
   let { budgets, state, totalBudget } = context.state || { budgets: [], state: State.initializing }
   const fetchData = async () => {
     const budgets = await context.get('/budget')
-    const totalBudget = budgets.reduce((accum, item) => accum + item.amount, 0)
-    context.setState({ budgets, totalBudget, state: State.done, budget: {} })
+
+    if (budgets.length === 0) {
+      context.setState({ state: State.toNewView })
+      context.loadTemplate("/templates/New.template")
+    } else {
+      const totalBudget = budgets.reduce((accum, item) => accum + item.amount, 0)
+      context.setState({ budgets, totalBudget, state: State.done, budget: {} })
+    }
   }
 
   if (state === State.fromOtherView) context.setState({ state: State.initializing })
-  if (state === State.initializing) {
-    fetchData()
-  }
+  if (state === State.initializing) fetchData()
 
   if (state !== State.done) {
     return (
@@ -129,9 +133,7 @@ Template = (data, context) => {
     <Klutch.KView key='container'>
 
       <Klutch.KView key='header'>
-        <Klutch.KHeader showBackArrow onBackArrowPressed={context.closeMiniApp} textStyle={styles.textHeader} >
-          MONTHLY BUDGET
-        </Klutch.KHeader>
+        <Klutch.KHeader showBackArrow onBackArrowPressed={context.closeMiniApp}>MONTHLY BUDGET</Klutch.KHeader>
 
         <Klutch.KPressable
           style={styles.editButtonContainer}
@@ -145,7 +147,7 @@ Template = (data, context) => {
       </Klutch.KView>
 
       <Klutch.KView key='summary' style={styles.summaryContainer}>
-        <Klutch.KText style={styles.summaryAmount}>{`$${totalBudget.toFixed(2)}`}</Klutch.KText>
+        <Klutch.KText style={styles.summaryAmount} fontWeight='semibold'>{`$${totalBudget.toFixed(2)}`}</Klutch.KText>
         <Klutch.KText style={styles.summarySubtitle}>Total Budgeted</Klutch.KText>
       </Klutch.KView >
 
