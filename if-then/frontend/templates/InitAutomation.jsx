@@ -1,4 +1,9 @@
 Template = (data = {}, context) => {
+  const onDoneButtonPress = async () => {
+    await context.post("automation", data)
+    context.loadTemplate("/templates/Main.template", data)
+  }
+
   const addConditionLabel = data.condition ?
     <Klutch.KText style={{ color: "white" }}>
       {data.condition.title.toUpperCase()}
@@ -53,10 +58,7 @@ Template = (data = {}, context) => {
           disabled={!data.condition || !data.action}
           type="primary"
           label="DONE"
-          onPress={async () => {
-            await context.post("automation", data)
-            context.loadTemplate("/templates/Main.template", data)
-          }}
+          onPress={onDoneButtonPress}
         />
       </Klutch.KButtonBar>
     </Klutch.KView>

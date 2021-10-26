@@ -16,7 +16,7 @@ Template = (data = {}, context) => {
     context.setState({ rules })
   }
 
-  if (!context.state) {
+  if (rules === undefined) {
     fetchRules()
   }
 
@@ -52,7 +52,12 @@ Template = (data = {}, context) => {
       <Klutch.KScrollView>
         {rules && Object.entries(rules).map(([key, value]) => <Panel key={key} {...value} />)}
 
-        <Klutch.KPressable style={styles.card} onPress={() => context.loadTemplate("/templates/InitAutomation.template", {})}>
+        <Klutch.KPressable style={styles.card}
+          onPress={() => {
+            context.setState({ rules: undefined })
+            context.loadTemplate("/templates/InitAutomation.template", {})
+          }}
+        >
           <Klutch.PlusSign color={Klutch.KlutchTheme.colors.secondary} width={30} height={30} />
         </Klutch.KPressable>
       </Klutch.KScrollView>
