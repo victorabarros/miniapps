@@ -17,7 +17,6 @@ Parameters:
   KlutchPublicKey:
       Type: String
       Description: "Klutch Public Key"
-
 Resources:
   RecurringTransferAPI:
     Type: AWS::Serverless::HttpApi    

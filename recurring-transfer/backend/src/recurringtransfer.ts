@@ -13,6 +13,7 @@ export type RecurringTransfer = {
     lowbalanceAmount?: number
     day?: number
     deleted: boolean 
+    transferSourceId: string
 }
 
 export const addRecurringTranfer = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {

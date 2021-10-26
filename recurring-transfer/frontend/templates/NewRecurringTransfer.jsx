@@ -4,8 +4,8 @@ Template = (data, context) => {
     const K = Klutch
 
     context.init(async () => {
-        //const transferSources = await AlloyJS.TransferService.getTransferSources();
-        const transferSources = [{name: "Test"}]
+        const transferSources = await AlloyJS.TransferService.getTransferSources();
+        //const transferSources = [{name: "Test"}]
         context.setState({transferSources, loading: false})    
     })
 
@@ -52,7 +52,8 @@ Template = (data, context) => {
             type: data.type,
             amount: context.state.transferAmount,
             day: day,
-            lowbalanceAmount: context.state.lowBalanceAmount
+            lowbalanceAmount: context.state.lowBalanceAmount,
+            transferSourceId: context.state.transferSources[0].id
         }
         const newTransfer = await context.post("/transfers", transfer)
         context.loadTemplate("/templates/Main.template", newTransfer)

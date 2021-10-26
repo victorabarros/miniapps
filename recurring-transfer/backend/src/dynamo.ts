@@ -59,4 +59,22 @@ exports.query = async (table: string, id: any) => {
     })
 }
 
+exports.scan = async (table: string ) => {
+    var params = {
+        FilterExpression: "deleted = :deleted",
+        TableName: table,
+        ExpressionAttributeValues: {
+            ":deleted": false
+        }
+       };    
 
+    return new Promise((res, rej) => {
+        dynamoDb.scan(params, function(err: any, data: any) {
+            if (err) {
+                rej(err)
+            } else {
+                res(data)
+            }
+        })
+    })
+}
