@@ -24,7 +24,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: dist/
-      Handler: app.handleWebhook
+      Handler: app.lowBalanceWebhook
       Runtime: nodejs14.x
       Timeout: 10
       Policies: 
@@ -44,13 +44,14 @@ Resources:
           klutchKey: !Ref RecipeKey
           recipeId: !Ref RecipeId      
           klutchServerUrl: !Ref KlutchServerUrl
-          RecurringTransferTable: !Ref RecurringTransferTable
+          klutchpublickey: !Ref KlutchPublicKey
+          RecurringTableName: !Ref RecurringTransferTable
       Events:      
         Webhook:
           Type: HttpApi
           Properties:
             ApiId: !Ref RecurringTransferAPI
-            Path: /klutch-webhook
+            Path: /webhook
             Method: POST                      
   ListTransfersFunction:
     Type: AWS::Serverless::Function
@@ -159,7 +160,47 @@ Resources:
           Properties:
             ApiId: !Ref RecurringTransferAPI
             Path: /transfers
-            Method: POST                                       
+            Method: POST   
+  PerformTransfersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: app.processTransfers
+      Runtime: nodejs14.x
+      Timeout: 10
+      Policies: 
+        - Version: 2012-10-17
+          Statement: 
+            - Sid: KMSSign
+              Effect: Allow
+              Action: kms:Sign
+              Resource: !GetAtt RecipeKey.Arn                        
+        - Version: 2012-10-17
+          Statement: 
+            - Sid: DynamoQuery
+              Effect: Allow
+              Action: 
+                - dynamodb:Query
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:Scan
+              Resource: !GetAtt RecurringTransferTable.Arn
+      Environment: 
+        Variables:
+          klutchKey: !Ref RecipeKey
+          recipeId: !Ref RecipeId      
+          klutchServerUrl: !Ref KlutchServerUrl
+          klutchpublickey: !Ref KlutchPublicKey
+          RecurringTableName: !Ref RecurringTransferTable
+      Events:  
+        Schedule:
+          Type: Schedule
+          Properties:
+            Enabled: true
+            Description: Everyday
+            Schedule: cron(0 10 * * ? *)
+
+                                                   
   RecurringTransferTable:
     Type: AWS::DynamoDB::Table    
     Properties:
