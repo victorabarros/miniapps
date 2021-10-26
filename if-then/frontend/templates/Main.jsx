@@ -8,22 +8,29 @@ const styles = {
   },
 }
 
+// Enum
+const State = {
+  fromOtherView: 'switchingToMain',
+
+  ready: 'ready',
+  toInitView: 'switchingToInit',
+}
+
 Template = (data = {}, context) => {
-  let { rules } = context.state || {}
+  const { rules } = context.state || {}
+  const { state } = context.state || { state: State.fromOtherView }
 
   const fetchRules = async () => {
-    rules = await context.get("automation")
-    context.setState({ rules })
+    const resp = await context.get("automation")
+    context.setState({ rules: resp, state: State.ready })
   }
 
-  if (rules === undefined) {
-    fetchRules()
-  }
+  if (state === State.fromOtherView) fetchRules()
 
-  if (rules === undefined) {
-    return (<Klutch.KView style={{ flex: 1, justifyContent: "center" }}>
+  if (state !== State.ready) {
+    return <Klutch.KView style={{ flex: 1, justifyContent: "center" }}>
       <Klutch.KLoadingIndicator />
-    </Klutch.KView>)
+    </Klutch.KView>
   }
 
   const Panel = ({ condition, action }) => (
@@ -41,10 +48,6 @@ Template = (data = {}, context) => {
     </Klutch.KView>
   )
 
-  if (data.condition && data.action) {
-    rules[`${data.condition.key}-${data.condition.value}`] = data
-  }
-
   return (
     <Klutch.KView style={{ flex: 1, paddingBottom: 20 }}>
       <Klutch.KHeader showBackArrow onBackArrowPressed={context.closeMiniApp}>IF / THEN</Klutch.KHeader>
@@ -54,7 +57,7 @@ Template = (data = {}, context) => {
 
         <Klutch.KPressable style={styles.card}
           onPress={() => {
-            context.setState({ rules: undefined })
+            context.setState({ ...context.state, state: State.toInitView })
             context.loadTemplate("/templates/InitAutomation.template", {})
           }}
         >

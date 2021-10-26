@@ -54,25 +54,30 @@ const styles = {
   },
 }
 
+// Enum
+const State = {
+  fromOtherView: 'switchingToAddAction',
+
+  ready: 'ready',
+  toInitView: 'switchingToInit',
+}
 
 Template = (data, context) => {
   let { categories } = context.state || {}
+  const { state } = context.state || { state: State.fromOtherView }
 
   const fetchCategories = async () => {
     const cats = await context.get("category")
     let cats2 = []
     cats.map(({ name }) => cats2.push(name))
-    context.setState({ categories: cats2 })
+    context.setState({ ...context.state, categories: cats2, state: State.ready })
   }
 
-  if (!categories) {
-    fetchCategories()
-  }
-
-  if (categories === undefined) {
-    return (<Klutch.KView style={{ flex: 1, justifyContent: "center" }}>
+  if (state === State.fromOtherView) fetchCategories()
+  if (state !== State.ready) {
+    return <Klutch.KView style={{ flex: 1, justifyContent: "center" }}>
       <Klutch.KLoadingIndicator />
-    </Klutch.KView>)
+    </Klutch.KView>
   }
 
   if (!context.state) context.state = {}
@@ -181,6 +186,7 @@ Template = (data, context) => {
   }
 
   const confirmButtonPressed = (template) => {
+    context.setState({ ...context.state, state: State.toInitView })
     const { selected } = context.state.action
     var action = context.state.action[selected] || {}
     action.key = selected
