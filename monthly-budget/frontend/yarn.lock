@@ -1975,16 +1975,17 @@
     rxjs "^6.6.2"
     sqlite3 "^5.0.2"
 
-"@klutchcard/klutch-components@0.1.84":
-  version "0.1.84"
-  resolved "https://npm.pkg.github.com/download/@klutchcard/klutch-components/0.1.84/effd0bc9e5bed941e56bd0243d6225601a1ea0a983dd15569906490a6dec8a29#5bb28d13bf1a4faaf5dd792792f30a25d7275b64"
-  integrity sha512-lHNuKZyRtUB4RQob4hu46lUpcQC2Eoby/Z7LMZllPDEE1K3GeRnhDkwpVUz9/ElWJqz2syQJyzw8ya9ZroUCRw==
+"@klutchcard/klutch-components@0.1.87-a":
+  version "0.1.87-a"
+  resolved "https://npm.pkg.github.com/download/@klutchcard/klutch-components/0.1.87-a/9ca8630fc2909e41d653dd5e2c9cf92e65edd57483ae6ab93cbb005090c9afdf#9fd8894bf2810186787f6f2d77eb2920ab29748e"
+  integrity sha512-pFIKoptKbDoZB6dO2IPoSKH9br6FfJi9HGxU6cyEu29aW9dq67grr0Z+C4T7vZkMsQ6JJKTHA3J5dUjJFFDTog==
   dependencies:
     "@expo-google-fonts/inter" "^0.1.0"
     "@klutchcard/alloy-js" "1.4.31"
     "@react-native-community/hooks" "^2.6.0"
     expo "^42.0.0"
     expo-haptics "~10.1.0"
+    expo-linear-gradient "^10.0.3"
     luxon "^1.26.0"
     react-native-currency-input "^1.0.1"
     react-native-svg "12.1.1"
@@ -3925,6 +3926,13 @@ expo-keep-awake@~9.2.0:
   resolved "https://registry.yarnpkg.com/expo-keep-awake/-/expo-keep-awake-9.2.0.tgz#9cbdcc8264c943ef29a58326236cd34267e98f43"
   integrity sha512-R5jAx5j3MqrhKFB307FBpaHtYSYeVIFX/rVforBF5inKonYjXRWVhjGoBjolF4geAryNamC3NKhMfxyaaB0W6Q==
 
+expo-linear-gradient@^10.0.3:
+  version "10.0.3"
+  resolved "https://registry.yarnpkg.com/expo-linear-gradient/-/expo-linear-gradient-10.0.3.tgz#06ad72e164f5bf36c4afcfc8ccd31138a3a78d6e"
+  integrity sha512-zKkBhHvTvDywpb0y5BJDHTbxX5/2C60qW/M8uyZXKIZcTUwY7j/9Kcx0YzoNNglq7p6aQ/DWO7sM8LHr93985Q==
+  dependencies:
+    expo-modules-core "~0.4.4"
+
 expo-modules-autolinking@^0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/expo-modules-autolinking/-/expo-modules-autolinking-0.0.3.tgz#45ba8cb1798f9339347ae35e96e9cc70eafb3727"
@@ -3940,6 +3948,14 @@ expo-modules-core@~0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/expo-modules-core/-/expo-modules-core-0.2.0.tgz#68e5b6e53d0afbf8d131578831aed657589a2d42"
   integrity sha512-inpfZ5X/BaTtbj2wG9PA9AC0MN8VyId6KSRlVuEg7+ziurHBy/kKDFxpOddUokhwiln2uhoYPSStJjR/tKypdw==
+
+expo-modules-core@~0.4.4:
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/expo-modules-core/-/expo-modules-core-0.4.6.tgz#b4b251043c98ecf36f7353c247e8e0d83796aa77"
+  integrity sha512-ns9kQn1titPlDsmuKNfyxUui1Nf338d+oIHb/N8jlneKukFwgQxxc5CwyKHrNKNxcUVzumpStSi4sHquKBmOiA==
+  dependencies:
+    compare-versions "^3.4.0"
+    invariant "^2.2.4"
 
 expo-splash-screen@0.8.1:
   version "0.8.1"

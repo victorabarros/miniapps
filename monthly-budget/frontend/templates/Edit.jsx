@@ -65,14 +65,15 @@ const stylesCategories = {
   footerText: { fontSize: 12 },
 }
 
-getRandomColor = () => {
-  var letters = '0123456789ABCDEF'
-  var color = '#'
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)]
-  }
-  return color
-}
+const categoryColors = [
+  { color1: "#639FAF", color2: "#E0D0C2" },
+  { color1: "#9FA3AF", color2: "#E2D5D4" },
+  { color1: "#77A8C5", color2: "#BAC1D8" },
+  { color1: "#6A81BC", color2: "#C6B1B1" },
+  { color1: "#578C6D", color2: "#CCB9A8" },
+  { color1: "#77A8C5", color2: "#BAC1D8" },
+  { color1: "#77A8C5", color2: "#BAC1D8" },
+]
 
 // Enum
 const State = {
@@ -111,16 +112,23 @@ Template = (data, context) => {
           <Klutch.KScrollView>
             {/* TODO fetch categories from server */}
             {['SHOPPING', 'DINING OUT', 'TRANSPORT', 'FOOD', 'GIFTS', 'FUN', 'MEDICAL', 'BEAUTY',]
-              .map(categoryCandidate => {
+              .map((categoryCandidate, idx) => {
+                const gradientColors = [
+                  categoryColors[idx % categoryColors.length].color1,
+                  categoryColors[idx % categoryColors.length].color2,]
+
                 return (
                   <Klutch.KPressable
-                    key={categoryCandidate}
+                    key={`category-item-${idx}`}
                     style={stylesCategories.button}
-                    onPress={() => context.setState({ budget: { id, category: categoryCandidate, amount }, state: State.ready })}
+                    onPress={() =>
+                      context.setState({ budget: { id, category: categoryCandidate, amount }, state: State.ready })
+                    }
                   >
                     <Klutch.KView style={stylesCategories.buttonLabelContainer}>
-                      <Klutch.KView
-                        style={[stylesCategories.buttonSquare, { backgroundColor: getRandomColor() }]}
+                      <Klutch.LinearGradient.LinearGradient
+                        style={stylesCategories.buttonSquare}
+                        colors={gradientColors}
                       />
                       <Klutch.KText style={stylesCategories.buttonLabelText}>{categoryCandidate}</Klutch.KText>
                     </Klutch.KView>
