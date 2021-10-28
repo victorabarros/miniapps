@@ -68,7 +68,7 @@ Template = (data, context) => {
           context.redirect(`/miniapps/${recipeId}/templates/Home.template`)
         }}
       >
-        <Klutch.KText numberOfLines={1} style={styles.category} fontWeight="bold">
+        <Klutch.KText adjustsFontSizeToFit numberOfLines={1} style={styles.category} fontWeight="bold">
           {`${category[0].toUpperCase()}${category.substring(1).toLowerCase()}`}
         </Klutch.KText>
 
