@@ -47,34 +47,6 @@ const styles = {
   },
 }
 
-const budgetContainer = ({ id, category, amount: budget, spent }) => (
-  <Klutch.KView key={`budget-${id}`} style={styles.square}>
-
-    <Klutch.KPressable
-      style={styles.categoryContainer}
-      onPress={() => {
-        console.log('click')
-        // TODO add arrow and redirect to home template
-        // context.setState({ budgets, state: State.loading })
-        // context.redirect(`/miniapps/${recipeId}/templates/New.template`)
-        // context.setState({ budgets, state: State.done })
-      }}
-    >
-      <Klutch.KText numberOfLines={1} style={styles.category} fontWeight="bold">
-        {`${category[0].toUpperCase()}${category.substring(1).toLowerCase()}`}
-      </Klutch.KText>
-
-      <Klutch.KView style={styles.arrow} />
-    </Klutch.KPressable>
-
-    <Klutch.KView>
-      <Klutch.KText style={styles.spent} fontWeight="bold">{spent.toFixed(2)}</Klutch.KText>
-      <Klutch.KText style={styles.budget}>{`of ${(budget).toFixed(0)}`}</Klutch.KText>
-    </Klutch.KView>
-
-  </Klutch.KView>
-)
-
 // Enum
 const State = {
   initializing: 'initializing',
@@ -86,6 +58,31 @@ Template = (data, context) => {
   const { recipeId } = data
   const { budgets, state } = context.state || { budgets: [], state: State.initializing }
 
+  const budgetContainer = ({ id, category, amount: budget, spent }) => (
+    <Klutch.KView key={`budget-${id}`} style={styles.square}>
+
+      <Klutch.KPressable
+        style={styles.categoryContainer}
+        onPress={() => {
+          context.setState({ budgets, state: State.loading })
+          context.redirect(`/miniapps/${recipeId}/templates/Home.template`)
+        }}
+      >
+        <Klutch.KText numberOfLines={1} style={styles.category} fontWeight="bold">
+          {`${category[0].toUpperCase()}${category.substring(1).toLowerCase()}`}
+        </Klutch.KText>
+
+        <Klutch.KView style={styles.arrow} />
+      </Klutch.KPressable>
+
+      <Klutch.KView>
+        <Klutch.KText style={styles.spent} fontWeight="bold">{spent.toFixed(2)}</Klutch.KText>
+        <Klutch.KText style={styles.budget}>{`of ${(budget).toFixed(0)}`}</Klutch.KText>
+      </Klutch.KView>
+
+    </Klutch.KView>
+  )
+
   const fetchData = async () => {
     const budgets = await context.get('/budget')
     context.setState({ budgets, state: State.done })
@@ -94,7 +91,6 @@ Template = (data, context) => {
   const onPlusButtonPress = () => {
     context.setState({ budgets, state: State.loading })
     context.redirect(`/miniapps/${recipeId}/templates/New.template`)
-    context.setState({ budgets, state: State.done })
   }
 
   if (state === State.initializing) fetchData()
