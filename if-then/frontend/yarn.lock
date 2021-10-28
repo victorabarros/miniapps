@@ -1843,24 +1843,10 @@
     "@babel/runtime" "^7.7.2"
     regenerator-runtime "^0.13.3"
 
-"@klutchcard/alloy-js@1.4.41":
+"@klutchcard/alloy-js@1.4.41", "@klutchcard/alloy-js@^1.4.41":
   version "1.4.41"
   resolved "https://npm.pkg.github.com/download/@klutchcard/alloy-js/1.4.41/193b8c77401d8dc5b8d1a3a398cc74a0ee9e87ea6012e97d394d3653e9431233#7c4e52ee6f4a468ec18a7bfcd0cdb35eeaf9eb86"
   integrity sha512-cCkS1W2rec9HmvQ5tob5o6cOEPC0k+oA83CZOnIRBg39nnT1jCT3v+Ey6gNUoa/Qs7FSJui7BhvoznUDrj524g==
-  dependencies:
-    "@apollo/client" "^3.3.19"
-    axios "^0.21.1"
-    base64url "^3.0.1"
-    cross-fetch "^3.0.6"
-    graphql "^15.3.0"
-    graphql-tag "^2.12.0"
-    rxjs "^6.6.2"
-    sqlite3 "^5.0.2"
-
-"@klutchcard/alloy-js@^1.4.39":
-  version "1.4.39"
-  resolved "https://npm.pkg.github.com/download/@klutchcard/alloy-js/1.4.39/f4b7d242f9d1b1da6cd5f405a81adfa70fbca7ecc98d90461dc6dfa697b85e7d#8b00981cde4de6e38819a08e9bc46b619ab28407"
-  integrity sha512-tEyeuTsnnTU5slRvWln89BOuJC0HYvRS+b517oJkWL7WpfF2iLAGhzZ3latJYTTmhY9Ex3GO1wEtPIet/0BmwA==
   dependencies:
     "@apollo/client" "^3.3.19"
     axios "^0.21.1"
