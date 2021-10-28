@@ -139,8 +139,10 @@ Template = (data, context) => {
 
   const ButtonWithDropDown = ([key, { label, title }]) => {
     const labelStyle = [styles.label, (selected === key && { color: "white" })]
-    const containerStyle = [{ flexDirection: 'row' },
-    (selected === key && { backgroundColor: Klutch.KlutchTheme.colors.primaryButtonColor })]
+    const containerStyle = [
+      { flexDirection: 'row' },
+      { backgroundColor: (selected === key ? Klutch.KlutchTheme.colors.primaryButtonColor : Klutch.KlutchTheme.backgroundColor) }
+    ]
 
     const inputComponent = (
       <Klutch.KView style={containerStyle}>
@@ -218,7 +220,7 @@ Template = (data, context) => {
   }
 
   return (
-    <Klutch.KKeyboardAvoidingView behavior='padding' style={{ flex: 1, paddingBottom: 20 }}>
+    <Klutch.KView style={{ flex: 1, paddingBottom: 20 }}>
       <Klutch.KView>
         <Klutch.KHeader
           showBackArrow
@@ -266,6 +268,6 @@ Template = (data, context) => {
         </Klutch.KButtonBar>
       </Klutch.KView>
 
-    </Klutch.KKeyboardAvoidingView >
+    </Klutch.KView >
   )
 }
