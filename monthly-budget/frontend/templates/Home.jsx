@@ -54,12 +54,24 @@ const budgetContainerStyles = {
 const State = {
   fromOtherView: 'switchingToHome',
 
+  initializing: 'initializing',
   done: 'done',
   toEditView: 'switchingToEdit',
   toNewView: 'switchingToNew',
 }
 
 Template = (data, context) => {
+  const fetchData = async () => {
+    const budgets = await context.get('/budget')
+
+    if (budgets.length === 0) {
+      context.setState({ state: State.toNewView })
+      context.loadTemplate("/templates/New.template")
+    } else {
+      const totalBudget = budgets.reduce((accum, item) => accum + item.amount, 0)
+      context.setState({ budgets, totalBudget, state: State.done, budget: {} })
+    }
+  }
 
   const budgetContainer = ({ id, category, amount: budget }) => (
     <Klutch.KPressable
@@ -81,8 +93,9 @@ Template = (data, context) => {
     </Klutch.KPressable>
   )
 
-  const { budgets, totalBudget, state } = context.state
+  const { budgets, totalBudget, state } = context.state || { state: State.initializing }
 
+  if (state === State.initializing) fetchData()
   if (state === State.fromOtherView) context.setState({ state: State.done })
 
   if (state !== State.done) {

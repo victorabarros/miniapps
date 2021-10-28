@@ -38,6 +38,7 @@ export default function App() {
       <KScreen style={{ flex: 1, marginVertical: 30, justifyContent: 'space-evenly' }}>
         <KText>What template do you want to open?</KText>
         <KButton type="primary" style={buttonStyle} label="Main" onPress={() => setTemplateToLoad(Templates.Main)} />
+        <KButton type="primary" style={buttonStyle} label="Home" onPress={() => setTemplateToLoad(Templates.Home)} />
         <KButton type="primary" style={buttonStyle} label="New" onPress={() => setTemplateToLoad(Templates.New)} />
         <KButton type="primary" style={buttonStyle} label="Home Panel" onPress={() => setTemplateToLoad(Templates.HomePanel)} />
       </KScreen>
