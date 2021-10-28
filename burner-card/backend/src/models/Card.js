@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 
 const BurnerCardSchema = new mongoose.Schema(
   {
-    _id: false,
     recipeInstallId: {
       type: String,
       unique: true,
