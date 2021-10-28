@@ -1947,10 +1947,10 @@
     "@babel/runtime" "^7.7.2"
     regenerator-runtime "^0.13.3"
 
-"@klutchcard/alloy-js@1.4.31":
-  version "1.4.31"
-  resolved "https://npm.pkg.github.com/download/@klutchcard/alloy-js/1.4.31/becdb367565cc6a00138b6611e1d123d53274aa6be0e636540099bb7696ee02d#3422bf1256109d6263e5245a81243d084a382ce5"
-  integrity sha512-i6dN0nAiCmSsyJfchW8KjwWqT1kjoZYu1NXnngeU6ypjfD+8qyrZNAouz53i6YE6I6t3hkRpxIVpdP7I9pxPkQ==
+"@klutchcard/alloy-js@1.4.41":
+  version "1.4.41"
+  resolved "https://npm.pkg.github.com/download/@klutchcard/alloy-js/1.4.41/193b8c77401d8dc5b8d1a3a398cc74a0ee9e87ea6012e97d394d3653e9431233#7c4e52ee6f4a468ec18a7bfcd0cdb35eeaf9eb86"
+  integrity sha512-cCkS1W2rec9HmvQ5tob5o6cOEPC0k+oA83CZOnIRBg39nnT1jCT3v+Ey6gNUoa/Qs7FSJui7BhvoznUDrj524g==
   dependencies:
     "@apollo/client" "^3.3.19"
     axios "^0.21.1"
@@ -1961,30 +1961,17 @@
     rxjs "^6.6.2"
     sqlite3 "^5.0.2"
 
-"@klutchcard/alloy-js@1.4.33":
-  version "1.4.33"
-  resolved "https://npm.pkg.github.com/download/@klutchcard/alloy-js/1.4.33/52873a3ba9b530aca4efe47e3884f88f02bacf10a9fe1bab1ff179c9052c6faa#874803a29461fd6e47bdbde125d473347757ff62"
-  integrity sha512-x4fZ6r4WkSvjn1mSnEy8vQpHXc24p6zhHXMMEatHjhf8i7BJQB/2ioiHiy+bl8IUy8EIN4l1sugd6Biu6C89jQ==
-  dependencies:
-    "@apollo/client" "^3.3.19"
-    axios "^0.21.1"
-    base64url "^3.0.1"
-    cross-fetch "^3.0.6"
-    graphql "^15.3.0"
-    graphql-tag "^2.12.0"
-    rxjs "^6.6.2"
-    sqlite3 "^5.0.2"
-
-"@klutchcard/klutch-components@0.1.84":
-  version "0.1.84"
-  resolved "https://npm.pkg.github.com/download/@klutchcard/klutch-components/0.1.84/effd0bc9e5bed941e56bd0243d6225601a1ea0a983dd15569906490a6dec8a29#5bb28d13bf1a4faaf5dd792792f30a25d7275b64"
-  integrity sha512-lHNuKZyRtUB4RQob4hu46lUpcQC2Eoby/Z7LMZllPDEE1K3GeRnhDkwpVUz9/ElWJqz2syQJyzw8ya9ZroUCRw==
+"@klutchcard/klutch-components@0.1.89":
+  version "0.1.89"
+  resolved "https://npm.pkg.github.com/download/@klutchcard/klutch-components/0.1.89/cf445617cf72573fac76a01e746b693f4a5bd3f0e1ebbf3027804ad57df1e634#ec78235bfb8ef9ea8e9eb31c3eb695e5b88a36a9"
+  integrity sha512-VH1k0MrY7Ge7uR0AcWGAp5uv0gBqAosu9NR99prSsbVgjEpwNQBvVzf22tI/03ZNYpH9JDdO9Vrktey1muK6FQ==
   dependencies:
     "@expo-google-fonts/inter" "^0.1.0"
-    "@klutchcard/alloy-js" "1.4.31"
+    "@klutchcard/alloy-js" "1.4.41"
     "@react-native-community/hooks" "^2.6.0"
     expo "^42.0.0"
     expo-haptics "~10.1.0"
+    expo-linear-gradient "~9.2.0"
     luxon "^1.26.0"
     react-native-currency-input "^1.0.1"
     react-native-svg "12.1.1"
@@ -3924,6 +3911,11 @@ expo-keep-awake@~9.2.0:
   version "9.2.0"
   resolved "https://registry.yarnpkg.com/expo-keep-awake/-/expo-keep-awake-9.2.0.tgz#9cbdcc8264c943ef29a58326236cd34267e98f43"
   integrity sha512-R5jAx5j3MqrhKFB307FBpaHtYSYeVIFX/rVforBF5inKonYjXRWVhjGoBjolF4geAryNamC3NKhMfxyaaB0W6Q==
+
+expo-linear-gradient@~9.2.0:
+  version "9.2.0"
+  resolved "https://registry.yarnpkg.com/expo-linear-gradient/-/expo-linear-gradient-9.2.0.tgz#5ae16fcb8f141b1c51dc36bd4493dfd6566a9511"
+  integrity sha512-LnW2u9OT6GeyC6T8qEGjFYfNSk4KIBAwU0aRSjM4Y8hckWqhtKngGDz46DqGmJBzvZMSKuZZvj5xKn794r54ag==
 
 expo-modules-autolinking@^0.0.3:
   version "0.0.3"

@@ -11,18 +11,30 @@ const styles = {
   },
   square: {
     height: 110,
-    width: 130,
-    padding: 16,
-    paddingLeft: 8,
+    width: 135,
+    padding: 12,
     margin: 2,
     borderWidth: 1,
     justifyContent: "space-between"
   },
+  categoryContainer: {
+    flexDirection: 'row',
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   category: {
-    fontSize: 16
+    maxWidth: '90%',
+    fontSize: 20,
+  },
+  arrow: {
+    transform: [{ rotate: '45deg' }],
+    height: 12,
+    width: 12,
+    borderTopWidth: 2,
+    borderRightWidth: 2,
   },
   spent: {
-    fontSize: 16,
+    fontSize: 20,
   },
   budget: {
     fontSize: 12,
@@ -35,26 +47,6 @@ const styles = {
   },
 }
 
-const budgetContainer = ({ id, category, amount: budget, spent }) => (
-  <Klutch.KView key={`budget-${id}`} style={styles.square}>
-
-    <Klutch.KText style={styles.category} fontWeight="bold">
-      {`${category[0].toUpperCase()}${category.substring(1).toLowerCase()}`}
-    </Klutch.KText>
-    {/* TODO add arrow and redirect to home template
-      context.setState({ budgets, state: State.loading })
-      context.redirect(`/miniapps/${recipeId}/templates/New.template`)
-      context.setState({ budgets, state: State.done })
-    */}
-
-    <Klutch.KView>
-      <Klutch.KText style={styles.spent} fontWeight="bold">{spent.toFixed(2)}</Klutch.KText>
-      <Klutch.KText style={styles.budget}>{`of ${(budget).toFixed(0)}`}</Klutch.KText>
-    </Klutch.KView>
-
-  </Klutch.KView>
-)
-
 // Enum
 const State = {
   initializing: 'initializing',
@@ -66,6 +58,31 @@ Template = (data, context) => {
   const { recipeId } = data
   const { budgets, state } = context.state || { budgets: [], state: State.initializing }
 
+  const budgetContainer = ({ id, category, amount: budget, spent }) => (
+    <Klutch.KView key={`budget-${id}`} style={styles.square}>
+
+      <Klutch.KPressable
+        style={styles.categoryContainer}
+        onPress={() => {
+          context.setState({ budgets, state: State.loading })
+          context.redirect(`/miniapps/${recipeId}/templates/Home.template`)
+        }}
+      >
+        <Klutch.KText adjustsFontSizeToFit numberOfLines={1} style={styles.category} fontWeight="bold">
+          {`${category[0].toUpperCase()}${category.substring(1).toLowerCase()}`}
+        </Klutch.KText>
+
+        <Klutch.KView style={styles.arrow} />
+      </Klutch.KPressable>
+
+      <Klutch.KView>
+        <Klutch.KText style={styles.spent} fontWeight="bold">{spent.toFixed(2)}</Klutch.KText>
+        <Klutch.KText style={styles.budget}>{`of ${(budget).toFixed(0)}`}</Klutch.KText>
+      </Klutch.KView>
+
+    </Klutch.KView>
+  )
+
   const fetchData = async () => {
     const budgets = await context.get('/budget')
     context.setState({ budgets, state: State.done })
@@ -74,7 +91,6 @@ Template = (data, context) => {
   const onPlusButtonPress = () => {
     context.setState({ budgets, state: State.loading })
     context.redirect(`/miniapps/${recipeId}/templates/New.template`)
-    context.setState({ budgets, state: State.done })
   }
 
   if (state === State.initializing) fetchData()
