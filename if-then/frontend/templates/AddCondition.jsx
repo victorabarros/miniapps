@@ -113,7 +113,7 @@ Template = (data, context) => {
     const labelStyle = [styles.label, (selected === key && { color: "white" })]
     const containerStyle = [
       { flexDirection: 'row' },
-      (selected === key && { backgroundColor: Klutch.KlutchTheme.colors.primaryButtonColor })
+      { backgroundColor: (selected === key ? Klutch.KlutchTheme.colors.primaryButtonColor : Klutch.KlutchTheme.backgroundColor) }
     ]
 
     return (
@@ -218,9 +218,12 @@ Template = (data, context) => {
   }
 
   return (
-    <Klutch.KView style={{ flex: 1, paddingBottom: 20 }}>
+    <Klutch.KKeyboardAvoidingView behavior='padding' style={{ flex: 1, paddingBottom: 20 }}>
       <Klutch.KView>
-        <Klutch.KHeader showBackArrow onBackArrowPressed={() => confirmButtonPressed("/templates/Main.template")}>
+        <Klutch.KHeader
+          showBackArrow
+          onBackArrowPressed={() => confirmButtonPressed("/templates/Main.template")}
+        >
           ADD AUTOMATION
         </Klutch.KHeader>
 
@@ -263,6 +266,6 @@ Template = (data, context) => {
         </Klutch.KButtonBar>
       </Klutch.KView>
 
-    </Klutch.KView >
+    </Klutch.KKeyboardAvoidingView >
   )
 }
