@@ -2,18 +2,21 @@ const mongoose = require('mongoose')
 
 const AutomationSchema = new mongoose.Schema(
   {
-    _id: false,
     recipeInstallId: {
       type: String,
       unique: true,
       index: true,
       required: true,
     },
+    rules: {
+      type: Object,
+      required: true,
+    },
   },
   {
     timestamps: {
-      createdAt: 'created_at',
-      updatedAt: 'updated_at'
+      createdAt: 'createdAt',
+      updatedAt: 'updatedAt'
     }
   }, { strict: false }
 )
