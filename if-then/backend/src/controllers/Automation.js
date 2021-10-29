@@ -68,7 +68,7 @@ const addAutomation = async (req, resp) => {
 
   try {
     automation
-      ? await Automation.updateOne({ recipeInstallId, rules })
+      ? await Automation.updateOne({ recipeInstallId }, { recipeInstallId, rules })
       : await Automation.create({ recipeInstallId, rules })
   } catch (err) {
     console.log({ err, recipeInstallId, rules })

@@ -1,4 +1,35 @@
+// Enum
+const State = {
+  fromOtherView: 'switchingToInit',
+
+  loading: 'loading',
+  ready: 'ready',
+  toAddConditionView: 'switchingToAddCondition',
+  toAddActionView: 'switchingToAddAction',
+  toMainView: 'switchingToMain',
+}
+
 Template = (data = {}, context) => {
+  const { state } = context.state || { state: State.fromOtherView }
+
+  if (state === State.fromOtherView) context.setState({ ...context.state, state: State.ready })
+  if (state !== State.ready) {
+    return <Klutch.KView style={{ flex: 1, justifyContent: "center" }}>
+      <Klutch.KLoadingIndicator />
+    </Klutch.KView>
+  }
+
+  const onDoneButtonPress = async () => {
+    context.setState({ ...context.state, state: State.loading })
+    if (data.action && data.condition) {
+      await context.post("automation", data)
+      context.setState({ ...context.state, state: State.toMainView })
+      context.loadTemplate("/templates/Main.template", data)
+      return
+    }
+    context.setState({ ...context.state, state: State.ready })
+  }
+
   const addConditionLabel = data.condition ?
     <Klutch.KText style={{ color: "white" }}>
       {data.condition.title.toUpperCase()}
@@ -19,7 +50,6 @@ Template = (data = {}, context) => {
         ADD AUTOMATION
       </Klutch.KHeader>
 
-
       <Klutch.KText style={{ fontSize: 56, fontWeight: "bold" }}>IF</Klutch.KText>
       <Klutch.KText>Choose conditions that will start this automation.</Klutch.KText>
 
@@ -29,6 +59,7 @@ Template = (data = {}, context) => {
           label={addConditionLabel}
           style={{ backgroundColor: "black" }}
           onPress={() => {
+            context.setState({ ...context.state, state: State.toAddConditionView })
             context.loadTemplate("/templates/AddCondition.template", data)
           }}
         />
@@ -43,6 +74,7 @@ Template = (data = {}, context) => {
           label={addActionLabel}
           style={{ backgroundColor: "black" }}
           onPress={() => {
+            context.setState({ ...context.state, state: State.toAddActionView })
             context.loadTemplate("/templates/AddAction.template", data)
           }}
         />
@@ -53,10 +85,7 @@ Template = (data = {}, context) => {
           disabled={!data.condition || !data.action}
           type="primary"
           label="DONE"
-          onPress={async () => {
-            await context.post("automation", data)
-            context.loadTemplate("/templates/Main.template", data)
-          }}
+          onPress={onDoneButtonPress}
         />
       </Klutch.KButtonBar>
     </Klutch.KView>
