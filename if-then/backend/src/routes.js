@@ -6,7 +6,7 @@ const { addAutomation, listAutomation } = require("./controllers/Automation")
 const { execAutomation } = require("./controllers/Webhook")
 const { listCategories } = require("./controllers/Categories")
 const Automation = require('./models/Automation')
-const { klutchServerUrl } = require("../config")
+const { klutchServerUrl, version } = require("../config")
 
 const router = Router()
 AlloyJS.configure({ serverUrl: klutchServerUrl })
@@ -17,6 +17,8 @@ router.post("/automation", addAutomation)
 router.post("/webhook", execAutomation)
 
 router.get("/health", async (req, resp) => {
+  console.log(`GET /health started\nversion: ${version}`)
+
   let responseStatus = httpStatus.OK
   let services = {
     // klutchServer: {
@@ -45,7 +47,7 @@ router.get("/health", async (req, resp) => {
     console.log(services.klutchServer.errorMessage)
   }
 
-  return resp.status(responseStatus).json({ services })
+  return resp.status(responseStatus).json({ services, version })
 })
 
 module.exports = { router }
