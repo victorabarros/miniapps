@@ -42,7 +42,7 @@ const SimulationComponent = ({ template, type, name, data, onLoadTemplate }) => 
     },
     state: templateState,
     async post(path, data) {
-      return await axios({
+      const resp = await axios({
         url: `${config.recipe.serverUrl}${path}`,
         method: "POST",
         headers: {
@@ -51,6 +51,7 @@ const SimulationComponent = ({ template, type, name, data, onLoadTemplate }) => 
         },
         data: data
       })
+      return resp
     },
     async get(path) {
       const resp = await axios({
@@ -63,11 +64,25 @@ const SimulationComponent = ({ template, type, name, data, onLoadTemplate }) => 
       })
       return resp.data
     },
+    async request(verb, path, data) {
+      const resp = await axios({
+        url: `${config.recipe.serverUrl}${path}`,
+        method: verb.toUpperCase(),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer EXAMPLEAUTHKEY`
+        },
+        data: data
+      })
+      return resp
+    },
     closeMiniApp() {
       onLoadTemplate();
     },
+    redirect(path) {
+      console.log(`redirect to ${path}`)
+    },
     changePanelData(panelId, data) {
-
     }
   }
 
@@ -92,9 +107,7 @@ const SimulationComponent = ({ template, type, name, data, onLoadTemplate }) => 
         </Klutch.KMiniAppPanel>
       </Klutch.KScreen>
     )
-
   }
-
 }
 
 export default SimulationComponent

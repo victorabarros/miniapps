@@ -1,19 +1,16 @@
 const axios = require('axios')
 const { Router } = require("express")
 const httpStatus = require('http-status')
-const { execWebhook } = require("./controllers/Webhook")
-const AlloyJS = require("@klutchcard/alloy-js")
-const { listBurnerCard, addBurnerCard } = require("./controllers/Card")
-const { mongoDbName, klutchServerUrl } = require("../config")
-const BurnerCard = require('./models/Card');
+const { klutchServerUrl, database } = require("../src/config/config")
+const { createOrUpdateBudget, getBudgets, deleteBudget } = require('./controllers/BudgetController')
+const connection = require('./database/index')
+
 
 const router = Router()
-AlloyJS.configure({ serverUrl: `${klutchServerUrl}/graphql` })
 
-router.get("/card", listBurnerCard)
-router.post("/card", addBurnerCard)
-router.post("/webhook", execWebhook)
-
+router.put("/budget", createOrUpdateBudget)
+router.get("/budget", getBudgets)
+router.delete("/budget/:id", deleteBudget)
 router.get("/health", async (req, resp) => {
   let responseStatus = httpStatus.OK
   let services = {
@@ -24,7 +21,7 @@ router.get("/health", async (req, resp) => {
     database: {
       success: true,
       errorMessage: null,
-      databaseName: mongoDbName,
+      databaseName: database.database,
     },
   }
 
@@ -36,12 +33,13 @@ router.get("/health", async (req, resp) => {
       console.log(services.klutchServer.errorMessage, error)
     })
 
-  if (BurnerCard.collection.conn._readyState !== 1) {
-    services.database.success = false
-    services.database.errorMessage = "database connection fail"
-    responseStatus = httpStatus.SERVICE_UNAVAILABLE
-    console.log(services.klutchServer.errorMessage)
-  }
+  await connection.authenticate()
+    .catch(err => {
+      services.database.success = false
+      services.database.errorMessage = "database connection fail"
+      responseStatus = httpStatus.SERVICE_UNAVAILABLE
+      console.log(services.database.errorMessage, err)
+    })
 
   return resp.status(responseStatus).json({ services })
 })
