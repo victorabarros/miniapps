@@ -174,7 +174,7 @@ Resources:
             - Sid: KMSSign
               Effect: Allow
               Action: kms:Sign
-              Resource: !GetAtt RecipeKey.Arn                        
+              Resource: !GetAtt RecipeKey.Arn
         - Version: 2012-10-17
           Statement: 
             - Sid: DynamoQuery
