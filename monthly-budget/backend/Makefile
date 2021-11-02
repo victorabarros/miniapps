@@ -61,4 +61,3 @@ publish-image:
 	@docker push ${DOCKER_REMOTE_REPOSITORY}:${TAG_VERSION}
 	@echo "\e[1m\033[33mRunning command:\e[0m"
 	@echo "docker run --rm -d -p ${PORT}:${PORT} --name ${APP_NAME} ${DOCKER_REMOTE_REPOSITORY}:${TAG_VERSION}"
-

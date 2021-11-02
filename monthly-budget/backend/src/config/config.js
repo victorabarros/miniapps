@@ -14,4 +14,5 @@ module.exports = {
   },
   recipeId: process.env.RECIPE_ID || throwMissingVariable('RECIPE_ID'),
   privateKey: process.env.RECIPE_PRIVATE_KEY || throwMissingVariable('RECIPE_PRIVATE_KEY'),
+  version: process.env.APP_VERSION || '1.0.5',
 }
