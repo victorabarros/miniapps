@@ -1,7 +1,7 @@
 const { Router } = require("express")
 const axios = require('axios')
 const httpStatus = require('http-status')
-const AlloyJS = require("@alloycard/alloy-js")
+const AlloyJS = require("@klutchcard/alloy-js")
 const { addAutomation, listAutomation } = require("./controllers/Automation")
 const { execAutomation } = require("./controllers/Webhook")
 const { listCategories } = require("./controllers/Categories")

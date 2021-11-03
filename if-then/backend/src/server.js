@@ -17,4 +17,4 @@ mongoose.connect(
   }
 )
 
-app.listen(port, () => console.log(`\nServer is running on port ${port}\nversion ${version}`))
+app.listen(port, () => console.log(`\nServer is running on port ${port}\tversion ${version}`))
