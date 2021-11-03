@@ -84,15 +84,6 @@ const execAutomation = async (req, resp) => {
 
   if (!automation) {
     console.log(`recipeInstall "${recipeInstallId}" has no rules`)
-    await RecipesService.addPanel(
-      recipeInstallId,
-      "/templates/TransactionPanel.template",
-      { recipeId },
-      new Entity({
-        entityID: event.transaction.entityID,
-        type: "com.alloycard.core.entities.transaction.Transaction"
-      })
-    )
     return resp.status(httpStatus.OK).json()
   }
 
@@ -118,16 +109,24 @@ const execAutomation = async (req, resp) => {
 }
 
 const handleRule = async ({ condition, action }) => {
-  if (!verifyCondition(condition, transaction)) return
+  const entity = new Entity({
+    type: "com.alloycard.core.entities.transaction.Transaction",
+    entityID: transaction.id,
+  })
+
+  if (!verifyCondition(condition, transaction)) {
+    RecipesService.addPanel(recipeInstallId, "/templates/TransactionPanel.template", { recipeId }, entity)
+    return
+  }
+
   console.log(`applying rule "${condition.key}-${condition.value}", action "${action.key}" on transaction ${transaction.id}`)
   await applyAction(action, transaction)
 
-  console.log(`adding panel to transaction \"${transaction.id}\"\trecipeInstallId \"${recipeInstallId}\"`)
-  await RecipesService.addPanel(
+  RecipesService.addPanel(
     recipeInstallId,
     "/templates/TransactionPanel.template",
     { condition, action },
-    new Entity({ entityID: transaction.id, type: "com.alloycard.core.entities.transaction.Transaction" })
+    entity
   )
 }
 
