@@ -1,5 +1,5 @@
 const { BuildJWTToken, DecodeToken } = require("./helper")
-const { RecipesService, GraphQLService, TransactionService } = require("@alloycard/alloy-js")
+const { RecipesService, GraphQLService, TransactionService } = require("@klutchcard/alloy-js")
 const httpStatus = require('http-status');
 
 
