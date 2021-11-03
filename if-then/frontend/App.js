@@ -51,7 +51,7 @@ export default function App() {
         <KButton type="primary" style={buttonStyle} label="TransactionPanel" onPress={() => setTemplateToLoad(Templates.TransactionPanel)} />
         <KButton type="primary" style={buttonStyle} label="BlankTransactionPanel" onPress={() => {
           setTemplateToLoad(Templates.TransactionPanel)
-          setTemplateData(undefined)
+          setTemplateData({recipeId: 'IfThen'})
         }} />
       </KScreen>
     )

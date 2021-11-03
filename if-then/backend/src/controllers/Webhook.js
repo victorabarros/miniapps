@@ -9,7 +9,7 @@ const {
 } = require("@klutchcard/alloy-js")
 const httpStatus = require('http-status');
 const Automation = require('../models/Automation')
-const { transactionEventType, klutchServerUrl } = require('../../config')
+const { transactionEventType, klutchServerUrl, recipeId } = require('../../config')
 const Ajv = require("ajv")
 
 AlloyJS.configure({ serverUrl: klutchServerUrl })
@@ -84,7 +84,16 @@ const execAutomation = async (req, resp) => {
 
   if (!automation) {
     console.log(`recipeInstall "${recipeInstallId}" has no rules`)
-    return resp.status(httpStatus.BAD_REQUEST).json()
+    await RecipesService.addPanel(
+      recipeInstallId,
+      "/templates/TransactionPanel.template",
+      { recipeId },
+      new Entity({
+        entityID: event.transaction.entityID,
+        type: "com.alloycard.core.entities.transaction.Transaction"
+      })
+    )
+    return resp.status(httpStatus.OK).json()
   }
 
   const { rules } = automation._doc || {}

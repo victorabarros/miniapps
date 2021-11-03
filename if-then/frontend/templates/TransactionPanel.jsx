@@ -17,6 +17,22 @@ const styles = {
     fontWeight: "normal",
     color: Klutch.KlutchTheme.colors.secondary,
   },
+  blankContainer: {
+    flex: 1,
+    backgroundColor: "white",
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 10,
+  },
+  button: {
+    borderWidth: 1,
+    borderColor: Klutch.KlutchTheme.colors.secondary,
+    width: 64,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
 }
 
 // Enum
@@ -25,8 +41,8 @@ const State = {
   done: 'done',
 }
 
-Template = (data, context) => {
-  if (data !== undefined) {
+Template = (data = {}, context) => {
+  if (data.condition && data.action) {
     const { condition, action } = data
     return (
       <Klutch.KView style={styles.container}>
@@ -47,6 +63,7 @@ Template = (data, context) => {
     )
   }
 
+  const { recipeId } = data
   const { state } = context.state || { state: State.done }
 
   if (state == State.loading) {
@@ -58,25 +75,13 @@ Template = (data, context) => {
   }
 
   return (
-    <Klutch.KView style={{
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-    }}>
+    <Klutch.KView style={styles.blankContainer}>
 
       <Klutch.KPressable
-        style={{
-          borderWidth: 1,
-          borderColor: Klutch.KlutchTheme.colors.secondary,
-          width: 64,
-          height: 30,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginRight: 15,
-        }}
+        style={styles.button}
         onPress={() => {
           context.setState({ state: State.loading })
-          // TODO redirect
+          context.redirect(`/miniapps/${recipeId}/templates/InitAutomation.template`)
         }}
       >
         <Klutch.PlusSign color={Klutch.KlutchTheme.colors.secondary} width={15} height={15} />
@@ -86,6 +91,6 @@ Template = (data, context) => {
         <Klutch.KText style={styles.value}>Using this merchant</Klutch.KText>
       </Klutch.KText>
 
-    </Klutch.KView>
+    </Klutch.KView >
   )
 }
