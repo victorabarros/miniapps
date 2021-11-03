@@ -1,5 +1,12 @@
 const { BuildJWTToken } = require("./helper")
-const { AlloyJS, RecipesService, GraphQLService, TransactionService, CardsService } = require("@alloycard/alloy-js")
+const {
+  AlloyJS,
+  RecipesService,
+  GraphQLService,
+  TransactionService,
+  CardsService,
+  Entity
+} = require("@klutchcard/alloy-js")
 const httpStatus = require('http-status');
 const Automation = require('../models/Automation')
 const { transactionEventType, klutchServerUrl } = require('../../config')
@@ -10,6 +17,7 @@ AlloyJS.configure({ serverUrl: klutchServerUrl })
 const ajv = new Ajv()
 let categories = null
 let transaction
+let recipeInstallId
 
 const validate = ajv.compile({
   type: "object",
@@ -58,7 +66,7 @@ const execAutomation = async (req, resp) => {
     return resp.status(httpStatus.BAD_REQUEST).json()
   }
 
-  const recipeInstallId = principal.entityID
+  recipeInstallId = principal.entityID
 
   if (event._alloyCardType !== transactionEventType) {
     console.log(`event type "${event._alloyCardType} hasn't a handler`)
@@ -104,6 +112,14 @@ const handleRule = async ({ condition, action }) => {
   if (!verifyCondition(condition, transaction)) return
   console.log(`applying rule "${condition.key}-${condition.value}", action "${action.key}" on transaction ${transaction.id}`)
   await applyAction(action, transaction)
+
+  console.log(`adding panel to transaction \"${transaction.id}\"\trecipeInstallId \"${recipeInstallId}\"`)
+  await RecipesService.addPanel(
+    recipeInstallId,
+    "/templates/TransactionPanel.template",
+    { condition, action },
+    new Entity({ entityID: transaction.id, type: "com.alloycard.core.entities.transaction.Transaction" })
+  )
 }
 
 const verifyCondition = ({ key, value }, trx) => conditions[key](value, trx)
