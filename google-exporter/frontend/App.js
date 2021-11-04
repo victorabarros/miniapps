@@ -11,15 +11,17 @@ import {gql} from "graphql-tag"
 /* MINIAPP CONFIGURATION */
 
 
-const APPNAME = "DEMO APP"
+const APPNAME = "GOOGLE SHEET SYNC"
 
 const Templates = {
   Main: {type: "fullscreen", template: require(`./dist/templates/Main.template`)},
   Transaction: {type: "transaction", template: require(`./dist/templates/Transaction.template`)},
-  Home: {type: "home", template: require(`./dist/templates/Home.template`)},
+  Connected: {type: "home", template: require(`./dist/templates/Connected.template`)},
 }
 
 const initialData = {
+  sheetName: "Sept 28 3:30 PM EST",
+  row: 35,
   transaction: {
       id: "0d2b05d9-68fd-4dd3-a354-25199bd55d48",
       merchantName: "Sport's Academy",
@@ -102,7 +104,7 @@ export default function App() {
         <KText>What template do you want to open?</KText>
         <KButton type="primary" style={buttonStyle} label="Main" onPress={() => setTemplateToLoad(Templates.Main)} />
         <KButton type="primary" style={buttonStyle} label="Transaction Panel" onPress={() => setTemplateToLoad(Templates.Transaction)} />
-        <KButton type="primary" style={buttonStyle} label="Home Panel" onPress={() => setTemplateToLoad(Templates.Home)} />      
+        <KButton type="primary" style={buttonStyle} label="Connected Panel" onPress={() => setTemplateToLoad(Templates.Connected)} />      
       </KScreen>
     )  
   }
