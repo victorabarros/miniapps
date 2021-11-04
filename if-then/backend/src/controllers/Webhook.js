@@ -9,7 +9,7 @@ const {
 } = require("@klutchcard/alloy-js")
 const httpStatus = require('http-status');
 const Automation = require('../models/Automation')
-const { transactionEventType, klutchServerUrl } = require('../../config')
+const { transactionEventType, klutchServerUrl, recipeId } = require('../../config')
 const Ajv = require("ajv")
 
 AlloyJS.configure({ serverUrl: klutchServerUrl })
@@ -84,7 +84,7 @@ const execAutomation = async (req, resp) => {
 
   if (!automation) {
     console.log(`recipeInstall "${recipeInstallId}" has no rules`)
-    return resp.status(httpStatus.BAD_REQUEST).json()
+    return resp.status(httpStatus.OK).json()
   }
 
   const { rules } = automation._doc || {}
@@ -109,16 +109,24 @@ const execAutomation = async (req, resp) => {
 }
 
 const handleRule = async ({ condition, action }) => {
-  if (!verifyCondition(condition, transaction)) return
+  const entity = new Entity({
+    type: "com.alloycard.core.entities.transaction.Transaction",
+    entityID: transaction.id,
+  })
+
+  if (!verifyCondition(condition, transaction)) {
+    RecipesService.addPanel(recipeInstallId, "/templates/TransactionPanel.template", { recipeId }, entity)
+    return
+  }
+
   console.log(`applying rule "${condition.key}-${condition.value}", action "${action.key}" on transaction ${transaction.id}`)
   await applyAction(action, transaction)
 
-  console.log(`adding panel to transaction \"${transaction.id}\"\trecipeInstallId \"${recipeInstallId}\"`)
-  await RecipesService.addPanel(
+  RecipesService.addPanel(
     recipeInstallId,
     "/templates/TransactionPanel.template",
     { condition, action },
-    new Entity({ entityID: transaction.id, type: "com.alloycard.core.entities.transaction.Transaction" })
+    entity
   )
 }
 

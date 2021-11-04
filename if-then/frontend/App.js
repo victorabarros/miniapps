@@ -49,6 +49,10 @@ export default function App() {
         <KText>What template do you want to open?</KText>
         <KButton type="primary" style={buttonStyle} label="Main" onPress={() => setTemplateToLoad(Templates.Main)} />
         <KButton type="primary" style={buttonStyle} label="TransactionPanel" onPress={() => setTemplateToLoad(Templates.TransactionPanel)} />
+        <KButton type="primary" style={buttonStyle} label="TransactionBlankPanel" onPress={() => {
+          setTemplateToLoad(Templates.TransactionPanel)
+          setTemplateData({recipeId: 'IfThen'})
+        }} />
       </KScreen>
     )
   }
