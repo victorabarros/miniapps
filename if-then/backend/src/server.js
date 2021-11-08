@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const { router } = require('./routes')
-const { mongoUrl, mongoDbName, port } = require('../config')
+const { mongoUrl, mongoDbName, port, version } = require('../config')
 
 const app = express()
 
@@ -17,4 +17,4 @@ mongoose.connect(
   }
 )
 
-app.listen(port, () => console.log(`\nServer is running on port ${port}`))
+app.listen(port, () => console.log(`\nServer is running on port ${port}\tversion ${version}`))

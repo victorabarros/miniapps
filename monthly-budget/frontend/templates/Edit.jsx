@@ -63,6 +63,10 @@ const stylesCategories = {
   },
   buttonLabelText: { marginLeft: 16 },
   footerText: { fontSize: 12 },
+  scrollContainer: {
+    marginTop: 10,
+    height: "85%",
+  },
 }
 
 const categoryColors = [
@@ -79,6 +83,7 @@ const categoryColors = [
 const State = {
   fromOtherView: 'switchingToEdit',
 
+  loadCategories: "loadCategories",
   selectCategory: 'selectCategory',
   saving: 'saving',
   deleting: 'deleting',
@@ -89,9 +94,16 @@ const State = {
 Template = (data, context) => {
   if (Object.keys(context.state.budget).length === 0) context.setState({ budget: data })
   const { id, category, amount } = context.state.budget
-  const { budgets, state, error } = context.state
+  const { budgets, state, error, categories } = context.state
+  if (!categories) context.setState({ ...context.state, categories: ['SHOPPING', 'DINING OUT', 'TRANSPORT', 'FOOD', 'GIFTS', 'FUN', 'MEDICAL', 'BEAUTY',] })
 
-  if (state === State.fromOtherView) context.setState({ state: State.ready })
+  const loadCategories = async () => {
+    const cats = await context.get("/category")
+    context.setState({ ...context.state, state: State.ready, categories: cats.map(({ name }) => name) })
+  }
+
+  if (state === State.fromOtherView) context.setState({ ...context.state, state: State.loadCategories })
+  if (state === State.loadCategories) loadCategories()
 
   if (state === State.selectCategory) {
     return (
@@ -100,7 +112,7 @@ Template = (data, context) => {
         <Klutch.KView key='header'>
           <Klutch.KHeader
             showBackArrow
-            onBackArrowPressed={() => context.setState({ budget: { id, category, amount }, state: State.ready })}
+            onBackArrowPressed={() => context.setState({ ...context.state, budget: { id, category, amount }, state: State.ready })}
           >
             CATEGORIES
           </Klutch.KHeader>
@@ -110,37 +122,33 @@ Template = (data, context) => {
 
         <Klutch.KView key='body' style={stylesCategories.scrollContainer}>
           <Klutch.KScrollView>
-            {/* TODO fetch categories from server */}
-            {['SHOPPING', 'DINING OUT', 'TRANSPORT', 'FOOD', 'GIFTS', 'FUN', 'MEDICAL', 'BEAUTY',]
-              .map((categoryCandidate, idx) => {
-                const gradientColors = [
-                  categoryColors[idx % categoryColors.length].color1,
-                  categoryColors[idx % categoryColors.length].color2,]
+            {categories.map((categoryCandidate, idx) => {
+              const gradientColors = [
+                categoryColors[idx % categoryColors.length].color1,
+                categoryColors[idx % categoryColors.length].color2,]
 
-                return (
-                  <Klutch.KPressable
-                    key={`category-item-${idx}`}
-                    style={stylesCategories.button}
-                    onPress={() =>
-                      context.setState({ budget: { id, category: categoryCandidate, amount }, state: State.ready })
-                    }
-                  >
-                    <Klutch.KView style={stylesCategories.buttonLabelContainer}>
-                      <Klutch.LinearGradient.LinearGradient
-                        style={stylesCategories.buttonSquare}
-                        colors={gradientColors}
-                      />
-                      <Klutch.KText style={stylesCategories.buttonLabelText}>{categoryCandidate}</Klutch.KText>
-                    </Klutch.KView>
-                    <Klutch.Arrow color="black" />
-                  </Klutch.KPressable>
-                )
-              })
-            }
-            {/* TODO uncoment when fetch catagories */}
-            {/* <Klutch.KText style={stylesCategories.footerText}>
+              return (
+                <Klutch.KPressable
+                  key={`category-item-${idx}`}
+                  style={stylesCategories.button}
+                  onPress={() =>
+                    context.setState({ ...context.state, budget: { id, category: categoryCandidate, amount }, state: State.ready })
+                  }
+                >
+                  <Klutch.KView style={stylesCategories.buttonLabelContainer}>
+                    <Klutch.LinearGradient.LinearGradient
+                      style={stylesCategories.buttonSquare}
+                      colors={gradientColors}
+                    />
+                    <Klutch.KText style={stylesCategories.buttonLabelText}>{categoryCandidate}</Klutch.KText>
+                  </Klutch.KView>
+                  <Klutch.Arrow color="black" />
+                </Klutch.KPressable>
+              )
+            })}
+            <Klutch.KText style={stylesCategories.footerText}>
               To create a new category, go to the transactions tab and swipe right on a transaction
-            </Klutch.KText> */}
+            </Klutch.KText>
           </Klutch.KScrollView >
         </Klutch.KView>
 
@@ -148,7 +156,7 @@ Template = (data, context) => {
     )
   }
 
-  if (state !== State.ready) {
+  if ([State.fromOtherView, State.saving, State.deleting, State.toMainView].includes(state)) {
     return (
       <Klutch.KView style={styles.loading}>
         <Klutch.KLoadingIndicator />
@@ -195,7 +203,7 @@ Template = (data, context) => {
         <Klutch.KBigCurrencyInput
           style={styles.inputValue}
           value={amount}
-          onAmountChanged={(value) => context.setState({ budget: { id, category, amount: value } })}
+          onAmountChanged={(value) => context.setState({ ...context.state, budget: { id, category, amount: value } })}
           placeholder="$0.00"
         />
       </Klutch.KView>
@@ -204,7 +212,7 @@ Template = (data, context) => {
         <Klutch.KText style={styles.inputLabel}>Budget Category</Klutch.KText>
         <Klutch.KPressable
           style={styles.inputCategoryContainer}
-          onPress={() => context.setState({ budget: { id, category, amount }, state: State.selectCategory })}
+          onPress={() => context.setState({ ...context.state, budget: { id, category, amount }, state: State.selectCategory })}
         >
           <Klutch.KText style={styles.inputValue}>{category}</Klutch.KText>
           <Klutch.Arrow color="black" height={30} width={30} />

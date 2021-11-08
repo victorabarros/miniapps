@@ -182,4 +182,4 @@ const deleteBudget = async (req, resp) => {
   return resp.status(httpStatus.OK).json(null)
 }
 
-module.exports = { createOrUpdateBudget, getBudgets, deleteBudget }
+module.exports = { createOrUpdateBudget, getBudgets, deleteBudget, getRecipeInstallId }

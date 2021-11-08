@@ -1,36 +1,33 @@
-const { BuildJWTToken, DecodeToken } = require("./helper")
 const { RecipesService, GraphQLService, TransactionService } = require("@klutchcard/alloy-js")
+const { getRecipeInstallId } = require("./BudgetController")
 const httpStatus = require('http-status');
-
+const { recipeId, privateKey } = require('../config/config')
 
 const listCategories = async (req, resp) => {
   console.log("GET /category started")
-  const token = req.headers.authorization
-  let decodedToken
 
+  let recipeInstallId
   try {
-    decodedToken = DecodeToken(token.substr(7))
+    recipeInstallId = getRecipeInstallId(req.headers.authorization)
   } catch (err) {
     console.log({ err })
     return resp.status(httpStatus.UNAUTHORIZED).json({ errorMessage: "Invalid token" })
   }
 
-  const recipeInstallId = decodedToken["custom:principalId"]
-
-  let cats
+  let cats = []
 
   try {
-    GraphQLService.setAuthToken(BuildJWTToken())
+    GraphQLService.setAuthToken(RecipesService.buildRecipeToken(recipeId, privateKey))
     const recipeInstallToken = await RecipesService.getRecipeInstallToken(recipeInstallId)
     GraphQLService.setAuthToken(recipeInstallToken)
 
     cats = await TransactionService.getTransactionCategories()
   } catch (err) {
     console.log({ err, recipeInstallId })
-    return resp.status(httpStatus.SERVICE_UNAVAILABLE).json({ errorMessage: "fail in request to graphql api" })
+    return resp.status(httpStatus.SERVICE_UNAVAILABLE).json({ errorMessage: 'fail in fetch categories from server' })
   }
 
-  console.log(`GET /category finished with success`)
+  console.log(`recipeInstall "${recipeInstallId}" has "${cats.length}" categories\nGET /category finished with success`)
   return resp.status(httpStatus.OK).json(cats)
 }
 

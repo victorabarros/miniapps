@@ -1,0 +1,121 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  monthly-budget-miniapp
+
+Parameters:
+  AppVersion:
+    Type: String
+    Description: App version
+  DatabaseDialect:
+    Type: String
+    Description: Database dialect
+  DatabaseHost:
+    Type: String
+    Description: Database address
+  DatabaseName:
+    Type: String
+    Description: Database name
+  DatabasePassword:
+    Type: String
+    Description: Database password
+  DatabaseUsername:
+    Type: String
+    Description: Database username
+  KlutchPublicKey:
+    Type: String
+    Description: Klutch Public Key
+  KlutchServerUrl:
+    Type: String
+    Description: Klutch Server URL
+  Port:
+    Type: Number
+    Description: port
+  PrivateKey:
+    Type: String
+    Description: MiniAppPrivateKey
+  RecipeId:
+    Type: String
+    Description: MiniApp id
+
+Resources:
+  MiniAppECR:
+    Type: AWS::ECR::Repository
+    Properties:
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      ImageTagMutability: MUTABLE
+      RepositoryName: miniapps/mothlybudget
+
+  MiniAppECSTask:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      ContainerDefinitions:
+        - Name: "miniapps-mothlybudget"
+          Image: !GetAtt MiniAppECR.RepositoryUri
+          PortMappings:
+            - ContainerPort: !Ref Port
+              HostPort: 0
+              Protocol: tcp
+          MemoryReservation: 512
+          Environment:
+            [
+              { Name: APP_VERSION, Value: !Ref AppVersion },
+              { Name: DATABASE_DIALECT, Value: !Ref DatabaseDialect },
+              { Name: DATABASE_HOST, Value: !Ref DatabaseHost },
+              { Name: DATABASE_NAME, Value: !Ref DatabaseName },
+              { Name: DATABASE_PASSWORD, Value: !Ref DatabasePassword },
+              { Name: DATABASE_USERNAME, Value: !Ref DatabaseUsername },
+              { Name: KLUTCH_PUBLIC_KEY, Value: !Ref KlutchPublicKey },
+              { Name: KLUTCH_SERVER_URL, Value: !Ref KlutchServerUrl },
+              { Name: PORT, Value: !Ref Port },
+              { Name: RECIPE_ID, Value: !Ref RecipeId },
+              { Name: RECIPE_PRIVATE_KEY, Value: !Ref PrivateKey },
+            ]
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref ECSCloudWatchLogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: ecs
+      Family: miniapps-mothlybudget
+      ExecutionRoleArn: !Ref TaskRole
+      TaskRoleArn: !Ref TaskRole
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ecs-tasks.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: allow-access-to-ecr
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  [
+                    "ecr:GetDownloadUrlForLayer",
+                    "ecr:BatchGetImage",
+                    "ecr:GetAuthorizationToken",
+                    "ecr:BatchCheckLayerAvailability",
+                  ]
+                Resource: "*"
+        - PolicyName: allow-cloudwatch-logs
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: ["logs:CreateLogStream", "logs:PutLogEvents"]
+                Resource: !GetAtt ECSCloudWatchLogGroup.Arn
+  ECSCloudWatchLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: "/ecs/miniapps/mothlybudget"
+      RetentionInDays: 90
