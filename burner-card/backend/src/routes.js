@@ -4,7 +4,7 @@ const httpStatus = require('http-status')
 const { execWebhook } = require("./controllers/Webhook")
 const AlloyJS = require("@klutchcard/alloy-js")
 const { listBurnerCard, addBurnerCard } = require("./controllers/Card")
-const { mongoDbName, klutchServerUrl } = require("../config")
+const { mongoDbName, klutchServerUrl, version } = require("../config")
 const BurnerCard = require('./models/Card');
 
 const router = Router()
@@ -43,7 +43,7 @@ router.get("/health", async (req, resp) => {
     console.log(services.klutchServer.errorMessage)
   }
 
-  return resp.status(responseStatus).json({ services })
+  return resp.status(responseStatus).json({ services, version })
 })
 
 module.exports = { router }
