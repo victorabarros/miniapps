@@ -94,14 +94,16 @@ const execAutomation = async (req, resp) => {
 
     transaction = await TransactionService.getTransactionDetails(event.transaction.entityID)
 
-    const { merchantName } = transaction
     const entity = new Entity({
       type: "com.alloycard.core.entities.transaction.Transaction",
       entityID: transaction.id,
     })
 
     RecipesService.addPanel(
-      recipeInstallId, "/templates/TransactionPanel.template", { recipeId, merchantName }, entity
+      recipeInstallId,
+      "/templates/TransactionPanel.template",
+      { recipeId, merchantName: transaction.merchantName },
+      entity
     )
 
     await Promise.all(Object.values(rules).map(handleRule))
