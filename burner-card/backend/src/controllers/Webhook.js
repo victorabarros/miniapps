@@ -44,7 +44,7 @@ const execWebhook = async (req, resp) => {
 
   if (event._alloyCardType !== transactionCreatedEventType) {
     console.log(`event type "${event._alloyCardType} hasn't a handler`)
-    return resp.status(httpStatus.BAD_REQUEST).json()
+    return resp.status(httpStatus.OK).json()
   }
 
   let row
@@ -58,7 +58,7 @@ const execWebhook = async (req, resp) => {
 
   if (!row) {
     console.log(`recipeInstall "${recipeInstallId}" has no burner cards`)
-    return resp.status(httpStatus.NOT_FOUND).json()
+    return resp.status(httpStatus.OK).json()
   }
 
   const { cards } = (row || { _doc: { cards: [] } })._doc

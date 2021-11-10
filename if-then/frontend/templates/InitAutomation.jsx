@@ -46,7 +46,10 @@ Template = (data = {}, context) => {
 
   return (
     <Klutch.KView style={{ flex: 1, paddingBottom: 20 }}>
-      <Klutch.KHeader showBackArrow onBackArrowPressed={() => context.loadTemplate("/templates/Main.template", {})}>
+      <Klutch.KHeader
+        showBackArrow
+        onBackArrowPressed={() => context.loadTemplate("/templates/Main.template", {})}
+      >
         ADD AUTOMATION
       </Klutch.KHeader>
 
