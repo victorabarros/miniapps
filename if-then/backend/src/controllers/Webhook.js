@@ -70,24 +70,19 @@ const execAutomation = async (req, resp) => {
 
   if (event._alloyCardType !== transactionEventType) {
     console.log(`event type "${event._alloyCardType} hasn't a handler`)
-    return resp.status(httpStatus.BAD_REQUEST).json()
+    return resp.status(httpStatus.OK).json()
   }
 
   let automation
 
   try {
-    automation = await Automation.findOne({ recipeInstallId })
+    automation = (await Automation.findOne({ recipeInstallId })) || { _doc: { rules: {} } }
   } catch (err) {
     console.log({ err, recipeInstallId })
     return resp.status(httpStatus.SERVICE_UNAVAILABLE).json({ errorMessage: "Database connection error" })
   }
 
-  if (!automation) {
-    console.log(`recipeInstall "${recipeInstallId}" has no rules`)
-    return resp.status(httpStatus.OK).json()
-  }
-
-  const { rules } = automation._doc || {}
+  const { rules } = automation._doc
   console.log(`recipeInstall "${recipeInstallId}" has "${Object.keys(rules).length}" rules`)
 
   const jwtToken = BuildJWTToken()
@@ -98,6 +93,19 @@ const execAutomation = async (req, resp) => {
     GraphQLService.setAuthToken(recipeInstallToken)
 
     transaction = await TransactionService.getTransactionDetails(event.transaction.entityID)
+
+    const entity = new Entity({
+      type: "com.alloycard.core.entities.transaction.Transaction",
+      entityID: transaction.id,
+    })
+
+    RecipesService.addPanel(
+      recipeInstallId,
+      "/templates/TransactionPanel.template",
+      { recipeId, merchantName: transaction.merchantName },
+      entity
+    )
+
     await Promise.all(Object.values(rules).map(handleRule))
   } catch (err) {
     console.log({ err, recipeInstallId, transactionId: event.transaction.entityID })
@@ -115,7 +123,6 @@ const handleRule = async ({ condition, action }) => {
   })
 
   if (!verifyCondition(condition, transaction)) {
-    RecipesService.addPanel(recipeInstallId, "/templates/TransactionPanel.template", { recipeId }, entity)
     return
   }
 

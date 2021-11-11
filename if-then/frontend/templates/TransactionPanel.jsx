@@ -39,6 +39,7 @@ const styles = {
 const State = {
   loading: 'loading',
   done: 'done',
+  toInitView: 'switchingToInit',
 }
 
 Template = (data = {}, context) => {
@@ -63,10 +64,10 @@ Template = (data = {}, context) => {
     )
   }
 
-  const { recipeId } = data
+  const { merchantName } = data
   const { state } = context.state || { state: State.done }
 
-  if (state == State.loading) {
+  if (state !== State.done) {
     return (
       <Klutch.KView style={styles.loading}>
         <Klutch.KLoadingIndicator size="small" />
@@ -80,8 +81,11 @@ Template = (data = {}, context) => {
       <Klutch.KPressable
         style={styles.button}
         onPress={() => {
-          context.setState({ state: State.loading })
-          context.redirect(`/miniapps/${recipeId}/templates/InitAutomation.template`)
+          context.setState({ state: State.toInitView })
+          const conditionData = merchantName
+            ? { "condition": { "key": "merchantName", "title": "Merchant is ", "value": merchantName, } }
+            : {}
+          context.loadTemplate("/templates/InitAutomation.template", conditionData)
         }}
       >
         <Klutch.PlusSign color={Klutch.KlutchTheme.colors.secondary} width={15} height={15} />
