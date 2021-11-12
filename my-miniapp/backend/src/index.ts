@@ -7,33 +7,26 @@ const port = 3004
 const middleware = (req: Request, res: Response, next: NextFunction) => {
   const { method, url } = req
 
-  console.log(`${new Date().toISOString()} ${method} "${url}" started`)
+  console.log(`[${new Date().toISOString()}] ${method} "${url}" started`)
   //   TODO check authorization
 
   next()
 }
 
-const healthCheckController = async (req: Request, res: Response) => {
-  return res
-    .status(httpStatus.OK)
-    .json({ health: "check" })
-}
+const healthCheckController = async (req: Request, res: Response) =>
+  res.status(httpStatus.OK).json({ health: "check" })
 
 const listResourcesController = async (req: Request, res: Response) => {
   const resources = await Resource.list()
 
-  return res
-    .status(httpStatus.OK)
-    .json({ resources })
+  return res.status(httpStatus.OK).json({ resources })
 }
 
 const insertResourceController = async (req: Request, res: Response) => {
   const { name, value } = req.body
   const resources = await Resource.insert({ id: '004', name, value })
 
-  return res
-    .status(httpStatus.CREATED)
-    .json({ resources })
+  return res.status(httpStatus.CREATED).json({ resources })
 }
 
 express()
