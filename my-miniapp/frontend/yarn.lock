@@ -2,19 +2,6 @@
 # yarn lockfile v1
 
 
-"@alloycard/alloy-js@^1.4.15":
-  version "1.4.15"
-  resolved "https://npm.pkg.github.com/download/@alloycard/alloy-js/1.4.15/8ed9dcbac074204d659334340ae787a2c33bb7b704d09c5ef56317721fd134e0#9287b879ee0be62785d7c2f780f1900c85d46ebb"
-  integrity sha512-Jas1CyFEhocDzBey6kN0f70ploV5s2PZIdZ7yc+VnvRR5LwuZ18KWG8Va4rsX68Z+3GguR0K+6au+MPuFxdZFg==
-  dependencies:
-    "@apollo/client" "^3.3.19"
-    axios "^0.21.1"
-    cross-fetch "^3.0.6"
-    graphql "^15.3.0"
-    graphql-tag "^2.12.0"
-    rxjs "^6.6.2"
-    sqlite3 "^5.0.2"
-
 "@apollo/client@^3.3.19":
   version "3.4.8"
   resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.4.8.tgz#66d06dc1784d07d46731b3bda546046f8c280b74"
@@ -1960,11 +1947,10 @@
     "@babel/runtime" "^7.7.2"
     regenerator-runtime "^0.13.3"
 
-"@klutchcard/alloy-js@^1.4.17-beta3":
-  name "@alloycard/alloy-js"
-  version "1.4.29"
-  resolved "https://npm.pkg.github.com/download/@klutchcard/alloy-js/1.4.29/4978bee37ff7b366a9bd33617a8eb847639ae447e068ba0a1c2aeed86f1f4f9e#44944bbebffafe62b4ea6079f2fa8218136995ac"
-  integrity sha512-VYvw8A+T1XCl4HvLvJM67v8H7dZgFX6s0ZPLwHbt4XyL7xfjLSlVhyw3O7xYtuMyX2/CRzlrV27atMQxz9gQ2g==
+"@klutchcard/alloy-js@1.4.41":
+  version "1.4.41"
+  resolved "https://npm.pkg.github.com/download/@klutchcard/alloy-js/1.4.41/193b8c77401d8dc5b8d1a3a398cc74a0ee9e87ea6012e97d394d3653e9431233#7c4e52ee6f4a468ec18a7bfcd0cdb35eeaf9eb86"
+  integrity sha512-cCkS1W2rec9HmvQ5tob5o6cOEPC0k+oA83CZOnIRBg39nnT1jCT3v+Ey6gNUoa/Qs7FSJui7BhvoznUDrj524g==
   dependencies:
     "@apollo/client" "^3.3.19"
     axios "^0.21.1"
@@ -1975,17 +1961,31 @@
     rxjs "^6.6.2"
     sqlite3 "^5.0.2"
 
-"@klutchcard/klutch-components@^0.1.78":
-  name "@alloycard/klutch-components"
-  version "0.1.82"
-  resolved "https://npm.pkg.github.com/download/@klutchcard/klutch-components/0.1.82/21fa6a4922798a479e21444c3fcd874e768709ea35dd7166c6c1e7cc0bfcee5d#28206b894c6c5b5db3c1f2917ebfa7eb7167e4b7"
-  integrity sha512-gz+3Cy4KNcWn6zP1eE8KNA3C9oUz+A1JxX9A7XJqlQsAuih9DT4fkuBFERP7heQjoBjwTCQscdBwquWo0SM5FQ==
+"@klutchcard/alloy-js@1.4.44":
+  version "1.4.44"
+  resolved "https://npm.pkg.github.com/download/@klutchcard/alloy-js/1.4.44/76de391b26129560ea5226725b586f777abbd8acc8059d9a70c47ec306c444c3#6687934a3404539e784afb845adfa6683be00c5c"
+  integrity sha512-Nz8i9rIjs8QA9RF3i5qdF3a9K3JstWhJNooB7fFdwJlHcIizqcG1lMnxHxyGBSgT48zVMxXqtt1F2h8yJFIyhQ==
   dependencies:
-    "@alloycard/alloy-js" "^1.4.15"
+    "@apollo/client" "^3.3.19"
+    axios "^0.21.1"
+    base64url "^3.0.1"
+    cross-fetch "^3.0.6"
+    graphql "^15.3.0"
+    graphql-tag "^2.12.0"
+    rxjs "^6.6.2"
+    sqlite3 "^5.0.2"
+
+"@klutchcard/klutch-components@0.1.89":
+  version "0.1.89"
+  resolved "https://npm.pkg.github.com/download/@klutchcard/klutch-components/0.1.89/cf445617cf72573fac76a01e746b693f4a5bd3f0e1ebbf3027804ad57df1e634#ec78235bfb8ef9ea8e9eb31c3eb695e5b88a36a9"
+  integrity sha512-VH1k0MrY7Ge7uR0AcWGAp5uv0gBqAosu9NR99prSsbVgjEpwNQBvVzf22tI/03ZNYpH9JDdO9Vrktey1muK6FQ==
+  dependencies:
     "@expo-google-fonts/inter" "^0.1.0"
+    "@klutchcard/alloy-js" "1.4.41"
     "@react-native-community/hooks" "^2.6.0"
     expo "^42.0.0"
     expo-haptics "~10.1.0"
+    expo-linear-gradient "~9.2.0"
     luxon "^1.26.0"
     react-native-currency-input "^1.0.1"
     react-native-svg "12.1.1"
@@ -4085,6 +4085,11 @@ expo-keep-awake@~9.2.0:
   version "9.2.0"
   resolved "https://registry.yarnpkg.com/expo-keep-awake/-/expo-keep-awake-9.2.0.tgz#9cbdcc8264c943ef29a58326236cd34267e98f43"
   integrity sha512-R5jAx5j3MqrhKFB307FBpaHtYSYeVIFX/rVforBF5inKonYjXRWVhjGoBjolF4geAryNamC3NKhMfxyaaB0W6Q==
+
+expo-linear-gradient@~9.2.0:
+  version "9.2.0"
+  resolved "https://registry.yarnpkg.com/expo-linear-gradient/-/expo-linear-gradient-9.2.0.tgz#5ae16fcb8f141b1c51dc36bd4493dfd6566a9511"
+  integrity sha512-LnW2u9OT6GeyC6T8qEGjFYfNSk4KIBAwU0aRSjM4Y8hckWqhtKngGDz46DqGmJBzvZMSKuZZvj5xKn794r54ag==
 
 expo-linking@^2.3.1:
   version "2.3.1"
@@ -7177,10 +7182,7 @@ qs@^6.5.0:
   integrity sha512-M528Hph6wsSVOBiYUnGf+K/7w0hNshs/duGsNXPUCLH5XAqjEtiPGwNONLV0tBH8NoGb0mvD5JubnUTrujKDTg==
   dependencies:
     side-channel "^1.0.4"
-<<<<<<< HEAD
 
-=======
->>>>>>> 0fa1df75e9d5d60eb63e0523e0abc0a5a54c66ce
 qs@~6.5.2:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
