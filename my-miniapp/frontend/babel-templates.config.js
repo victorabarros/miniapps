@@ -6,4 +6,4 @@ module.exports = {
     "@babel/preset-react"
     //'module:metro-react-native-babel-preset'
   ],
-};
+}

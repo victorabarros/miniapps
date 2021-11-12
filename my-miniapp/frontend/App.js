@@ -1,33 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { View } from "react-native";
-import { useFonts, Inter_400Regular, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
-import AppLoading from 'expo-app-loading';
-import SimulationComponent from './SimulationComponent';
+import React, { useEffect, useState } from 'react'
+import { View } from "react-native"
+import { useFonts, Inter_400Regular, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter'
+import AppLoading from 'expo-app-loading'
+import SimulationComponent from './SimulationComponent'
 import { KText, KButton, KScreen } from "@klutchcard/klutch-components"
-import AlloyJS, { AuthService, GraphQLService } from '@klutchcard/alloy-js';
-import Constants from 'expo-constants';
+import AlloyJS, { AuthService, GraphQLService } from '@klutchcard/alloy-js'
+import Constants from 'expo-constants'
 import { gql } from "graphql-tag"
 
 /* MINIAPP CONFIGURATION */
 
-
-const APPNAME = "DEMO APP"
+const APPNAME = "My Miniapp"
 
 const Templates = {
   Main: {
     type: "fullscreen",
     template: require(`./dist/templates/Main.template`),
-    path: `/templates/Main.template`
+    filename: `/templates/Main.template`,
   },
   Transaction: {
     type: "transaction",
     template: require(`./dist/templates/Transaction.template`),
-    path: `/templates/Transaction.template`
+    filename: `/templates/Transaction.template`
   },
   Home: {
     type: "home",
-    path: `/templates/Home.template`,
-    template: require(`./dist/templates/Home.template`)
+    template: require(`./dist/templates/Home.template`),
+    filename: `/templates/Home.template`,
   }
 }
 
@@ -42,9 +41,6 @@ const initialData = {
   }
 }
 
-
-
-
 /* END MINIAPP CONFIGURATION */
 
 const envFields = Constants.manifest?.extra
@@ -56,17 +52,12 @@ const RECIPEID = envFields.RecipeId
 const RECIPEINSTALLID = envFields.RecipeInstallId
 const SERVERURL = envFields.MiniAppServerUrl
 
-
-
 export default function App() {
-
-  let [fontsLoaded] = useFonts({ Inter_400Regular, Inter_600SemiBold, Inter_700Bold });
+  let [fontsLoaded] = useFonts({ Inter_400Regular, Inter_600SemiBold, Inter_700Bold })
   const [templateToLoad, setTemplateToLoad] = useState()
   const [templateData, setTemplateData] = useState(initialData)
   const [token, setToken] = useState("")
   const [bgColor, setBgColor] = useState("")
-
-
 
   useEffect(() => {
     AlloyJS.configure({
@@ -74,6 +65,7 @@ export default function App() {
       userPoolClientId: envFields.userPoolClientId,
       userPoolServer: envFields.userPoolServer
     })
+
     const run = async () => {
       await AuthService.signIn(envFields.userName, envFields.password)
       try {
@@ -96,16 +88,12 @@ export default function App() {
     run()
   }, [])
 
-
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return <AppLoading />
   }
-
-
 
   if (!templateToLoad) {
     const buttonStyle = { marginVertical: 10 }
-
 
     return (
       <KScreen style={{ flex: 1, marginVertical: 30, justifyContent: 'space-evenly' }}>
@@ -128,7 +116,6 @@ export default function App() {
     setTemplateToLoad(t)
   }
 
-
   return (
     <View>
       <SimulationComponent
@@ -142,7 +129,5 @@ export default function App() {
         token={token}
         onLoadTemplate={onLoadTemplate} />
     </View>
-  );
+  )
 }
-
-

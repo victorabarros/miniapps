@@ -1,9 +1,9 @@
-const { getDefaultConfig } = require('@expo/metro-config');
+const { getDefaultConfig } = require('@expo/metro-config')
 
-const defaultConfig = getDefaultConfig(__dirname);
+const defaultConfig = getDefaultConfig(__dirname)
 
-defaultConfig.resolver.assetExts.push('template');
+defaultConfig.resolver.assetExts.push('template')
 //defaultConfig.watchFolders.push('dist/templates')
 
 
-module.exports = defaultConfig;
+module.exports = defaultConfig

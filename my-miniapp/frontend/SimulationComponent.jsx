@@ -1,14 +1,11 @@
-import * as Klutch from '@klutchcard/klutch-components';
-import { Asset } from 'expo-asset';
-import React, { useEffect, useState, useCallback } from "react";
-import equal from "deep-equal";
-import axios from "axios";
-import * as Linking from 'expo-linking';
-
-
+import * as Klutch from '@klutchcard/klutch-components'
+import { Asset } from 'expo-asset'
+import React, { useEffect, useState, useCallback } from "react"
+import equal from "deep-equal"
+import axios from "axios"
+import * as Linking from 'expo-linking'
 
 const SimulationComponent = ({ serverUrl, token, template, type, name, data, onLoadTemplate, panelConfigCallback, recipeInstallId }) => {
-
   const [content, setContent] = useState(null)
   const [templateState, setTemplateState] = useState()
   const [reRender, setReRender] = useState(0)
@@ -20,7 +17,7 @@ const SimulationComponent = ({ serverUrl, token, template, type, name, data, onL
     const run = async () => {
       if (template) {
         const mod = await Asset.loadAsync(template)
-        const resp = await fetch(mod[0].uri);
+        const resp = await fetch(mod[0].uri)
         const doc = await resp.text()
         setContent(doc)
       }
@@ -28,11 +25,9 @@ const SimulationComponent = ({ serverUrl, token, template, type, name, data, onL
     run()
   })
 
-
   useEffect(() => {
     setInit(false)
   }, [template])
-
 
   useEffect(() => {
     if (initCallback) {
@@ -66,59 +61,61 @@ const SimulationComponent = ({ serverUrl, token, template, type, name, data, onL
     state: templateState,
     recipeInstallId: recipeInstallId,
     async post(path, data) {
-      try {
-        const resp = await axios.post(`${serverUrl}${path}`, data, {
+      const resp = await axios.post(
+        `${serverUrl}${path}`,
+        data,
+        {
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           }
-        })
-        return resp.data
-      } catch (e) {
-        console.error("Error on post ", e)
-      }
-
+        }
+      )
+      return resp.data
     },
     async get(path, data) {
-      try {
-        const resp = await axios.get(`${serverUrl}${path}`, {
+      const resp = await axios.get(
+        `${serverUrl}${path}`,
+        {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
           data: data
-        })
-        return resp.data
-      } catch (e) {
-        console.error(e)
-      }
+        }
+      )
+      return resp.data
     },
     async delete(path, data) {
       try {
-        const resp = await axios.delete(`${serverUrl}${path}`, {
-          method: "DELETE",
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          data: data
-        })
+        const resp = await axios.delete(
+          `${serverUrl}${path}`,
+          {
+            method: "DELETE",
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            data: data
+          }
+        )
         return resp.data
       } catch (e) {
         console.error(e)
       }
     },
     openExternalUrl(url) {
-      Linking.openURL(url);
+      Linking.openURL(url)
     },
     closeMiniApp() {
-      onLoadTemplate();
+      onLoadTemplate()
     },
-    changePanelData(panelId, data) {
-
+    redirect(path) {
+      console.log(`redirect to ${path}`)
     },
+    changePanelData(panelId, data) { },
     setPanelConfig(conf) {
       if (!equal(config, conf)) {
         setConfig(conf)
@@ -135,12 +132,11 @@ const SimulationComponent = ({ serverUrl, token, template, type, name, data, onL
   const drawTemplate = function () {
     const r = eval(content)
     const React = react
-    const { DateTime } = require("luxon");
+    const { DateTime } = require("luxon")
     const Victory = require("victory-native")
     const AlloyJS = require("@klutchcard/alloy-js")
     return r(data, simulationContext)
   }
-
 
   if (type === "fullscreen") {
     return (
@@ -156,14 +152,8 @@ const SimulationComponent = ({ serverUrl, token, template, type, name, data, onL
         </Klutch.KMiniAppPanel>
       </Klutch.KScreen>
     )
-
   }
-
 }
 
 const isPromise = v => typeof v === 'object' && typeof v.then === 'function'
-
 export default SimulationComponent
-
-
-
