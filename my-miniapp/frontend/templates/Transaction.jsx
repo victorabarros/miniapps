@@ -1,8 +1,8 @@
 Template = (data, context) => {
 
-    return (
-        <>
-            <Klutch.KText>This is a transaction Panel</Klutch.KText>
-        </>
-    )
+  return (
+    <>
+      <Klutch.KText>This is a transaction Panel</Klutch.KText>
+    </>
+  )
 }
