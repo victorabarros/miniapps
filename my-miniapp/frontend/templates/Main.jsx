@@ -1,7 +1,26 @@
+const MOCK_DATA = [
+  {
+    id: '001',
+    name: 'Food',
+    value: .81,
+  },
+  {
+    id: '002',
+    name: 'Travel',
+    value: .44,
+  },
+  {
+    id: '003',
+    name: 'Book',
+    value: .25,
+  }
+]
+
 Template = (data, context) => {
   const { resources } = context.state || {}
   const fetchData = async () => {
-    const { resources } = await context.get('resource')
+    // const { resources } = await context.get('resource')
+    const resources = MOCK_DATA
     context.setState({ resources })
   }
 
