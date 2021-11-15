@@ -1,4 +1,11 @@
 Template = (data, context) => {
+  const { resources } = context.state || {}
+  const fetchData = async () => {
+    const { resources } = await context.get('resource')
+    context.setState({ resources })
+  }
+
+  if (resources == undefined) fetchData()
 
   return (
     <Klutch.KView style={{ flex: 1 }}>
