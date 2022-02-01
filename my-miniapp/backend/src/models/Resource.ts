@@ -1,18 +1,18 @@
 const resources = [
   {
-    id: '001',
+    id: '0',
+    name: 'Book',
+    value: .25,
+  },
+  {
+    id: '1',
     name: 'Food',
     value: .81,
   },
   {
-    id: '002',
+    id: '2',
     name: 'Travel',
     value: .44,
-  },
-  {
-    id: '003',
-    name: 'Book',
-    value: .25,
   }
 ]
 

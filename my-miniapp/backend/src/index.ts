@@ -4,22 +4,19 @@ import {
   GraphQLService,
   RecipesService,
   AlloyJS,
+  CardsService,
+  TransactionService,
 } from "@klutchcard/alloy-js"
-import { sign, verify } from 'jsonwebtoken'
 import Resource from "./models/Resource"
+import { BuildJWTToken } from "./helper"
 
 // TODO move to env
 const port = 3004
 const recipeInstallCreatedEventType = "com.alloycard.core.entities.recipe.RecipeInstallCreatedEvent"
-const recipeId = ""
 const klutchServerUrl = "https://sandbox.klutchcard.com"
-const klutchPublicKey = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA68vuDInRI2B9gJsoYQfk\nC+7LyLjiye7iyOACXjCHGXF3yyYhTj8aKp5x6EDZHSupnuLd2kaNoWfu5oMHP1Nm\noU0Sx6z40cuO4fDk1SVswl+Ptv10L9zQjfhVaog9DbyKB9nCyIf9fYsphIQtpWfu\n3MkXgvvUKUR41hJOkM2d6jpH7k3wrgFfztGxTiDLAtb3HZk+QU2V0C6VBB6Uev/8\noZuG6GH8bwGCr68rTrUaDzD5MgVtLv9c7em+ZxXuSS1eS1thkCZaHnjoD2AjvheK\nDDFbFzAribqyPE+BFxhy8bLuAnQodQ1eISCel3AOsPzLHROtKIODmVVVBSZL27RV\nzwIDAQAB\n-----END PUBLIC KEY-----"
-const privateKey = ""
 
 AlloyJS.configure({
   serverUrl: `${klutchServerUrl}/graphql`,
-  jwtService: { sign, verify },
-  klutchPublicKey,
 })
 
 const middleware = (req: Request, res: Response, next: NextFunction) => {
@@ -42,9 +39,10 @@ const listResourcesController = async (req: Request, res: Response) => {
 
 const insertResourceController = async (req: Request, res: Response) => {
   const { name, value } = req.body
-  const resources = await Resource.insert({ id: '004', name, value })
+  const resources = await Resource.list()
+  const resp = await Resource.insert({ id: resources.length.toString(), name, value })
 
-  return res.status(httpStatus.CREATED).json({ resources })
+  return res.status(httpStatus.CREATED).json({ resp })
 }
 
 const webhookController = async (req: Request, res: Response) => {
@@ -59,11 +57,13 @@ const webhookController = async (req: Request, res: Response) => {
   if (event._alloyCardType === recipeInstallCreatedEventType) {
     console.log(`adding home panel to recipeInstallId \"${recipeInstallId}\"`)
 
-    GraphQLService.setAuthToken(RecipesService.buildRecipeToken(recipeId, privateKey))
+    const jwtToken = BuildJWTToken()
+    GraphQLService.setAuthToken(jwtToken)
 
     try {
       const recipeInstallToken = await RecipesService.getRecipeInstallToken(recipeInstallId)
       GraphQLService.setAuthToken(recipeInstallToken)
+
       await RecipesService.addPanel(recipeInstallId, "/templates/Home.template", {}, null)
       return res.status(httpStatus.OK).json()
     } catch (err) {
