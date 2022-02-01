@@ -62,7 +62,10 @@ const webhookController = async (req: Request, res: Response) => {
       const recipeInstallToken = await RecipesService.getRecipeInstallToken(recipeInstallId)
       GraphQLService.setAuthToken(recipeInstallToken)
 
-      await RecipesService.addPanel(recipeInstallId, "/templates/Home.template", {}, null)
+      await RecipesService.addPanel(recipeInstallId, "/templates/Home.template", {}, undefined)
+
+      // console.log(await RecipesService.getPanels(undefined))
+
       return res.status(httpStatus.OK).json()
     } catch (err) {
       console.log({ err, recipeInstallId })
