@@ -9,7 +9,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
   },
   "dependencies": {
-    "@klutchcard/alloy-js": "1.4.56",
+    "@klutchcard/alloy-js": "1.4.44",
     "express": "^4.17.1",
     "http-status": "^1.5.0",
     "jsonwebtoken": "^8.5.1"
