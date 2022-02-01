@@ -5,11 +5,11 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/src/index.js",
+    "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
   },
   "dependencies": {
-    "@klutchcard/alloy-js": "1.4.44",
+    "@klutchcard/alloy-js": "1.4.56",
     "express": "^4.17.1",
     "http-status": "^1.5.0",
     "jsonwebtoken": "^8.5.1"

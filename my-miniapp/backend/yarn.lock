@@ -25,10 +25,10 @@
   resolved "https://registry.yarnpkg.com/@graphql-typed-document-node/core/-/core-3.1.0.tgz#0eee6373e11418bfe0b5638f654df7a4ca6a3950"
   integrity sha512-wYn6r8zVZyQJ6rQaALBEln5B1pzxb9shV5Ef97kTvn6yVGrqyXVnDqnU24MXnFubR+rZjBY9NWuxX3FB2sTsjg==
 
-"@klutchcard/alloy-js@1.4.44":
-  version "1.4.44"
-  resolved "https://npm.pkg.github.com/download/@klutchcard/alloy-js/1.4.44/76de391b26129560ea5226725b586f777abbd8acc8059d9a70c47ec306c444c3#6687934a3404539e784afb845adfa6683be00c5c"
-  integrity sha512-Nz8i9rIjs8QA9RF3i5qdF3a9K3JstWhJNooB7fFdwJlHcIizqcG1lMnxHxyGBSgT48zVMxXqtt1F2h8yJFIyhQ==
+"@klutchcard/alloy-js@1.4.56":
+  version "1.4.56"
+  resolved "https://npm.pkg.github.com/download/@klutchcard/alloy-js/1.4.56/446d5d7236801e15533e1b32fc824697df9c34613144716057388b2c138ee790#1aad306355e4fda5310569241a9b726aa36a2936"
+  integrity sha512-evQqRU+J4/ejjyrHAXCc53rkpaIZGHhoKelEW07HrEa4H8cLaHZ6NA0PCYzC+1tG8IgPiS/nYPJYLOChmiMnkQ==
   dependencies:
     "@apollo/client" "^3.3.19"
     axios "^0.21.1"
