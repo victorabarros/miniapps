@@ -4,19 +4,17 @@ import {
   GraphQLService,
   RecipesService,
   AlloyJS,
-  CardsService,
-  TransactionService,
 } from "@klutchcard/alloy-js"
 import Resource from "./models/Resource"
 import { BuildJWTToken } from "./helper"
 
 // TODO move to env
-const port = 3004
-const recipeInstallCreatedEventType = "com.alloycard.core.entities.recipe.RecipeInstallCreatedEvent"
-const klutchServerUrl = "https://sandbox.klutchcard.com"
+const PORT = 3004
+const RECIPEINSTALL_CREATED_EVENT = "com.alloycard.core.entities.recipe.RecipeInstallCreatedEvent"
+const SERVER_URL = "https://sandbox.klutchcard.com"
 
 AlloyJS.configure({
-  serverUrl: `${klutchServerUrl}/graphql`,
+  serverUrl: `${SERVER_URL}/graphql`,
 })
 
 const middleware = (req: Request, res: Response, next: NextFunction) => {
@@ -54,7 +52,7 @@ const webhookController = async (req: Request, res: Response) => {
 
   const recipeInstallId = principal.entityID
 
-  if (event._alloyCardType === recipeInstallCreatedEventType) {
+  if (event._alloyCardType === RECIPEINSTALL_CREATED_EVENT) {
     console.log(`adding home panel to recipeInstallId \"${recipeInstallId}\"`)
 
     const jwtToken = BuildJWTToken()
@@ -64,7 +62,7 @@ const webhookController = async (req: Request, res: Response) => {
       const recipeInstallToken = await RecipesService.getRecipeInstallToken(recipeInstallId)
       GraphQLService.setAuthToken(recipeInstallToken)
 
-      await RecipesService.addPanel(recipeInstallId, "/templates/Home.template", {}, null)
+      await RecipesService.addPanel(recipeInstallId, "/templates/Home.template", {}, null, .5)
       return res.status(httpStatus.OK).json()
     } catch (err) {
       console.log({ err, recipeInstallId })
@@ -80,4 +78,4 @@ express()
   .get('/resource', listResourcesController)
   .post('/resource', insertResourceController)
   .post('/webhook', webhookController)
-  .listen(port, () => console.log(`runnnig on port ${port}`))
+  .listen(PORT, () => console.log(`runnnig on port ${PORT}`))
