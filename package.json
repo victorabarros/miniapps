@@ -3,7 +3,7 @@
   "repository": "https://github.com/klutchcard/miniapps.git",
   "license": "MIT",
   "scripts": {
-    "heroku-prebuild": "cd burner-card/backend/ && npm install",
-    "start": "cd burner-card/backend/ && npm start"
+    "heroku-prebuild": "cd burner-card/backend/ && yarn install",
+    "start": "cd burner-card/backend/ && yarn start"
   }
 }
