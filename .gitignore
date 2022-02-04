@@ -113,3 +113,4 @@ samconfig.toml
 **/testDist/*
 
 local.vars.json
+.vscode/

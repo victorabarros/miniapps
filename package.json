@@ -1,0 +1,8 @@
+{
+  "name": "miniapps",
+  "repository": "https://github.com/klutchcard/miniapps.git",
+  "license": "MIT",
+  "scripts": {
+    "start": "bash entrypoint.sh"
+  }
+}
